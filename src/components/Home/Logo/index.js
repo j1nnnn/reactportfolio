@@ -1,3 +1,5 @@
+/*
+
 import './index.scss'
 import LogoS from '../../../assets/images/logo-s.png'
 import { useEffect, useRef } from 'react'
@@ -61,3 +63,6 @@ const Logo = () => {
 }
 
 export default Logo
+
+
+*/
