@@ -41,11 +41,23 @@ const Home = () => {
                 <h2>Software Engineer / FullStack Developer / Project Management / Scrum Master </h2>
                 <Link to="/contact" className='flat-button'>CONTACT ME</Link>
             </div>
-            <Logo />
+
         </div>
         <Loader type="pacman" />
         </>
     )
 }
+
+/*  
+        The original with Logo for GSAP
+
+            <Link to="/contact" className='flat-button'>CONTACT ME</Link>
+        </div>
+        <Logo />
+
+    </div>
+    <Loader type="pacman" />
+    
+    */
 
 export default Home;
