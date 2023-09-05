@@ -7,8 +7,10 @@ import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter basename={process.env.PUBLIC_URL="/reactportfolio"}>
-      <App />
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <Link to="/reactportfolio">
+        <App />
+      </Link> 
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
