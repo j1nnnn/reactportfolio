@@ -10,12 +10,14 @@ const About = () => {
     const [letterClass, setLetterClass] = useState('text-animate')
 
     // useEffect causes routing problems
+    /*
     useEffect(() => {
         return setTimeout(() => {
             setLetterClass('text-animate-hover')
         }, 4000)
     }, [])
-
+    */
+    
     return (
         <>
             <div className='container about-page'>
