@@ -8,7 +8,7 @@ const Contact = () =>  {
     const [letterClass, setLetterClass] = useState('text-animate')
     const refForm = useRef()
 
-    // useEffect causes routing problems
+    // useEffect causes routing problems, damage is not a function
     useEffect(() => {
         return setTimeout(() => {
             setLetterClass('text-animate-hover')
