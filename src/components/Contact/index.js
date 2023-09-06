@@ -9,11 +9,13 @@ const Contact = () =>  {
     const refForm = useRef()
 
     // useEffect causes routing problems, damage is not a function
+    /*
     useEffect(() => {
         return setTimeout(() => {
             setLetterClass('text-animate-hover')
         }, 4000)
     }, [])
+    */
 
     const sendEmail = (e) => {
         e.preventDefault()
