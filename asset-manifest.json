@@ -1,22 +1,23 @@
 {
   "files": {
-    "main.css": "/reactportfolio/static/css/main.5619f12f.css",
-    "main.js": "/reactportfolio/static/js/main.f5221f32.js",
+    "main.css": "/reactportfolio/static/css/main.623e2645.css",
+    "main.js": "/reactportfolio/static/js/main.4ea32a88.js",
     "static/js/787.e29dc422.chunk.js": "/reactportfolio/static/js/787.e29dc422.chunk.js",
     "static/media/NJIT.png": "/reactportfolio/static/media/NJIT.bc98ecc979715841aae7.png",
     "static/media/logo-j.png": "/reactportfolio/static/media/logo-j.9f107317bb5ba039fcee.png",
+    "static/media/splunkicon.png": "/reactportfolio/static/media/splunkicon.8a7f9a28c004488c22b8.png",
     "static/media/logo_sub.png": "/reactportfolio/static/media/logo_sub.c01d78611e440cf5527b.png",
     "static/media/logo-dj.png": "/reactportfolio/static/media/logo-dj.63afad0c667946647d31.png",
     "static/media/helvetica-neu.ttf": "/reactportfolio/static/media/helvetica-neu.8a19678078a6b21c8057.ttf",
     "static/media/LaBelleAurore.woff2": "/reactportfolio/static/media/LaBelleAurore.a83c1c58fd7e43972e4a.woff2",
     "static/media/CoolveticaRg-Regular.woff2": "/reactportfolio/static/media/CoolveticaRg-Regular.7d1f3b1dd46ad6557a17.woff2",
     "index.html": "/reactportfolio/index.html",
-    "main.5619f12f.css.map": "/reactportfolio/static/css/main.5619f12f.css.map",
-    "main.f5221f32.js.map": "/reactportfolio/static/js/main.f5221f32.js.map",
+    "main.623e2645.css.map": "/reactportfolio/static/css/main.623e2645.css.map",
+    "main.4ea32a88.js.map": "/reactportfolio/static/js/main.4ea32a88.js.map",
     "787.e29dc422.chunk.js.map": "/reactportfolio/static/js/787.e29dc422.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.5619f12f.css",
-    "static/js/main.f5221f32.js"
+    "static/css/main.623e2645.css",
+    "static/js/main.4ea32a88.js"
   ]
 }
