@@ -1,0 +1,11 @@
+$primary-color: #ffd700;
+@import 'loaders.css/src/animations/ball-grid-beat.scss';
+
+.loader-hidden {
+    display:none;
+}
+
+.loader-active {
+    display:block;
+    color: #ffd700;
+}

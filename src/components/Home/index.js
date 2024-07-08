@@ -12,14 +12,15 @@ const Home = () => {
     const nameArray = ['i', 'n']
     const jobArray = ['S', 'o', 'f', 't', 'w', 'a', 'r', 'e', ' ', 'E', 'n', 'g', 'i', 'n', 'e', 'e', 'r']
 
-    // useEffect causes routing problems
-    /*
     useEffect(() => {
-        return setTimeout(() => {
+        const timer = setTimeout(() => {
             setLetterClass('text-animate-hover')
-        }, 4000)
-    }, [])
-    */
+        }, 3000);
+
+        return () => {
+            clearTimeout(timer);
+        }
+    });
 
     return (
         <>
@@ -40,12 +41,12 @@ const Home = () => {
                 strArray={jobArray}
                 idx={19}/>
                 </h1>
-                <h2>Software Engineer / FullStack Developer / Data Scientist / Scrum Master </h2>
+                <h2>Software Engineering / Full-Stack / AI / Automation / Agile </h2>
                 <Link to="/contact" className='flat-button'>CONTACT ME</Link>
             </div>
 
         </div>
-        <Loader type="pacman" />
+        <Loader type="ball-grid-beat" />
         </>
     )
 }
