@@ -1,3 +1,128 @@
+$primary-color: #ffd700;
+@import 'loaders.css/src/animations/ball-grid-beat.scss';
+
+.loader-hidden {
+    display:none;
+}
+
+.loader-active {
+    display:block;
+    color: #ffd700;
+}
+
+
+//////////////////////////////////////////////////////
+///                 About Website                  ///
+//////////////////////////////////////////////////////
+
+// First Row of Icon Boxes 
+
+.boxA, .boxB, .boxC, .boxD {
+    position: absolute;
+    border-radius: 1rem 1.5rem 1.25rem;
+    width: 150px;
+    height: 150px;
+    border:  1px solid #ccc;
+    background: #444; 
+    text-align: center;
+    font-size: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 20px 0px lightyellow; 
+    margin-top: -5%;
+    margin-left: 7%;
+}
+.boxB {
+    margin-left: 57%;
+}
+.boxC {
+    margin-left: 107%;
+}
+.boxD {
+    margin-left: 157%;
+}
+
+// Second Row of Descriptions 
+
+.boxE, .boxF, .boxG, .boxH {
+    position: absolute;
+    width: 250px;
+    height: 70px;
+    text-align: center;
+    font-size: 100px;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    margin-top: 22%;
+}
+.boxF {
+    margin-left: 50%;
+}
+.boxG {
+    margin-left: 100%;
+}
+.boxH {
+    margin-left: 150%;
+}
+
+//////////////////////////////////////////////////////
+
+// Third row of Icon Boxes
+
+.box1, .box2, .box3, .box4 {
+    position: absolute;
+    border-radius: 1rem 1.5rem 1.25rem;
+    width: 150px;
+    height: 150px;
+    border:  1px solid #ccc;
+    background: #444; 
+    text-align: center;
+    font-size: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 20px 0px lightyellow; 
+    margin-top: 45%;
+    margin-left: 7%;
+}
+.box2 {
+    margin-left: 57%;
+}
+.box3 {
+    margin-left: 107%;
+}
+.box4 {
+    margin-left: 157%;
+}
+
+// Fourth row of descriptions
+.box5, .box6, .box7, .box8 {
+    position: absolute;
+    width: 250px;
+    height: 70px;
+    text-align: center;
+    font-size: 100px;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    margin-top: 72%;
+}
+.box6 {
+    margin-left: 50%;
+}
+.box7 {
+    margin-left: 100%;
+}
+.box8 {
+    margin-left: 150%;
+}
+
+//////////////////////////////////////////////////////
+///                 About Website                  ///
+//////////////////////////////////////////////////////
+
+
 .stage-cube-cont {
     width: 50%;
     height: 100%;
@@ -72,4 +197,14 @@
     83% {
         transform: rotateX(90deg);
     }
+}
+
+@media screen and (max-width: 1200px) {
+    .stage-cube-cont {
+        position: initial;
+        width: 100%;
+        height: 0%;
+        overflow: visible;
+    }
+    
 }

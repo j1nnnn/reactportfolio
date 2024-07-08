@@ -16,7 +16,7 @@ const Contact = () =>  {
         }, 4000)
     }, [])
     */
-    
+
     const sendEmail = (e) => {
         e.preventDefault()
 
@@ -53,12 +53,14 @@ const Contact = () =>  {
                     I am interested in any opportunities - especially ambitious or large projects. 
                     However, if you have other request or question, don't hesitate to contact me 
                     using below form either. 
+                    <br/><br/>
+                    I am also open to any feedback regarding the design and content of this website!
                 </p>
                 <div className='contact-form'>
                     <form ref={refForm} onSubmit={sendEmail}>
                         <ul>
                             <li className='half'>
-                                <input type="text" name="name" placeholder="Name" required/>
+                                <input type="text" name="name" placeholder="Name" required font-family/>
                             </li>
                             <li className='half'>
                                 <input type="email" name="email" placeholder="Email" required/>
@@ -77,7 +79,7 @@ const Contact = () =>  {
                 </div>
             </div>
         </div>
-        <Loader type="pacman" />    
+        <Loader type="ball-grid-beat" />   
     </>
     )
 }

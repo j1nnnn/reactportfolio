@@ -14,9 +14,18 @@ const Home = () => {
 
     // useEffect causes routing problems
     /* 
+
     useEffect(() => {
-        return setTimeout(() => {
+        const timer = setTimeout(() => {
             setLetterClass('text-animate-hover')
+
+        }, 3000);
+
+        return () => {
+            clearTimeout(timer);
+        }
+    });
+
         }, 4000)
     }, [])
     */
@@ -30,7 +39,7 @@ const Home = () => {
                 <span className={`${letterClass} _12`}>i,</span>
                 <br />
                 <span className={`${letterClass} _13`}>I</span>
-                <span className={`${letterClass} _14`}>'m,</span>
+                <span className={`${letterClass} _14`}>'m</span>
                 <img src={LogoTitle} alt="developer" />
                 <AnimatedLetters letterClass={letterClass}
                 strArray={nameArray}
@@ -40,12 +49,12 @@ const Home = () => {
                 strArray={jobArray}
                 idx={19}/>
                 </h1>
-                <h2>Software Engineer / FullStack Developer / Project Management / Scrum Master </h2>
+                <h2>Software Engineering / Full-Stack / AI / Automation / Agile </h2>
                 <Link to="/contact" className='flat-button'>CONTACT ME</Link>
             </div>
 
         </div>
-        <Loader type="pacman" />
+        <Loader type="ball-grid-beat" />
         </>
     )
 }

@@ -1,3 +1,15 @@
+$primary-color: #ffd700;
+@import 'loaders.css/src/animations/ball-grid-beat.scss';
+
+.loader-hidden {
+    display:none;
+}
+
+.loader-active {
+    display:block;
+    color: #ffd700;
+}
+
 .contact-form {
     width: 100%;
     margin-top: 20px;
@@ -5,6 +17,7 @@
     ul {
         padding: 0;
         margin: 0;
+        font-family: sans-serif;
 
         li {
             padding: 0;
@@ -36,7 +49,7 @@
     input[type='email'] {
         width: 100%;
         border: 0;
-        background: #115173;
+        background: #404244;
         height: 50px;
         font-size: 16px;
         color:#fff;
@@ -47,7 +60,7 @@
     textarea {
         width: 100%;
         border: 0;
-        background: #115173;
+        background: #404244;
         height: 50px;
         font-size: 16px;
         color: #fff;
