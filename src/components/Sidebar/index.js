@@ -11,6 +11,38 @@ import { useState } from 'react';
 const Sidebar = () => {
     const [showNav, setShowNav] = useState(false);
 
+const Sidebar = () => (
+    <div className='nav-bar'>
+        <Link className='logo' to='/'>
+            <img src={LogoS} alt="logo" />
+            <img className='sub-logo' src={LogoSubtitle} alt="jinwoo" />
+        </Link>
+        <nav>
+            <NavLink exact="true" activeclassname="active" to="/">
+                <FontAwesomeIcon icon={faHome} color="#4d4d4e" />
+            </NavLink>
+            <NavLink exact="true" activeclassname="active" className="about-link" to="/about">
+                <FontAwesomeIcon icon={faUser} color="#4d4d4e" />
+            </NavLink>
+            <NavLink exact="true" activeclassname="active" className="contact-link" to="/contact">
+                <FontAwesomeIcon icon={faEnvelope} color="#4d4d4e" />
+            </NavLink>
+        </nav>
+        <ul>
+            <li>
+                <a target="_blank" rel='noreferrer' href="https://www.linkedin.com/in/cs22-jinwoo-lim">
+                    <FontAwesomeIcon icon={faLinkedin} color="#4d4d4e" />
+                </a>
+            </li>
+            <li>
+                <a target="_blank" rel='noreferrer' href="https://www.github.com/j1nnnn">
+                    <FontAwesomeIcon icon={faGithub} color="#4d4d4e" />
+                </a>
+            </li>
+        </ul>
+    </div>
+)
+
     return (
         <div className='nav-bar'>
             <Link className='logo' to='/'>
