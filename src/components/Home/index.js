@@ -12,9 +12,13 @@ const Home = () => {
     const nameArray = ['i', 'n']
     const jobArray = ['S', 'o', 'f', 't', 'w', 'a', 'r', 'e', ' ', 'E', 'n', 'g', 'i', 'n', 'e', 'e', 'r']
 
+    // useEffect causes routing problems
+    /* 
+
     useEffect(() => {
         const timer = setTimeout(() => {
             setLetterClass('text-animate-hover')
+
         }, 3000);
 
         return () => {
@@ -22,6 +26,10 @@ const Home = () => {
         }
     });
 
+        }, 4000)
+    }, [])
+    */
+    
     return (
         <>
         <div className="container home-page"> 
