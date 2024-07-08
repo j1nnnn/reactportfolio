@@ -23,6 +23,8 @@ const Portfolio = () => {
         getPortfolio();
     }, []);
 
+
+
     const getPortfolio = async () => {
         const querySnapshot = await getDocs(collection(db, 'portfolio'));
         setPortfolio(querySnapshot.docs.map((doc) => doc.data()));
@@ -30,10 +32,10 @@ const Portfolio = () => {
     
     
     const renderPortfolio = (portfolio) => {
-        return (
+        return ( // don't forget about the sort!!
             <div className="images-container">
                 {
-                    portfolio.map((port, idx) => {
+                    portfolio.sort((a,b) => a.dates > b.dates ? 1 : -1).map((port, idx) => {
                         return (
                             <div className="image-box" key={idx}>
                                 <img 
