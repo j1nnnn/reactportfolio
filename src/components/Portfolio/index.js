@@ -5,6 +5,21 @@ import Loader from 'react-loaders';
 import { getDocs, collection } from 'firebase/firestore';
 import { db } from '../../firebase';
 
+// function HoverDescription() {
+//     return (
+//         <div className='content'>
+//             <p className='title'><b>{port.name}</b></p>
+//             <h3 className='dates'>{port.dates}</h3>
+//             <h4 className='description'>{port.description}</h4>
+//             <button class="btn" onClick={() => window.open(port.url)}
+//             >View</button>
+//         </div>
+        
+//     )
+
+
+// }
+
 const Portfolio = () => {
     const [letterClass, setLetterClass] = useState('text-animate');
     const [portfolio, setPortfolio] = useState([]);
@@ -21,15 +36,25 @@ const Portfolio = () => {
 
     useEffect(() => {
         getPortfolio();
+
     }, []);
 
+    const [isHovering, setIsHovering] = useState(false);
 
+    const handleMouseOver = () => {
+        setIsHovering(true);
+    };
+
+    const handleMouseOut = () => {
+        setIsHovering(false);
+    };
 
     const getPortfolio = async () => {
         const querySnapshot = await getDocs(collection(db, 'portfolio'));
         setPortfolio(querySnapshot.docs.map((doc) => doc.data()));
     }
     
+
     
     const renderPortfolio = (portfolio) => {
         return ( // don't forget about the sort!!
@@ -37,6 +62,7 @@ const Portfolio = () => {
                 {
                     portfolio.sort((a,b) => a.dates.substring(5) > b.dates.substring(5) ? 1 : -1).map((port, idx) => {
                         return (
+                            // <div className="image-box" key={idx} onMouseEnter={handleMouseOver} onMouseLeave={handleMouseOut}>
                             <div className="image-box" key={idx}>
                                 <img 
                                 src={port.image} 
@@ -48,8 +74,8 @@ const Portfolio = () => {
                                     <h4 className='description'>{port.description}</h4>
                                     <button class="btn" onClick={() => window.open(port.url)}
                                     >View</button>
-                                </div>    
-                            </div>
+                                </div>
+                            </div> 
                         )
                     })
                 }
@@ -75,6 +101,7 @@ const Portfolio = () => {
             <Loader type="ball-grid-beat" />
         </>
     );
+    
 }
 
 export default Portfolio
