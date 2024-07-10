@@ -53,10 +53,10 @@ const Experience = () => {
                     <h6></h6>
                     
                     
-                    <img src={LogoTitle} alt="WellsFargo" class="image1"/>
+                    {/* <img src={LogoTitle} alt="WellsFargo" class="image1"/>
                     <h2>
                         Wells Fargo
-                    </h2> 
+                    </h2>  */}
                     <h3>
                         July 2021 - August 2021
                     </h3>
@@ -70,12 +70,12 @@ const Experience = () => {
                     <h4>
                         Developed automated unit tests for the front-end and back-end in banking software application in Wealth and Investment Management Technology while completing full migrations of software to the pivotal cloud foundries
                     </h4>
-                    <h5></h5>
+                    <h6></h6>
 
-                    <img src={LogoTitle} alt="WellsFargo" class="image1"/>
+                    {/* <img src={LogoTitle} alt="WellsFargo" class="image1"/>
                     <h2>
                         Wells Fargo
-                    </h2>
+                    </h2> */}
                     <h3>
                         July 2021 - August 2021
                     </h3>
