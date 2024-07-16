@@ -5,6 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngular, faCss3, faGitAlt, faHtml5, faJsSquare, faReact } from '@fortawesome/free-brands-svg-icons'
 import Loader from 'react-loaders'
 
+
+import { RiFirebaseFill } from "react-icons/ri";
+import { IoLogoFirebase } from "react-icons/io5";
+
 const About = () => {
     
     const [letterClass, setLetterClass] = useState('text-animate')
@@ -95,7 +99,7 @@ const About = () => {
                         <p>There were many <b>React</b> Libraries along with components used to design and make the website aesthetically.</p>
                     </div>
                     <div className='boxF'>
-                        <p>As an <b>HTML5</b> front-end website potentially using a backend, this website is using most recent and modern frameworks.</p>
+                        <p>As an <b>HTML5</b> front-end website using a simple backend at the moment, this website is using most recent and modern frameworks.</p>
                     </div>
                     <div className='boxG'>
                         <p><b>JavaScript, typescript, and JSX</b> are the languages that runs this website.</p>
@@ -106,9 +110,11 @@ const About = () => {
 
 
                     <div className='box1'>
-                        <FontAwesomeIcon icon={faReact} color="#5ED4F4"/>
+                        <RiFirebaseFill IoLogoFirebase />
+                        {/* <FontAwesomeIcon icon="fa-solid fa-fire" />
+                        <FontAwesomeIcon icon={faFirebase} color="#5ED4F4"/> */}
                     </div>
-                    <div className='box2'>
+                    {/* <div className='box2'>
                         <FontAwesomeIcon icon={faHtml5} color="#F06529"/>
                     </div>
                     <div className='box3'>
@@ -116,13 +122,13 @@ const About = () => {
                     </div>
                     <div className='box4'>
                         <FontAwesomeIcon icon={faGitAlt} color="#EC4D28"/>
-                    </div>
+                    </div> */}
 
 
                     <div className='box5'>
-                        <p>There were many <b>React</b> Libraries along with components used to design and make the website aesthetically.</p>
+                        <p>Firebase was used as backend tool to various tasks such as storage, app hosting, or security.</p>
                     </div>
-                    <div className='box6'>
+                    {/* <div className='box6'>
                         <p>As an <b>HTML5</b> front-end website potentially using a backend, this website is using most recent and modern frameworks.</p>
                     </div>
                     <div className='box7'>
@@ -130,7 +136,7 @@ const About = () => {
                     </div>
                     <div className='box8'>
                         <p><b>Github</b> and <b>Github Pages</b> is used to host and run this website on a repository.</p>
-                    </div>
+                    </div> */}
                     
                 </div>
 
