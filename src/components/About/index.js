@@ -1,13 +1,13 @@
 import './index.scss'
 import AnimatedLetters from '../AnimatedLetters'
 import { useEffect, useState } from 'react'
+// import { ReactComponent as Logo} from '../../assets/images/firebaseIcon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngular, faCss3, faGitAlt, faHtml5, faJsSquare, faReact } from '@fortawesome/free-brands-svg-icons'
+import { faAngular, faCss3, faGitAlt, faHtml5, faJsSquare, faReact, faFontAwesomeAlt, faGripfire } from '@fortawesome/free-brands-svg-icons'
 import Loader from 'react-loaders'
 
 
-import { RiFirebaseFill } from "react-icons/ri";
-import { IoLogoFirebase } from "react-icons/io5";
+
 
 const About = () => {
     
@@ -110,7 +110,8 @@ const About = () => {
 
 
                     <div className='box1'>
-                        <RiFirebaseFill IoLogoFirebase />
+                        {/* <Logo /> */}
+                        {/* <FontAwesomeIcon icon={faGripfire} color="red"/> */}
                         {/* <FontAwesomeIcon icon="fa-solid fa-fire" />
                         <FontAwesomeIcon icon={faFirebase} color="#5ED4F4"/> */}
                     </div>

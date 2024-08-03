@@ -28,7 +28,7 @@ const Projects = () => {
                             idx={15}
                         />
                     </h1>
-                    <img src={LogoPic1} alt="splunk"/>
+                    
                     <h2>
                         OpenFin Analyst Project
                     </h2>
