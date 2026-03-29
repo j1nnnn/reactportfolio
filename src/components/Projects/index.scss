@@ -1,4 +1,20 @@
 .projects {
+  .progress-section {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: 20px 0;
+    background: var(--color-bg);
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--color-primary);
+    transform-origin: left;
+    border-radius: 2px;
+    margin-top: 8px;
+  }
+
   .projects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -18,7 +34,6 @@
 
     &:hover {
       border-color: rgba(255, 215, 0, 0.3);
-      transform: translateY(-4px);
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     }
   }
