@@ -1,62 +1,76 @@
 const JLLogo = ({ size = 40 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 100 100"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    {/* Outer ring */}
-    <circle
-      cx="50"
-      cy="50"
-      r="46"
-      stroke="var(--color-primary)"
-      strokeWidth="1.5"
-      opacity="0.35"
-    />
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="46" stroke="#c9a020" strokeWidth="1.5" opacity="0.3" />
 
-    {/* JL monogram — geometric style matching original logo */}
-    <g transform="translate(50, 50) scale(0.58)" strokeLinejoin="round" strokeLinecap="round">
-      {/* Left arm — J letter */}
-      {/* Outer face (lighter gold) */}
+    <g transform="translate(50, 54) scale(0.52)">
+      {/* J — left letter */}
       <path
-        d="M -38 -20 L -38 22 Q -38 32 -28 32 L -18 32 L -18 22 L -28 22 Q -28 22 -28 22 L -28 -8 Z"
+        d="M -40 -18 L -40 24 Q -40 36 -28 36 L -16 36 L -16 24 L -28 24 L -28 -6 Z"
         fill="#c9a020"
-        opacity="0.9"
       />
-      {/* Inner face (darker gold) */}
       <path
-        d="M -28 -8 L -28 22 L -18 22 L -18 32 L -8 32 L -8 22 Q -8 12 -18 12 L -18 -20 Z"
-        fill="#a07818"
-        opacity="0.9"
+        d="M -28 -6 L -28 24 L -16 24 L -16 36 L -4 36 L -4 24 Q -4 12 -16 12 L -16 -18 Z"
+        fill="#9a7818"
       />
 
-      {/* Right arm — L letter (mirrored) */}
-      {/* Inner face (darker gold) */}
+      {/* L — right letter (mirrored) */}
       <path
-        d="M 28 -8 L 28 22 L 18 22 L 18 32 L 8 32 L 8 22 Q 8 12 18 12 L 18 -20 Z"
-        fill="#a07818"
-        opacity="0.9"
+        d="M 28 -6 L 28 24 L 16 24 L 16 36 L 4 36 L 4 24 Q 4 12 16 12 L 16 -18 Z"
+        fill="#9a7818"
       />
-      {/* Outer face (lighter gold) */}
       <path
-        d="M 38 -20 L 38 22 Q 38 32 28 32 L 18 32 L 18 22 L 28 22 Q 28 22 28 22 L 28 -8 Z"
+        d="M 40 -18 L 40 24 Q 40 36 28 36 L 16 36 L 16 24 L 28 24 L 28 -6 Z"
         fill="#c9a020"
-        opacity="0.9"
       />
 
-      {/* Top center chevron — dark accent */}
+      {/* Data flow curves — converging from left and right to center top */}
       <path
-        d="M -18 -20 L 0 -38 L 18 -20 L 8 -20 L 0 -28 L -8 -20 Z"
-        fill="#3a3530"
+        d="M -20 -16 Q -16 -32 0 -40"
+        stroke="#c9a020"
+        strokeWidth="2.5"
+        opacity="0.7"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M 20 -16 Q 16 -32 0 -40"
+        stroke="#c9a020"
+        strokeWidth="2.5"
+        opacity="0.7"
+        strokeLinecap="round"
+        fill="none"
+      />
+
+      {/* Inner flow lines — thinner, more subtle */}
+      <path
+        d="M -12 -16 Q -8 -28 0 -34"
+        stroke="#c9a020"
+        strokeWidth="1.5"
+        opacity="0.4"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M 12 -16 Q 8 -28 0 -34"
+        stroke="#c9a020"
+        strokeWidth="1.5"
+        opacity="0.4"
+        strokeLinecap="round"
+        fill="none"
+      />
+
+      {/* Convergence point — diamond */}
+      <path
+        d="M 0 -44 L 4 -39 L 0 -34 L -4 -39 Z"
+        fill="#c9a020"
         opacity="0.85"
       />
-      {/* Chevron highlight */}
+
+      {/* Subtle dark fill between letters */}
       <path
-        d="M -8 -20 L 0 -28 L 8 -20 L 4 -20 L 0 -24 L -4 -20 Z"
-        fill="#4a4540"
-        opacity="0.7"
+        d="M -16 -18 L 0 -22 L 16 -18 L 10 -16 L 0 -18 L -10 -16 Z"
+        fill="#2a2520"
+        opacity="0.5"
       />
     </g>
   </svg>
