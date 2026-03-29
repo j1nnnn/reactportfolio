@@ -43,67 +43,31 @@ section {
   }
 }
 
-// Alternating backgrounds with gradient fade at edges
-// Surface sections (#141414) fade from bg at top, to bg at bottom
-// Bg sections (#0a0a0a) fade from surface at top, to surface at bottom
+// Alternating backgrounds — seamless gradients like Hero-to-About
+// Each section gently shifts across its full height, no hard stops
 
 #about {
-  background: linear-gradient(
-    to bottom,
-    var(--color-bg) 0%,
-    var(--color-surface) 12%,
-    var(--color-surface) 88%,
-    var(--color-bg) 100%
-  );
+  background: linear-gradient(to bottom, var(--color-bg), var(--color-surface));
 }
 
 #experience {
-  background: linear-gradient(
-    to bottom,
-    var(--color-surface) 0%,
-    var(--color-bg) 12%,
-    var(--color-bg) 88%,
-    var(--color-surface) 100%
-  );
+  background: linear-gradient(to bottom, var(--color-surface), var(--color-bg));
 }
 
 #skills {
-  background: linear-gradient(
-    to bottom,
-    var(--color-bg) 0%,
-    var(--color-surface) 12%,
-    var(--color-surface) 88%,
-    var(--color-bg) 100%
-  );
+  background: linear-gradient(to bottom, var(--color-bg), var(--color-surface));
 }
 
 #projects {
-  background: linear-gradient(
-    to bottom,
-    var(--color-surface) 0%,
-    var(--color-bg) 12%,
-    var(--color-bg) 88%,
-    var(--color-surface) 100%
-  );
+  background: linear-gradient(to bottom, var(--color-surface), var(--color-bg));
 }
 
 #education {
-  background: linear-gradient(
-    to bottom,
-    var(--color-bg) 0%,
-    var(--color-surface) 12%,
-    var(--color-surface) 88%,
-    var(--color-bg) 100%
-  );
+  background: linear-gradient(to bottom, var(--color-bg), var(--color-surface));
 }
 
 #contact {
-  background: linear-gradient(
-    to bottom,
-    var(--color-surface) 0%,
-    var(--color-bg) 12%,
-    var(--color-bg) 100%
-  );
+  background: linear-gradient(to bottom, var(--color-surface), var(--color-bg));
 }
 
 .section-heading {
