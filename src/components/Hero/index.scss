@@ -4,10 +4,14 @@
   justify-content: center;
   min-height: 100vh;
   padding: 0 10%;
+  position: relative;
+  overflow: hidden;
   background: radial-gradient(ellipse at 20% 50%, rgba(255, 215, 0, 0.03) 0%, transparent 70%);
 
   .hero-content {
     max-width: 700px;
+    z-index: 1;
+    position: relative;
   }
 
   .hero-greeting {
@@ -17,10 +21,7 @@
     color: var(--color-text);
     line-height: 1.1;
     margin-bottom: 16px;
-
-    .hero-name {
-      color: var(--color-primary);
-    }
+    .hero-name { color: var(--color-primary); }
   }
 
   .hero-title {
@@ -30,14 +31,12 @@
     color: var(--color-text-muted);
     margin-bottom: 12px;
     letter-spacing: 2px;
-    animation: fadeIn 1s 1.8s backwards;
   }
 
   .hero-subtitle {
     height: 32px;
     margin-bottom: 40px;
     overflow: hidden;
-
     .subtitle-text {
       display: inline-block;
       font-family: var(--font-mono);
@@ -51,10 +50,10 @@
   .hero-ctas {
     display: flex;
     gap: 16px;
-    animation: fadeIn 1s 2.2s backwards;
   }
 
   .cta-primary {
+    display: inline-block;
     color: #111;
     background: var(--color-primary);
     padding: 12px 28px;
@@ -63,14 +62,12 @@
     letter-spacing: 2px;
     text-decoration: none;
     text-transform: uppercase;
-    transition: all 0.3s;
-    &:hover {
-      background: #fff;
-      transform: translateY(-2px);
-    }
+    transition: background 0.3s;
+    &:hover { background: #fff; }
   }
 
   .cta-secondary {
+    display: inline-block;
     color: var(--color-primary);
     background: transparent;
     padding: 12px 28px;
@@ -80,11 +77,26 @@
     text-decoration: none;
     text-transform: uppercase;
     border: 1px solid var(--color-primary);
-    transition: all 0.3s;
-    &:hover {
-      background: rgba(255, 215, 0, 0.1);
-      transform: translateY(-2px);
-    }
+    transition: background 0.3s;
+    &:hover { background: rgba(255, 215, 0, 0.1); }
+  }
+
+  .scroll-icon {
+    width: 40px;
+    margin-top: 24px;
+    opacity: 0.6;
+  }
+
+  .sliding-text {
+    position: absolute;
+    bottom: -5px;
+    white-space: nowrap;
+    color: rgba(255, 215, 0, 0.04);
+    font-size: 32vh;
+    font-family: var(--font-heading);
+    width: max-content;
+    z-index: 0;
+    pointer-events: none;
   }
 
   @media (max-width: 768px) {
@@ -92,5 +104,6 @@
     .hero-greeting { font-size: 48px; }
     .hero-title { font-size: 18px; }
     .hero-ctas { flex-direction: column; }
+    .sliding-text { font-size: 20vh; }
   }
 }
