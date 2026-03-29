@@ -43,29 +43,67 @@ section {
   }
 }
 
-// Alternating backgrounds for visual rhythm
+// Alternating backgrounds with gradient fade at edges
+// Surface sections (#141414) fade from bg at top, to bg at bottom
+// Bg sections (#0a0a0a) fade from surface at top, to surface at bottom
+
 #about {
-  background: var(--color-surface);
+  background: linear-gradient(
+    to bottom,
+    var(--color-bg) 0%,
+    var(--color-surface) 12%,
+    var(--color-surface) 88%,
+    var(--color-bg) 100%
+  );
 }
 
 #experience {
-  background: var(--color-bg);
+  background: linear-gradient(
+    to bottom,
+    var(--color-surface) 0%,
+    var(--color-bg) 12%,
+    var(--color-bg) 88%,
+    var(--color-surface) 100%
+  );
 }
 
 #skills {
-  background: var(--color-surface);
+  background: linear-gradient(
+    to bottom,
+    var(--color-bg) 0%,
+    var(--color-surface) 12%,
+    var(--color-surface) 88%,
+    var(--color-bg) 100%
+  );
 }
 
 #projects {
-  background: var(--color-bg);
+  background: linear-gradient(
+    to bottom,
+    var(--color-surface) 0%,
+    var(--color-bg) 12%,
+    var(--color-bg) 88%,
+    var(--color-surface) 100%
+  );
 }
 
 #education {
-  background: var(--color-surface);
+  background: linear-gradient(
+    to bottom,
+    var(--color-bg) 0%,
+    var(--color-surface) 12%,
+    var(--color-surface) 88%,
+    var(--color-bg) 100%
+  );
 }
 
 #contact {
-  background: var(--color-bg);
+  background: linear-gradient(
+    to bottom,
+    var(--color-surface) 0%,
+    var(--color-bg) 12%,
+    var(--color-bg) 100%
+  );
 }
 
 .section-heading {
