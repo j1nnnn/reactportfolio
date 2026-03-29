@@ -26,7 +26,7 @@ const Hero = () => {
           <span className={`${letterClass} _12`}>i,</span>
           <br />
           <span className={`${letterClass} _13`}>I</span>
-          <span className={`${letterClass} _14`}>&apos;m{' '}</span>
+          <span className={`${letterClass} _14`} style={{ marginRight: '16px' }}>&apos;m</span>
           <span className="hero-name">
             <AnimatedLetters letterClass={letterClass} strArray={['J', ...nameArray]} idx={15} />
           </span>
