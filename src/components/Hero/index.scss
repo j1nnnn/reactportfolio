@@ -53,7 +53,7 @@
 
   .cta-primary {
     display: inline-block;
-    color: #111;
+    color: var(--color-bg);
     background: var(--color-primary);
     padding: 12px 28px;
     font-size: 14px;
@@ -62,7 +62,7 @@
     text-decoration: none;
     text-transform: uppercase;
     transition: background 0.3s;
-    &:hover { background: #fff; }
+    &:hover { background: var(--color-text); }
   }
 
   .cta-secondary {
@@ -77,7 +77,7 @@
     text-transform: uppercase;
     border: 1px solid var(--color-primary);
     transition: background 0.3s;
-    &:hover { background: rgba(255, 215, 0, 0.1); }
+    &:hover { background: rgba(218, 119, 86, 0.1); }
   }
 
   @media (max-width: 768px) {

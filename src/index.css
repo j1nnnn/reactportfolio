@@ -1,11 +1,11 @@
 :root {
-  --color-primary: #ffd700;
-  --color-bg: #0a0a0a;
-  --color-surface: #141414;
-  --color-text: #f0f0f0;
-  --color-text-muted: #888888;
-  --color-border: rgba(255, 215, 0, 0.1);
-  --color-primary-dim: #b99e00;
+  --color-primary: #da7756;
+  --color-bg: #1a1714;
+  --color-surface: #23201c;
+  --color-text: #e8e0d4;
+  --color-text-muted: #9a918a;
+  --color-border: rgba(218, 119, 86, 0.15);
+  --color-primary-dim: #b8624a;
   --sidebar-width: 80px;
   --font-heading: 'Coolvetica', sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;

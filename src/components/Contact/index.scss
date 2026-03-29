@@ -56,7 +56,7 @@
       outline: none;
       transition: border-color 0.3s;
 
-      &::placeholder { color: #555; }
+      &::placeholder { color: var(--color-text-muted); }
       &:focus { border-color: var(--color-primary); }
     }
 
@@ -65,7 +65,7 @@
 
   .submit-btn {
     background: var(--color-primary);
-    color: #111;
+    color: var(--color-bg);
     border: none;
     padding: 14px 32px;
     font-size: 14px;
@@ -78,7 +78,7 @@
     align-self: flex-start;
 
     &:hover {
-      background: #fff;
+      background: var(--color-text);
       transform: translateY(-2px);
     }
   }

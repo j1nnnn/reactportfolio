@@ -4,7 +4,7 @@
   top: 0;
   bottom: 0;
   width: 80px;
-  background: #111;
+  background: var(--color-bg);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,7 +30,7 @@
       justify-content: center;
       width: 44px;
       height: 44px;
-      color: #555;
+      color: var(--color-text-muted);
       font-size: 18px;
       text-decoration: none;
       transition: color 0.3s;
@@ -55,7 +55,7 @@
       .nav-label {
         position: absolute;
         left: 60px;
-        background: #222;
+        background: var(--color-surface);
         color: var(--color-text);
         padding: 4px 10px;
         border-radius: 4px;
@@ -78,7 +78,7 @@
     flex-direction: column;
     gap: 12px;
     a {
-      color: #555;
+      color: var(--color-text-muted);
       font-size: 18px;
       text-align: center;
       transition: color 0.3s;
@@ -121,7 +121,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: #111;
+      background: var(--color-bg);
       flex-direction: column;
       align-items: center;
       justify-content: center;

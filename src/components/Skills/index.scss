@@ -12,7 +12,7 @@
     border-radius: 8px;
     padding: 24px;
     transition: border-color 0.3s;
-    &:hover { border-color: rgba(255, 215, 0, 0.3); }
+    &:hover { border-color: rgba(218, 119, 86, 0.3); }
   }
 
   .category-name {
@@ -42,7 +42,7 @@
     &:hover {
       border-color: var(--color-primary);
       color: var(--color-primary);
-      background: rgba(255, 215, 0, 0.05);
+      background: rgba(218, 119, 86, 0.05);
     }
   }
 
