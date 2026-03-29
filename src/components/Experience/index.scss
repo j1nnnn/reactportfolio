@@ -78,6 +78,29 @@
     flex-shrink: 0;
   }
 
+  .timeline-summary {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+    margin-bottom: 20px;
+    font-weight: 300;
+    font-style: italic;
+  }
+
+  .timeline-subsection {
+    margin-bottom: 16px;
+    &:last-child { margin-bottom: 0; }
+  }
+
+  .subsection-title {
+    font-family: var(--font-heading);
+    font-size: 15px;
+    color: var(--color-primary);
+    font-weight: 400;
+    margin-bottom: 10px;
+    opacity: 0.85;
+  }
+
   .timeline-bullets {
     list-style: none;
     padding: 0;
