@@ -1,5 +1,10 @@
-import useScrollReveal from '../../hooks/useScrollReveal'
+import { motion } from 'framer-motion'
 import './index.scss'
+
+const variants = {
+  initial: { y: 100, opacity: 0 },
+  animate: { y: 0, opacity: 1, transition: { duration: 0.5, staggerChildren: 0.1 } },
+}
 
 const SKILL_CATEGORIES = [
   {
@@ -29,24 +34,22 @@ const SKILL_CATEGORIES = [
 ]
 
 const Skills = () => {
-  const [ref, isVisible] = useScrollReveal()
-
   return (
-    <div className={`skills reveal ${isVisible ? 'revealed' : ''}`} ref={ref}>
-      <h2 className="section-heading">Skills</h2>
-      <div className="skills-grid">
+    <motion.div className="skills" variants={variants} initial="initial" whileInView="animate" viewport={{ once: true, margin: '-100px' }}>
+      <motion.h2 className="section-heading" variants={variants}>Skills</motion.h2>
+      <motion.div className="skills-grid" variants={variants}>
         {SKILL_CATEGORIES.map((cat) => (
-          <div className="skill-category" key={cat.name}>
+          <motion.div className="skill-category" key={cat.name} variants={variants}>
             <h3 className="category-name">{cat.name}</h3>
             <div className="skill-chips">
               {cat.skills.map((skill) => (
-                <span className="skill-chip" key={skill}>{skill}</span>
+                <motion.span className="skill-chip" key={skill} whileHover={{ scale: 1.1 }}>{skill}</motion.span>
               ))}
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }
 

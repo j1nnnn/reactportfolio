@@ -1,5 +1,10 @@
-import useScrollReveal from '../../hooks/useScrollReveal'
+import { motion } from 'framer-motion'
 import './index.scss'
+
+const variants = {
+  initial: { y: 100, opacity: 0 },
+  animate: { y: 0, opacity: 1, transition: { duration: 0.5, staggerChildren: 0.1 } },
+}
 
 const EDUCATION = [
   {
@@ -23,27 +28,25 @@ const CREDENTIALS = [
 ]
 
 const Education = () => {
-  const [ref, isVisible] = useScrollReveal()
-
   return (
-    <div className={`education reveal ${isVisible ? 'revealed' : ''}`} ref={ref}>
-      <h2 className="section-heading">Education & Credentials</h2>
-      <div className="education-grid">
+    <motion.div className="education" variants={variants} initial="initial" whileInView="animate" viewport={{ once: true, margin: '-100px' }}>
+      <motion.h2 className="section-heading" variants={variants}>Education & Credentials</motion.h2>
+      <motion.div className="education-grid" variants={variants}>
         {EDUCATION.map((edu) => (
-          <div className="education-card" key={edu.school}>
+          <motion.div className="education-card" key={edu.school} variants={variants} whileHover={{ scale: 1.02 }}>
             <h3 className="edu-school">{edu.school}</h3>
             <p className="edu-degree">{edu.degree}</p>
             <span className="edu-period">{edu.period}</span>
             {edu.note && <span className="edu-note">{edu.note}</span>}
-          </div>
+          </motion.div>
         ))}
-      </div>
-      <div className="credentials">
+      </motion.div>
+      <motion.div className="credentials" variants={variants}>
         {CREDENTIALS.map((cred) => (
-          <span className="credential-badge" key={cred}>{cred}</span>
+          <motion.span className="credential-badge" key={cred} variants={variants} whileHover={{ scale: 1.05 }}>{cred}</motion.span>
         ))}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }
 

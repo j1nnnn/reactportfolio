@@ -1,5 +1,10 @@
-import useScrollReveal from '../../hooks/useScrollReveal'
+import { motion } from 'framer-motion'
 import './index.scss'
+
+const variants = {
+  initial: { y: 100, opacity: 0 },
+  animate: { y: 0, opacity: 1, transition: { duration: 0.5, staggerChildren: 0.1 } },
+}
 
 const HIGHLIGHTS = [
   { value: '4+', label: 'Years at Wells Fargo' },
@@ -9,13 +14,11 @@ const HIGHLIGHTS = [
 ]
 
 const About = () => {
-  const [ref, isVisible] = useScrollReveal()
-
   return (
-    <div className={`about reveal ${isVisible ? 'revealed' : ''}`} ref={ref}>
-      <h2 className="section-heading">About Me</h2>
-      <div className="about-content">
-        <div className="about-text">
+    <motion.div className="about" variants={variants} initial="initial" whileInView="animate" viewport={{ once: true, margin: '-100px' }}>
+      <motion.h2 className="section-heading" variants={variants}>About Me</motion.h2>
+      <motion.div className="about-content" variants={variants}>
+        <motion.div className="about-text" variants={variants}>
           <p>
             I'm a Senior Software Engineer at Wells Fargo with 4+ years of hands-on
             delivery in Wealth & Investment Management. I architect and ship
@@ -31,17 +34,17 @@ const About = () => {
             driven by the intersection of engineering depth and product impact —
             building systems that solve real problems at scale.
           </p>
-        </div>
-        <div className="highlights">
+        </motion.div>
+        <motion.div className="highlights" variants={variants}>
           {HIGHLIGHTS.map(({ value, label }) => (
-            <div className="highlight-card" key={label}>
+            <motion.div className="highlight-card" key={label} variants={variants} whileHover={{ scale: 1.05 }}>
               <span className="highlight-value">{value}</span>
               <span className="highlight-label">{label}</span>
-            </div>
+            </motion.div>
           ))}
-        </div>
-      </div>
-    </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   )
 }
 
