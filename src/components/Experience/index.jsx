@@ -2,15 +2,29 @@ import './index.scss'
 
 const EXPERIENCES = [
   {
-    role: 'Software Engineer',
+    role: 'Software Engineer — Technical Product Owner',
     company: 'Wells Fargo',
     team: 'Wealth & Investment Technology — Portfolio Management',
     period: '2023 — Present',
     bullets: [
-      'Sole engineer and SME for a Playwright E2E test automation program that gates every production release — built the entire test catalog from scratch across a micro-frontend platform.',
-      "Own the platform's most complex asset allocation and billing workflow — a multi-persona, role-gated module serving Financial Advisor, Admin, and Operations views from a shared Zustand state model.",
-      'Built dynamic, data-driven UI modules within a React/Zustand micro-frontend (Module Federation) architecture, consuming Kafka event streams for real-time state synchronization.',
-      'Designed Spring Boot microservice endpoints for investment portfolio data aggregation, transformation, and serving to the React frontend.',
+      'Senior-level full-stack engineer and de facto Technical Product Owner across two enterprise investment platforms inside Wells Fargo\'s highest revenue-generating division.',
+      'Sole senior engineer on the platform\'s most complex module — a multi-persona asset allocation, portfolio rebalancing, and billing workflow handling real client investment assets in real time.',
+      'Own the product backlog, release planning, and sprint execution — defining sprint goals, prioritizing features against competing demands from compliance, operations, and business leadership.',
+      'Architected and delivered across every layer: React 18/Zustand micro-frontend components, Spring Boot REST microservices, Kafka event-driven pipelines, and business rules engine logic on Red Hat OpenShift.',
+      'Sole architect and SME of the Playwright (TypeScript) E2E release-gate automation program — no code ships to production without this program\'s sign-off.',
+      'Led PI planning sessions, sprint reviews, and executive stakeholder demonstrations — translating architecture decisions into business-facing impact narratives.',
+      'Mentored a junior engineer who is now an SME responsible for production deployments.',
+    ],
+  },
+  {
+    role: 'Full-Stack Engineer — Banking & Lending',
+    company: 'Wells Fargo',
+    team: 'Wealth & Investment Technology — Banking, Lending & Trust',
+    period: '2023 — 2024',
+    bullets: [
+      'Built the first modern Angular + Spring Boot production application within the Banking, Lending & Trust division — ending reliance on legacy .NET servers.',
+      'Delivered Account Maintenance GUI and Market Relationships GUI to production — replacing COBOL-era systems and manual Excel/email workflows.',
+      'Sole frontend owner and co-owner of backend delivery across both platforms, managing the full lifecycle from requirements through OpenShift deployment.',
     ],
   },
   {
@@ -19,9 +33,9 @@ const EXPERIENCES = [
     team: 'Cloud Modernization & Innovation',
     period: '2022 — 2023',
     bullets: [
-      'Awarded US Patent #US19372721 — designed a system for securing financial entity networks and presented technical justification to senior leadership for USPTO filing.',
+      'Awarded US Patent #US19372721 — designed a system for securing financial entity networks and navigated the full USPTO filing process.',
       'Won WIMT Hackathon as tech lead for "Scan2Invest" — built a Computer Vision/AI mobile MVP in 48 hours; secured executive sponsorship.',
-      'Executed zero-downtime PCF cloud migration of legacy investment applications.',
+      'Executed zero-downtime PCF cloud migration of legacy investment applications, coordinating CI/CD pipeline configuration with DevOps.',
     ],
   },
   {
@@ -29,7 +43,9 @@ const EXPERIENCES = [
     company: 'Wells Fargo',
     period: '2021',
     bullets: [
-      'Built automated test suites catching critical pre-production defects; co-led IT onboarding infrastructure for 50+ engineers — model adopted for future cohorts.',
+      'Built automated test suites catching critical pre-production defects across front-end UI, API validation, and regression coverage.',
+      'Co-led IT onboarding infrastructure for 50+ Early Careers engineers — framework adopted as the standard model for future cohorts.',
+      'Internship led directly to a full-time offer.',
     ],
   },
 ]
