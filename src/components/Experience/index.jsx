@@ -1,3 +1,4 @@
+import useScrollReveal from '../../hooks/useScrollReveal'
 import './index.scss'
 
 const EXPERIENCES = [
@@ -35,8 +36,10 @@ const EXPERIENCES = [
 ]
 
 const Experience = () => {
+  const [ref, isVisible] = useScrollReveal()
+
   return (
-    <div className="experience">
+    <div className={`experience reveal ${isVisible ? 'revealed' : ''}`} ref={ref}>
       <h2 className="section-heading">Experience</h2>
       <div className="timeline">
         {EXPERIENCES.map((exp, i) => (

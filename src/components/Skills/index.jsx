@@ -1,3 +1,4 @@
+import useScrollReveal from '../../hooks/useScrollReveal'
 import './index.scss'
 
 const SKILL_CATEGORIES = [
@@ -28,8 +29,10 @@ const SKILL_CATEGORIES = [
 ]
 
 const Skills = () => {
+  const [ref, isVisible] = useScrollReveal()
+
   return (
-    <div className="skills">
+    <div className={`skills reveal ${isVisible ? 'revealed' : ''}`} ref={ref}>
       <h2 className="section-heading">Skills</h2>
       <div className="skills-grid">
         {SKILL_CATEGORIES.map((cat) => (

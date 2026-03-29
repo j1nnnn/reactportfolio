@@ -1,3 +1,4 @@
+import useScrollReveal from '../../hooks/useScrollReveal'
 import './index.scss'
 
 const HIGHLIGHTS = [
@@ -8,8 +9,10 @@ const HIGHLIGHTS = [
 ]
 
 const About = () => {
+  const [ref, isVisible] = useScrollReveal()
+
   return (
-    <div className="about">
+    <div className={`about reveal ${isVisible ? 'revealed' : ''}`} ref={ref}>
       <h2 className="section-heading">About Me</h2>
       <div className="about-content">
         <div className="about-text">

@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import useScrollReveal from '../../hooks/useScrollReveal'
 import emailjs from '@emailjs/browser'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
@@ -6,6 +7,7 @@ import { faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons'
 import './index.scss'
 
 const Contact = () => {
+  const [ref, isVisible] = useScrollReveal()
   const formRef = useRef()
 
   const sendEmail = (e) => {
@@ -24,7 +26,7 @@ const Contact = () => {
   }
 
   return (
-    <div className="contact">
+    <div className={`contact reveal ${isVisible ? 'revealed' : ''}`} ref={ref}>
       <h2 className="section-heading">Get In Touch</h2>
       <div className="contact-layout">
         <div className="contact-info">

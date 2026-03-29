@@ -1,3 +1,4 @@
+import useScrollReveal from '../../hooks/useScrollReveal'
 import './index.scss'
 
 const PROJECTS = [
@@ -25,8 +26,10 @@ const PROJECTS = [
 ]
 
 const Projects = () => {
+  const [ref, isVisible] = useScrollReveal()
+
   return (
-    <div className="projects">
+    <div className={`projects reveal ${isVisible ? 'revealed' : ''}`} ref={ref}>
       <h2 className="section-heading">Projects</h2>
       <div className="projects-grid">
         {PROJECTS.map((project) => (
