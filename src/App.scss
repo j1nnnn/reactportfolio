@@ -70,16 +70,6 @@ section {
   background: linear-gradient(to bottom, var(--color-surface), var(--color-bg));
 }
 
-// Shorter sections — enough space to breathe without full viewport
-#education,
-#contact {
-  min-height: 60vh;
-}
-
-// Section separators — subtle gold accent line at transition points
-section:not(#hero) + section {
-  border-top: 1px solid rgba(255, 215, 0, 0.08);
-}
 
 .section-heading {
   font-family: var(--font-heading);
