@@ -1,6 +1,6 @@
 import './App.scss'
 import Sidebar from './components/Sidebar'
-import Hero from './components/Home'
+import Hero from './components/Hero'
 import About from './components/About'
 import Experience from './components/Experience'
 import Skills from './components/Skills'
