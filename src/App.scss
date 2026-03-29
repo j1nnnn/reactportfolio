@@ -10,14 +10,24 @@ html {
 }
 
 .app {
-  display: flex;
   min-height: 100vh;
+  position: relative;
 }
 
 .main-content {
+  overflow-x: hidden;
+}
+
+// Hero section: full-bleed behind sidebar, no indent
+#hero {
+  padding: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(255, 215, 0, 0.04) 0%, transparent 60%);
+}
+
+// All other sections: offset by sidebar width
+section:not(#hero) {
   margin-left: var(--sidebar-width);
   width: calc(100% - var(--sidebar-width));
-  overflow-x: hidden;
 }
 
 section {
@@ -33,6 +43,31 @@ section {
   }
 }
 
+// Alternating backgrounds for visual rhythm
+#about {
+  background: var(--color-surface);
+}
+
+#experience {
+  background: var(--color-bg);
+}
+
+#skills {
+  background: var(--color-surface);
+}
+
+#projects {
+  background: var(--color-bg);
+}
+
+#education {
+  background: var(--color-surface);
+}
+
+#contact {
+  background: var(--color-bg);
+}
+
 .section-heading {
   font-family: var(--font-heading);
   font-size: 48px;
@@ -43,5 +78,12 @@ section {
   @media (max-width: 768px) {
     font-size: 36px;
     margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  section:not(#hero) {
+    margin-left: 0;
+    width: 100%;
   }
 }
