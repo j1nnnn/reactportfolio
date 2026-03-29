@@ -4,7 +4,7 @@ const HIGHLIGHTS = [
   { value: '4+', label: 'Years at Wells Fargo' },
   { value: 'US', label: 'Patent Holder' },
   { value: 'M.S.', label: 'Georgia Tech (In Progress)' },
-  { value: '1st', label: 'Place Hackathon' },
+  { value: '3x', label: 'Hackathon Placements' },
 ]
 
 const About = () => {
@@ -14,19 +14,37 @@ const About = () => {
       <div className="about-content">
         <div className="about-text">
           <p>
-            I'm a Senior Software Engineer at Wells Fargo with 4+ years of hands-on
-            delivery in Wealth & Investment Management. I architect and ship
-            production systems — React/Zustand micro-frontends, Java/Spring Boot
-            microservices, Kafka event-driven pipelines, and business rules engines —
-            while owning release governance through a Playwright E2E test automation
-            program I built from scratch.
+            I'm a software engineer who owns product — and a technical product
+            owner who still writes the code. At Wells Fargo's Wealth & Investment
+            Management Technology, I operate across both disciplines
+            simultaneously. I architect and ship production systems: React
+            18/Zustand micro-frontends, Java/Spring Boot microservices, Kafka
+            event-driven pipelines, business rules engines, and Red Hat OpenShift
+            cloud deployments. And I own the product side of what I build:
+            requirements gathering, API contract definition, sprint planning,
+            release readiness reporting, and executive-level delivery
+            communication.
           </p>
           <p>
-            I hold a US Patent for financial network security architecture, won a
-            company-wide hackathon building a computer vision MVP in 48 hours, and I'm
-            currently pursuing my M.S. in Analytics (AI/ML) at Georgia Tech. I'm
-            driven by the intersection of engineering depth and product impact —
-            building systems that solve real problems at scale.
+            What really drives me is where technology meets real human impact.
+            I'm pursuing my M.S. in Analytics (AI/ML) at Georgia Tech because I
+            believe the next generation of enterprise platforms will be defined
+            by how intelligently they use data to serve people. I'm actively
+            prototyping with LLMs and RAG pipelines in regulated financial
+            workflows, exploring how generative AI can accelerate
+            decision-making without compromising compliance and auditability.
+          </p>
+          <p>
+            My technical depth makes me a better product owner. I can evaluate
+            engineering tradeoffs, write acceptance criteria that match how the
+            system behaves, and have honest conversations with dev teams about
+            feasibility. My product instincts make me a better engineer — I build
+            for the user, not just the ticket.
+          </p>
+          <p>
+            When I'm not building platforms or studying machine learning, I'm
+            editing vlogs, experimenting with content creation, and finding ways
+            to make complex technical ideas accessible to a wider audience.
           </p>
         </div>
         <div className="highlights">
