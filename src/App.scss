@@ -70,6 +70,14 @@ section {
   background: linear-gradient(to bottom, var(--color-surface), var(--color-bg));
 }
 
+// Compact sections — don't need full viewport height
+#education,
+#contact {
+  min-height: auto;
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
 .section-heading {
   font-family: var(--font-heading);
   font-size: 48px;
