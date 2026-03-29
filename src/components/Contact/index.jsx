@@ -1,85 +1,61 @@
-import AnimatedLetters from '../AnimatedLetters'
-import './index.scss'
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import emailjs from '@emailjs/browser'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons'
+import './index.scss'
 
-const Contact = () =>  {
-    const [letterClass, setLetterClass] = useState('text-animate')
-    const refForm = useRef()
+const Contact = () => {
+  const formRef = useRef()
 
-    // useEffect causes routing problems, damage is not a function
-    /*
-    useEffect(() => {
-        return setTimeout(() => {
-            setLetterClass('text-animate-hover')
-        }, 4000)
-    }, [])
-    */
+  const sendEmail = (e) => {
+    e.preventDefault()
+    emailjs
+      .sendForm('service_dgrqdjh', 'template_1i5m6la', formRef.current, 'ESgAkwZi7oCyUfLpi')
+      .then(
+        () => {
+          alert('Message sent successfully!')
+          formRef.current.reset()
+        },
+        () => {
+          alert('Failed to send — please try again.')
+        }
+      )
+  }
 
-    const sendEmail = (e) => {
-        e.preventDefault()
-
-        emailjs
-            .sendForm(
-                'service_dgrqdjh',
-                'template_1i5m6la',
-                refForm.current,
-                'ESgAkwZi7oCyUfLpi'
-            )
-            .then(
-                () => {
-                    alert('Message successfully sent!')
-                    window.location.reload(false)
-                },
-                () => {
-                    alert('Failed to send the message, please try again!')
-                }
-            )
-    }
-
-    return (
-    <>
-        <div className='container contact-page'>
-            <div className='text-zone'>
-                <h1>
-                    <AnimatedLetters
-                        letterClass={letterClass}
-                        strArray={['C', 'o', 'n', 't', 'a', 'c', 't', ' ', 'm', 'e']}
-                        idx={15}
-                    />
-                </h1>
-                <p>
-                    I am interested in any opportunities - especially ambitious or large projects. 
-                    However, if you have other request or question, don't hesitate to contact me 
-                    using below form either. 
-                    <br/><br/>
-                    I am also open to any feedback regarding the design and content of this website!
-                </p>
-                <div className='contact-form'>
-                    <form ref={refForm} onSubmit={sendEmail}>
-                        <ul>
-                            <li className='half'>
-                                <input type="text" name="name" placeholder="Name" required font-family/>
-                            </li>
-                            <li className='half'>
-                                <input type="email" name="email" placeholder="Email" required/>
-                            </li>
-                            <li>
-                                <input placeholder="Subject" type="text" name="subject" required/>
-                            </li>
-                            <li>
-                                <textarea placeholder="Message" name="message" required></textarea>
-                            </li>
-                            <li>
-                                <input type="submit" className="flat-button" value="SEND" />
-                            </li>
-                        </ul>
-                    </form>
-                </div>
-            </div>
+  return (
+    <div className="contact">
+      <h2 className="section-heading">Get In Touch</h2>
+      <div className="contact-layout">
+        <div className="contact-info">
+          <p>
+            I'm interested in ambitious projects and new opportunities. Whether you
+            have a question or just want to connect, feel free to reach out.
+          </p>
+          <div className="contact-links">
+            <a href="mailto:devj491@outlook.com">
+              <FontAwesomeIcon icon={faEnvelope} /> devj491@outlook.com
+            </a>
+            <a href="https://www.linkedin.com/in/jinwoo-lim23" target="_blank" rel="noreferrer">
+              <FontAwesomeIcon icon={faLinkedin} /> LinkedIn
+            </a>
+            <a href="https://www.github.com/j1nnnn" target="_blank" rel="noreferrer">
+              <FontAwesomeIcon icon={faGithub} /> GitHub
+            </a>
+          </div>
         </div>
-    </>
-    )
+        <form ref={formRef} onSubmit={sendEmail} className="contact-form">
+          <div className="form-row">
+            <input type="text" name="name" placeholder="Name" required />
+            <input type="email" name="email" placeholder="Email" required />
+          </div>
+          <input type="text" name="subject" placeholder="Subject" required />
+          <textarea name="message" placeholder="Message" rows="6" required />
+          <button type="submit" className="submit-btn">Send Message</button>
+        </form>
+      </div>
+    </div>
+  )
 }
 
 export default Contact
