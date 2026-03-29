@@ -31,7 +31,7 @@ const Hero = () => {
             <AnimatedLetters letterClass={letterClass} strArray={['J', ...nameArray]} idx={15} />
           </span>
         </h1>
-        <h2 className="hero-title">Senior Software Engineer</h2>
+        <h2 className="hero-title">Technical Product Owner — Senior Software Engineer</h2>
         <div className="hero-subtitle">
           <span className="subtitle-text" key={subtitleIndex}>{subtitles[subtitleIndex]}</span>
         </div>
