@@ -1,4 +1,3 @@
-import Loader from 'react-loaders'
 import AnimatedLetters from '../AnimatedLetters'
 import './index.scss'
 import { useEffect, useRef, useState } from 'react'
@@ -79,7 +78,6 @@ const Contact = () =>  {
                 </div>
             </div>
         </div>
-        <Loader type="ball-grid-beat" />   
     </>
     )
 }

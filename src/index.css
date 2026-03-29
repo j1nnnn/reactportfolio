@@ -1,26 +1,39 @@
+:root {
+  --color-primary: #ffd700;
+  --color-bg: #0a0a0a;
+  --color-surface: #141414;
+  --color-text: #f0f0f0;
+  --color-text-muted: #888888;
+  --color-border: rgba(255, 215, 0, 0.1);
+  --color-primary-dim: #b99e00;
+  --sidebar-width: 80px;
+  --font-heading: 'Coolvetica', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 html {
-  font-size: 62.5%;
+  font-size: 16px;
+  scroll-behavior: smooth;
 }
 
 body {
-  margin: 0;
-  font: 300 11px/1.4 'Helvetica Neue', 'sans-serif';
-  color: #444;
-  background: #282828;
-  overflow: hidden;
-  display: block;
+  font-family: var(--font-body);
+  font-weight: 300;
+  color: var(--color-text);
+  background: var(--color-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.dashboard {
-  margin-top: 200px;
-  margin-left: 200px;
-  
-}
-
-@media screen and (max-width: 1200px) {
-  body {
-    overflow: visible;
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 0px;
   }
 }

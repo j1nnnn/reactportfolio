@@ -1,5 +1,3 @@
-$primary-color: #ffd700;
-
 @import 'animate.css';
 
 @font-face {
@@ -7,7 +5,39 @@ $primary-color: #ffd700;
   src: url('./assets/fonts/CoolveticaRg-Regular.woff2') format('woff2');
 }
 
-input,
-textarea {
-  font-family: 'Helvetica Neue', sans-serif;
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+  overflow-x: hidden;
+}
+
+section {
+  min-height: 100vh;
+  padding: 80px 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    padding: 60px 5%;
+    min-height: auto;
+  }
+}
+
+.section-heading {
+  font-family: var(--font-heading);
+  font-size: 48px;
+  font-weight: 400;
+  color: var(--color-primary);
+  margin-bottom: 40px;
+
+  @media (max-width: 768px) {
+    font-size: 36px;
+    margin-bottom: 24px;
+  }
 }

@@ -1,7 +1,6 @@
 import './index.scss'
 import AnimatedLetters from '../AnimatedLetters'
 import { useEffect, useState } from 'react'
-import Loader from 'react-loaders'
 
 const Skills = () => {
     
@@ -34,8 +33,6 @@ const Skills = () => {
                     </p>
                 </div>
             </div>
-
-            <Loader type="ball-grid-beat" />
 
         </>
     )

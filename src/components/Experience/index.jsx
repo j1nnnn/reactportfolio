@@ -1,7 +1,6 @@
 import './index.scss'
 import AnimatedLetters from '../AnimatedLetters'
 import { useEffect, useState } from 'react'
-import Loader from 'react-loaders'
 
 const Experience = () => {
     
@@ -135,8 +134,6 @@ const Experience = () => {
 
                 </div>
             </div>
-
-            <Loader type="ball-grid-beat" />
 
         </>
     )

@@ -2,7 +2,6 @@ import './index.scss'
 import AnimatedLetters from '../AnimatedLetters'
 import LogoPic1 from '../../assets/images/splunkicon.png'
 import { useEffect, useState } from 'react'
-import Loader from 'react-loaders'
 
 const Projects = () => {
     const [letterClass, setLetterClass] = useState('text-animate')
@@ -43,7 +42,6 @@ const Projects = () => {
                 </div>
             </div>
 
-            <Loader type="ball-grid-beat" />
         </>
     )
 }

@@ -2,7 +2,6 @@ import './index.scss';
 import AnimatedLetters from '../AnimatedLetters';
 import LogoTitle from '../../assets/images/NJIT.png';
 import { useEffect, useState } from 'react';
-import Loader from 'react-loaders';
 
 const Education = () => {
     
@@ -98,7 +97,6 @@ const Education = () => {
                 </div>
             </div>
 
-            <Loader type="ball-grid-beat" />
         </>
     )
 
