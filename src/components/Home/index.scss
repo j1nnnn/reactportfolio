@@ -1,8 +1,21 @@
+$primary-color: #ffd700;
+@import 'loaders.css/src/animations/ball-grid-beat.scss';
+
+.loader-hidden {
+    display:none;
+}
+
+.loader-active {
+    display:block;
+    color: #ffd700;
+}
+
+
 .home-page {
     
     .text-zone {
         position: absolute;
-        left: 10%;
+        left: 15%;
         top: 50%;
         transform: translateY(-50%);
         width: 40%;
@@ -11,7 +24,8 @@
     
     h1 {
         color: #fff;
-        font-size: 53px;
+        font-size: 60px;
+
         margin: 0;
         font-family: 'Coolvetica';
         font-weight: 400;
@@ -40,7 +54,7 @@
         }
 
         img {
-            width: 32px;
+            width: 40px;
             margin-left: 20px;
             opacity: 0;
             height: initial;
@@ -53,7 +67,7 @@
         color: #8d8d8d;
         margin-top: 20px;
         font-weight: 400;
-        font-size: 11px;
+        font-size: 15px;
         font-family:  sans-serif;
         letter-spacing: 3px;
         animation: fadeIn 1s 1.9s backwards;
@@ -78,4 +92,41 @@
             color: #333;
         }
     }
+}
+
+@media screen and (max-width: 1200px) {
+    .tags,
+    .home-page h1::before,
+    .home-page h1::after {
+        display: none;
+    }
+
+    .home-page {
+        .text-zone {
+            position: initial;
+            width: 100%;
+            transform: none;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: 60px;
+            margin-top: 32%;
+
+
+            h1 {
+                font-size: 50px;
+                
+            }
+        }
+
+        .flat-button {
+            float: none;
+            display: block;
+            margin: 20px auto 0 auto;
+            width: 125px;
+        }
+
+        
+    }
+
+    
 }
