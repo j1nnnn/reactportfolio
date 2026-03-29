@@ -1,7 +1,6 @@
 import './App.scss'
 import Sidebar from './components/Sidebar'
 import Hero from './components/Hero'
-import Parallax from './components/Parallax'
 import About from './components/About'
 import Experience from './components/Experience'
 import Skills from './components/Skills'
@@ -15,14 +14,11 @@ function App() {
       <Sidebar />
       <main className="main-content">
         <section id="hero"><Hero /></section>
-        <Parallax type="about" />
         <section id="about"><About /></section>
         <section id="experience"><Experience /></section>
         <section id="skills"><Skills /></section>
-        <Parallax type="projects" />
         <section id="projects"><Projects /></section>
         <section id="education"><Education /></section>
-        <Parallax type="contact" />
         <section id="contact"><Contact /></section>
       </main>
     </div>

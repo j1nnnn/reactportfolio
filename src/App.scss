@@ -6,12 +6,7 @@
 }
 
 html {
-  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
-}
-
-section, .parallax {
-  scroll-snap-align: center;
 }
 
 .app {

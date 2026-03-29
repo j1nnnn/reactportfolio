@@ -1,10 +1,4 @@
-import { motion } from 'framer-motion'
 import './index.scss'
-
-const variants = {
-  initial: { y: 100, opacity: 0 },
-  animate: { y: 0, opacity: 1, transition: { duration: 0.5, staggerChildren: 0.1 } },
-}
 
 const EXPERIENCES = [
   {
@@ -42,11 +36,11 @@ const EXPERIENCES = [
 
 const Experience = () => {
   return (
-    <motion.div className="experience" variants={variants} initial="initial" whileInView="animate" viewport={{ once: true, margin: '-100px' }}>
-      <motion.h2 className="section-heading" variants={variants}>Experience</motion.h2>
-      <motion.div className="timeline" variants={variants}>
+    <div className="experience">
+      <h2 className="section-heading">Experience</h2>
+      <div className="timeline">
         {EXPERIENCES.map((exp, i) => (
-          <motion.div className="timeline-item" key={i} variants={variants}>
+          <div className="timeline-item" key={i}>
             <div className="timeline-marker" />
             <div className="timeline-content">
               <div className="timeline-header">
@@ -63,10 +57,10 @@ const Experience = () => {
                 ))}
               </ul>
             </div>
-          </motion.div>
+          </div>
         ))}
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   )
 }
 

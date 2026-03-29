@@ -81,29 +81,10 @@
     &:hover { background: rgba(255, 215, 0, 0.1); }
   }
 
-  .scroll-icon {
-    width: 40px;
-    margin-top: 24px;
-    opacity: 0.6;
-  }
-
-  .sliding-text {
-    position: absolute;
-    bottom: -5px;
-    white-space: nowrap;
-    color: rgba(255, 215, 0, 0.04);
-    font-size: 32vh;
-    font-family: var(--font-heading);
-    width: max-content;
-    z-index: 0;
-    pointer-events: none;
-  }
-
   @media (max-width: 768px) {
     padding: 0 5%;
     .hero-greeting { font-size: 48px; }
     .hero-title { font-size: 18px; }
     .hero-ctas { flex-direction: column; }
-    .sliding-text { font-size: 20vh; }
   }
 }

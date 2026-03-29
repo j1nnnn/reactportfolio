@@ -1,20 +1,5 @@
 .contact {
-  .contact-wrapper {
-    position: relative;
-  }
-
-  .phone-svg {
-    position: absolute;
-    right: 0;
-    top: 50px;
-    z-index: 0;
-    opacity: 0.3;
-    svg { width: 300px; height: 300px; }
-  }
-
   .contact-layout {
-    position: relative;
-    z-index: 1;
     display: grid;
     grid-template-columns: 1fr 1.5fr;
     gap: 48px;
