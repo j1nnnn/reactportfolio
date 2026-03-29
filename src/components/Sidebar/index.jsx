@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHome, faUser, faBriefcase, faCode, faFolder, faGraduationCap, faEnvelope, faBars, faClose } from '@fortawesome/free-solid-svg-icons'
 import { faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons'
-import LogoS from '../../assets/images/logo-dj.png'
+import JLLogo from './JLLogo'
 import './index.scss'
 
 const NAV_ITEMS = [
@@ -33,7 +33,7 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <a className="logo" href="#hero" onClick={(e) => { e.preventDefault(); scrollTo('hero') }}>
-        <img src={LogoS} alt="Jin Lim" />
+        <JLLogo size={44} />
       </a>
       <nav className="nav-links">
         {NAV_ITEMS.map(({ id, label, icon }) => (
