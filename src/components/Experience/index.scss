@@ -1,1 +1,116 @@
-$primary-color: #ffd700;
+.experience {
+  .timeline {
+    position: relative;
+    max-width: 900px;
+    padding-left: 40px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--color-border);
+    }
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 48px;
+    &:last-child { margin-bottom: 0; }
+  }
+
+  .timeline-marker {
+    position: absolute;
+    left: -46px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 3px solid var(--color-bg);
+  }
+
+  .timeline-content {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 24px;
+    transition: border-color 0.3s;
+    &:hover { border-color: rgba(255, 215, 0, 0.3); }
+  }
+
+  .timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    gap: 16px;
+  }
+
+  .timeline-role {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    color: var(--color-text);
+    font-weight: 400;
+  }
+
+  .timeline-company {
+    display: block;
+    font-size: 15px;
+    color: var(--color-primary);
+    margin-top: 2px;
+  }
+
+  .timeline-team {
+    display: block;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+  }
+
+  .timeline-period {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .timeline-bullets {
+    list-style: none;
+    padding: 0;
+
+    li {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--color-text);
+      font-weight: 300;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 10px;
+        width: 6px;
+        height: 6px;
+        background: var(--color-primary);
+        border-radius: 50%;
+      }
+
+      &:last-child { margin-bottom: 0; }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .timeline { padding-left: 24px; }
+    .timeline-marker { left: -30px; width: 10px; height: 10px; }
+    .timeline-header { flex-direction: column; }
+    .timeline-period { margin-top: 4px; }
+    .timeline-content { padding: 16px; }
+  }
+}
