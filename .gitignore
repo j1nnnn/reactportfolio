@@ -30,3 +30,6 @@ yarn-error.log*
 /out/
 next-env.d.ts
 *.tsbuildinfo
+
+# deploy guard blocked-name list: local only, never commit
+.deploy-guard-blocklist
