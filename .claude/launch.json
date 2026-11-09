@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "portfolio-dev",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite", "--port", "5180"],
-      "port": 5180
+      "name": "portfolio-next",
+      "runtimeExecutable": "fnm",
+      "runtimeArgs": ["exec", "--using", "22", "--", "node", "node_modules/next/dist/bin/next", "dev", "-p", "5181"],
+      "port": 5181
     }
   ]
 }
