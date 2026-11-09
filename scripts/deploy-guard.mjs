@@ -55,7 +55,8 @@ for (const f of htmlFiles) {
   const html = readFileSync(f, "utf8");
   for (const [, url] of html.matchAll(/(?:href|src)="(\/[^"]*)"/g)) {
     if (url.startsWith("//")) continue;
-    if (!url.startsWith(`${BASE_PATH}/`) && url !== BASE_PATH) fail(f, `link outside ${BASE_PATH}: ${url}`);
+    const path = url.split(/[?#]/)[0]; // "/reactportfolio?focus=jepa" is the home page with a query
+    if (!path.startsWith(`${BASE_PATH}/`) && path !== BASE_PATH) fail(f, `link outside ${BASE_PATH}: ${url}`);
     else if (!resolves(url)) fail(f, `broken internal link: ${url}`);
   }
 }

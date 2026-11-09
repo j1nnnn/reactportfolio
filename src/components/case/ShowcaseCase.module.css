@@ -1,0 +1,110 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  padding: 96px clamp(20px, 5vw, 72px) 40px;
+  overflow: hidden;
+}
+
+.shader {
+  position: absolute;
+  inset: 0;
+}
+
+.copy {
+  position: relative;
+  z-index: 1;
+}
+
+.model {
+  position: relative;
+  z-index: 1;
+  height: min(70vh, 620px);
+}
+
+.loop {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 24px clamp(20px, 4vw, 48px) 0;
+}
+
+.loopSvg {
+  width: 100%;
+  height: auto;
+  font-family: var(--font-plex), sans-serif;
+}
+
+.ring {
+  fill: none;
+  stroke: color-mix(in srgb, var(--accent) 25%, transparent);
+  stroke-width: 10;
+}
+
+.ringRun {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 90 664;
+  transform-origin: 200px 180px;
+  animation: spin 3.2s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.node {
+  fill: var(--panel);
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.nodeText {
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--ink);
+}
+
+.centerText {
+  font-size: 15px;
+  font-weight: 700;
+  fill: var(--muted);
+}
+
+.arrow {
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-dasharray: 6 8;
+  animation: flow 1s linear infinite;
+}
+
+@keyframes flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+
+.gate {
+  fill: var(--accent);
+}
+
+.gateText {
+  font-size: 15px;
+  font-weight: 700;
+  fill: #fff;
+}
+
+@media (max-width: 860px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+  .model {
+    height: 46vh;
+  }
+}
