@@ -161,10 +161,15 @@
   padding: 24px;
 }
 
-.next {
+.ways {
   max-width: 1040px;
   margin: 0 auto;
   padding: 48px clamp(20px, 4vw, 48px) 120px;
+  display: grid;
+  gap: 48px;
+}
+
+.next {
   display: grid;
   gap: 8px;
   color: var(--muted);
