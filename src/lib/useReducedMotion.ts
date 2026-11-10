@@ -2,18 +2,14 @@
 
 import { useSyncExternalStore } from "react";
 
-const QUERY = "(prefers-reduced-motion: reduce)";
-const KEY = "review-motion";
+// ADR 0003: the site always runs its full motion, whatever the visitor's OS motion setting says. The
+// calm version of each effect still exists, reachable only on purpose with ?motion=reduced (remembered
+// for the tab), so it stays testable and anyone who needs it can ask for it.
+const KEY = "motion";
 
-function subscribe(cb: () => void) {
-  const mq = window.matchMedia(QUERY);
-  mq.addEventListener("change", cb);
-  return () => mq.removeEventListener("change", cb);
-}
+const subscribe = () => () => {};
 
-/** Dev-only review override: ?motion=full or ?motion=reduced, remembered for the tab. */
-function devOverride(): string | null {
-  if (process.env.NODE_ENV === "production") return null;
+function read() {
   let value = new URLSearchParams(window.location.search).get("motion");
   try {
     if (value) sessionStorage.setItem(KEY, value);
@@ -21,18 +17,12 @@ function devOverride(): string | null {
   } catch {
     /* storage blocked */
   }
-  document.documentElement.classList.toggle("motion-full", value === "full");
-  return value;
+  const reduced = value === "reduced";
+  document.documentElement.classList.toggle("motion-reduced", reduced);
+  return reduced;
 }
 
-function read() {
-  const override = devOverride();
-  if (override === "full") return false;
-  if (override === "reduced") return true;
-  return window.matchMedia(QUERY).matches;
-}
-
-/** True when the visitor's OS asks for less motion (reduced-motion mode). */
+/** True only when the visitor asked for the calm version with ?motion=reduced. */
 export function useReducedMotion() {
   return useSyncExternalStore(subscribe, read, () => false);
 }

@@ -150,9 +150,9 @@ describe("home page", () => {
     expect(chip).toHaveFocus();
   });
 
-  it("keeps the island still for a visitor who asks for reduced motion", async () => {
+  it("animates the island even when the visitor's OS asks for reduced motion (ADR 0003)", async () => {
     setReducedMotion(true);
     render(<Home />);
-    expect(await screen.findByTestId("island-scene")).toHaveAttribute("data-animate", "false");
+    expect(await screen.findByTestId("island-scene")).toHaveAttribute("data-animate", "true");
   });
 });

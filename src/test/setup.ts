@@ -7,12 +7,21 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-// jsdom has no matchMedia. Tests that need reduced motion call setReducedMotion(true).
+// jsdom has no matchMedia. setReducedMotion(true) fakes the OS asking for reduced motion, which the
+// site ignores (ADR 0003); askForCalmVersion() is the ?motion=reduced link that does turn motion down.
 let reduced = false;
 export function setReducedMotion(on: boolean) {
   reduced = on;
 }
-afterEach(() => setReducedMotion(false));
+export function askForCalmVersion() {
+  window.history.replaceState(null, "", "/?motion=reduced");
+}
+afterEach(() => {
+  setReducedMotion(false);
+  window.history.replaceState(null, "", "/");
+  sessionStorage.clear();
+  document.documentElement.classList.remove("motion-reduced");
+});
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,

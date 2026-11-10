@@ -34,5 +34,5 @@ A Rust UI framework that draws everything on the GPU; its web target is a single
 ## Rules that follow from these
 
 - A 3D scene that navigates must have an HTML equivalent (a list of links or buttons) for keyboard, screen-reader, reduced-motion and no-WebGL visitors.
-- Every animated or shader effect has a reduced-motion version designed at the same time, not added later.
+- Every animated or shader effect has a reduced-motion version designed at the same time, not added later. Since ADR 0003 the site does not switch to it from the OS setting; only `?motion=reduced` does.
 - Prefer procedural low-poly geometry over large 3D model downloads, to keep the mobile performance floor.

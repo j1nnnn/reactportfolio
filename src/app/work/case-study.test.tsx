@@ -2,7 +2,7 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { track } from "@/lib/analytics";
-import { setReducedMotion } from "@/test/setup";
+import { askForCalmVersion, setReducedMotion } from "@/test/setup";
 import Page from "./[slug]/page";
 
 // Boundaries faked for Seam A: the analytics client, and WebGL can't run in jsdom, so each 3D canvas is a stub.
@@ -124,8 +124,14 @@ describe("particle intro", () => {
     }
   });
 
-  it("goes straight to the page for a visitor who asks for reduced motion", async () => {
+  it("plays the intro even when the visitor's OS asks for reduced motion (ADR 0003)", async () => {
     setReducedMotion(true);
+    await visit("pro-link-ai");
+    expect(screen.getByRole("button", { name: "Skip intro" })).toBeInTheDocument();
+  });
+
+  it("goes straight to the page for a visitor who asks for the calm version", async () => {
+    askForCalmVersion();
     await visit("pro-link-ai");
     expect(screen.queryByRole("button", { name: "Skip intro" })).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1, name: "Pro-Link AI" })).toBeInTheDocument();
@@ -191,8 +197,8 @@ describe("Pro-Link AI case study", () => {
     expect(within(track).getByText("Impact · 3 of 4")).toBeInTheDocument();
   });
 
-  it("shows every chapter at once to a visitor who asks for reduced motion", async () => {
-    setReducedMotion(true);
+  it("shows every chapter at once to a visitor who asks for the calm version", async () => {
+    askForCalmVersion();
     await visit("pro-link-ai");
     const track = screen.getByRole("region", { name: "How Pro-Link AI works" });
     const chapters = within(track).getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
@@ -225,8 +231,8 @@ describe("Software Factory case study", () => {
     }
   });
 
-  it("shows the whole run at once to a visitor who asks for reduced motion", async () => {
-    setReducedMotion(true);
+  it("shows the whole run at once to a visitor who asks for the calm version", async () => {
+    askForCalmVersion();
     await visit("software-factory");
     const console_ = screen.getByRole("figure", { name: "Replay of one ticket's run through the factory (illustrative)" });
     expect(console_).toHaveTextContent("pulled the next ticket from Linear");

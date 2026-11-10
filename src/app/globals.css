@@ -24,14 +24,12 @@ a {
   outline-offset: 3px;
 }
 
-/* .motion-full is the dev-only review override (?motion=full); production never sets it */
-@media (prefers-reduced-motion: reduce) {
-  :root:not(.motion-full) *,
-  :root:not(.motion-full) *::before,
-  :root:not(.motion-full) *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+/* ADR 0003: full motion whatever the OS setting; only ?motion=reduced (which sets .motion-reduced) calms it */
+:root.motion-reduced *,
+:root.motion-reduced *::before,
+:root.motion-reduced *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
 }
