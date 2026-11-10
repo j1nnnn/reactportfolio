@@ -62,6 +62,14 @@ for (const f of htmlFiles) {
   }
 }
 
+// 2b. Every page, error pages included, carries the CSP meta tag (Pages can't send it as a header).
+for (const f of htmlFiles) {
+  const html = readFileSync(f, "utf8");
+  if (!/<meta http-equiv="Content-Security-Policy" content="[^"]+"/i.test(html)) {
+    fail(f, "no Content-Security-Policy meta tag");
+  }
+}
+
 // 3. Every internal link and asset sits under the base path and resolves to a built file.
 for (const f of htmlFiles) {
   const html = readFileSync(f, "utf8");
@@ -74,14 +82,14 @@ for (const f of htmlFiles) {
 }
 
 // 4. Search engines get a sitemap, a robots file pointing to it, and Person data on the home page.
-const SITE_URL = `https://j1nnnn.github.io${BASE_PATH}/`;
+const SITE_ROOT = `${SITE_URL}/`; // the sitemap and Person data use the trailing-slash form
 const sitemapFile = join(outDir, "sitemap.xml");
 if (!existsSync(sitemapFile)) fail(outDir, "missing sitemap.xml");
 else {
   const locs = [...readFileSync(sitemapFile, "utf8").matchAll(/<loc>([^<]*)<\/loc>/g)].map(([, u]) => u.trim());
   if (!locs.length) fail(sitemapFile, "sitemap lists no URLs");
   for (const url of locs) {
-    if (!url.startsWith(SITE_URL) && url !== SITE_URL.slice(0, -1)) fail(sitemapFile, `sitemap URL not under ${SITE_URL}: ${url}`);
+    if (!url.startsWith(SITE_ROOT) && url !== SITE_URL) fail(sitemapFile, `sitemap URL not under ${SITE_ROOT}: ${url}`);
     else if (!resolves(new URL(url).pathname)) fail(sitemapFile, `sitemap URL has no built page: ${url}`);
   }
 }
@@ -89,16 +97,16 @@ const robotsFile = join(outDir, "robots.txt");
 if (!existsSync(robotsFile)) fail(outDir, "missing robots.txt");
 else {
   const robots = readFileSync(robotsFile, "utf8");
-  if (!new RegExp(`^Sitemap:\\s*${SITE_URL}sitemap\\.xml\\s*$`, "mi").test(robots))
-    fail(robotsFile, `robots.txt does not point to ${SITE_URL}sitemap.xml`);
+  if (!new RegExp(`^Sitemap:\\s*${SITE_ROOT}sitemap\\.xml\\s*$`, "mi").test(robots))
+    fail(robotsFile, `robots.txt does not point to ${SITE_ROOT}sitemap.xml`);
   if (/^Disallow:\s*\/\s*$/mi.test(robots)) fail(robotsFile, "robots.txt blocks crawling");
 }
 const homeFile = join(outDir, "index.html");
 if (existsSync(homeFile)) {
   const persons = [...readFileSync(homeFile, "utf8").matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)]
     .map(([, json]) => { try { return JSON.parse(json); } catch { return null; } })
-    .filter((d) => d?.["@type"] === "Person" && d.name && d.url === SITE_URL);
-  if (!persons.length) fail(homeFile, `home page has no schema.org Person data (name, url ${SITE_URL})`);
+    .filter((d) => d?.["@type"] === "Person" && d.name && d.url === SITE_ROOT);
+  if (!persons.length) fail(homeFile, `home page has no schema.org Person data (name, url ${SITE_ROOT})`);
   // Person data repeats what the site shows; contact details beyond that stay off it.
   for (const key of ["telephone", "address", "faxNumber", "birthDate"]) {
     if (persons.some((d) => key in d)) fail(homeFile, `Person data has ${key}`);

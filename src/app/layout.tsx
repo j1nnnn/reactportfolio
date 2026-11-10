@@ -13,6 +13,24 @@ const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrai
 const description = `${site.identity}. ${site.subline}.`;
 const preview = previewMetadata("home.png", site.name);
 
+// GitHub Pages can't send headers, so the CSP ships as a meta tag (ADR 0001). Inline scripts and
+// styles stay allowed: the static export inlines its RSC bootstrap (self.__next_f.push) with no
+// per-request nonce, and the WebGL canvas sets inline styles. Fonts are self-hosted by next/font.
+// A meta tag can't carry frame-ancestors, so framing is NOT blocked; that needs a real header.
+// `next dev` evaluates modules with eval(), so only development allows it.
+const csp = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self'",
+  "img-src 'self' data: blob:",
+  "connect-src 'self'",
+  "worker-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join("; ");
+
 export const metadata: Metadata = {
   title: site.name,
   description,
@@ -23,6 +41,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${archivo.variable} ${plex.variable} ${instrument.variable} ${jetbrains.variable}`}>
+      <head>
+        <meta httpEquiv="Content-Security-Policy" content={csp} />
+      </head>
       <body>{children}</body>
     </html>
   );
