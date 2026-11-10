@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useId } from "react";
 import { projects, type Project } from "@/content/projects";
+import { BASE_PATH } from "@/content/site";
 import s from "./case.module.css";
 
 /** Top bar shared by every case study. */
@@ -58,6 +59,32 @@ export function CaseFacts({ project, builtTitle = "What I built" }: { project: P
           <ul className={s.tags}>
             {project.stack.map((t) => (
               <li key={t}>{t}</li>
+            ))}
+          </ul>
+        </Block>
+      )}
+      {project.shots && project.shots.length > 0 && (
+        <Block title="Screens">
+          <ul className={s.shots}>
+            {project.shots.map((shot) => (
+              <li key={shot.caption}>
+                <figure className={s.shot}>
+                  {shot.image ? (
+                    // A plain <img> (static export): it doesn't get the base path added automatically.
+                    <img className={s.shotImage} src={`${BASE_PATH}${shot.image}`} alt={shot.caption} loading="lazy" />
+                  ) : (
+                    <div className={s.shotSlot}>
+                      <span className={s.shotBar} aria-hidden="true">
+                        <i />
+                        <i />
+                        <i />
+                      </span>
+                      <span className={s.shotSoon}>Screenshot coming soon</span>
+                    </div>
+                  )}
+                  <figcaption className={s.shotCaption}>{shot.caption}</figcaption>
+                </figure>
+              </li>
             ))}
           </ul>
         </Block>

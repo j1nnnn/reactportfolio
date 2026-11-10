@@ -18,7 +18,15 @@ export type Project = {
   numbers: { value: string; label: string }[];
   stack: string[];
   link?: { label: string; href: string };
+  /**
+   * Screens for a private project, whose code can't be shown. A shot without an image is a designed
+   * placeholder; to add one, put the file in public/shots/ and set `image` to "/shots/<file>".
+   * Pro-Link AI shots must never show the coach's or a student's face or name.
+   */
+  shots?: Shot[];
 };
+
+export type Shot = { caption: string; image?: string };
 
 export const projects: Project[] = [
   {
@@ -42,6 +50,11 @@ export const projects: Project[] = [
       { value: "~170", label: "translated strings, Korean and English" },
     ],
     stack: ["Next.js 14", "React 18", "TypeScript", "FastAPI", "Anthropic API", "MediaPipe", "Turborepo", "Cloudflare Workers"],
+    shots: [
+      { caption: "The live swing view, with the pose overlay and fault markers" },
+      { caption: "A swing compared side by side with a pro's" },
+      { caption: "The same screen in Korean and in English" },
+    ],
   },
   {
     id: "factory",
@@ -64,6 +77,10 @@ export const projects: Project[] = [
       { value: "$0.12–$0.74", label: "per ticket in live runs" },
     ],
     stack: ["Python 3.11", "Linear GraphQL", "Claude Code", "Claude Haiku", "SQLite", "MCP"],
+    shots: [
+      { caption: "A draft pull request opened by a worker, with its verify and secret-scan results" },
+      { caption: "The SQLite ledger of per-run cost and latency" },
+    ],
   },
   {
     id: "jepa",
@@ -87,6 +104,10 @@ export const projects: Project[] = [
       { value: "6", label: "ADRs" },
     ],
     stack: ["Python", "Typer", "httpx", "Supabase Postgres", "pg_cron", "GitHub Actions", "Claude Code", "Discord"],
+    shots: [
+      { caption: "A time-blocked daily plan, as posted to Discord" },
+      { caption: "A check-in on Discord during the day" },
+    ],
   },
   {
     id: "turf",
@@ -110,6 +131,10 @@ export const projects: Project[] = [
       { value: "41", label: "merged PRs, 12 ADRs" },
     ],
     stack: ["C#", ".NET 10", "Godot 4.7", "xunit.v3", "FluentAssertions"],
+    shots: [
+      { caption: "The Godot map, with the eight factions' territory" },
+      { caption: "A balance sweep across the seeds" },
+    ],
   },
   {
     id: "agent",
