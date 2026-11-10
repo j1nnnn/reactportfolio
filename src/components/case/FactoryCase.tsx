@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import { ContactSection } from "@/components/ContactSection";
 import type { Project } from "@/content/projects";
 import { CaseFacts, CaseHeader, NextProject } from "./CaseParts";
 import c from "./case.module.css";
@@ -86,6 +87,7 @@ export function FactoryCase({ project, reduced }: { project: Project; reduced: b
         </section>
         <div className={s.factsWrap}>
           <CaseFacts project={project} />
+          <ContactSection />
           <NextProject project={project} />
         </div>
       </main>

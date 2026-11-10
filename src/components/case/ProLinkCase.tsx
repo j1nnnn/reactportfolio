@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
+import { ContactSection } from "@/components/ContactSection";
 import type { Project } from "@/content/projects";
 import { CaseFacts, CaseHeader, NextProject } from "./CaseParts";
 import { PHASES } from "./three/swingPoses";
@@ -92,6 +93,7 @@ export function ProLinkCase({ project, reduced }: { project: Project; reduced: b
           </div>
         </section>
         <CaseFacts project={project} builtTitle="How it ships" />
+        <ContactSection />
         <NextProject project={project} />
       </main>
     </>

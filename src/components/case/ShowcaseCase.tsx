@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { ContactSection } from "@/components/ContactSection";
 import type { Project } from "@/content/projects";
 import { CaseFacts, CaseHeader, NextProject } from "./CaseParts";
 import c from "./case.module.css";
@@ -39,6 +40,7 @@ export function ShowcaseCase({ project, reduced }: { project: Project; reduced: 
         {project.id === "agent" && <AgentLoop />}
         {/* A co-invented patent: name Jin's share, never the whole invention. */}
         <CaseFacts project={project} builtTitle={project.id === "patent" ? "My part" : "What I built"} />
+        <ContactSection />
         <NextProject project={project} />
       </main>
     </>

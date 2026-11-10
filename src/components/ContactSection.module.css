@@ -1,0 +1,21 @@
+/* Takes a case study's theme where there is one, the island's colours on the home page. */
+.section {
+  --glass: var(--panel, rgba(255, 255, 255, 0.62));
+  --glass-edge: color-mix(in srgb, var(--ink, #1d2a35) 18%, transparent);
+  background: var(--bg, #f2f6f9);
+  color: var(--ink, #1d2a35);
+  font-family: var(--font-plex), system-ui, sans-serif;
+}
+
+.inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 48px clamp(20px, 4vw, 48px);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-archivo), sans-serif;
+  font-size: clamp(24px, 2.6vw, 34px);
+  font-weight: 800;
+}

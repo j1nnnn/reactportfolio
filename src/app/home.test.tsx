@@ -20,6 +20,13 @@ vi.mock("@/components/island/IslandScene", () => ({
   ),
 }));
 
+/** The hero's contact actions: the first on the page, above the island's Contact section. */
+const hero = {
+  link: (name: string) => screen.getAllByRole("link", { name })[0],
+  copy: () => screen.getAllByRole("button", { name: "Copy email address" })[0],
+  status: () => screen.getAllByRole("status")[0],
+};
+
 describe("home page", () => {
   it("tells the visitor who Jin is", () => {
     render(<Home />);
@@ -30,8 +37,8 @@ describe("home page", () => {
 
   it("offers ways to reach Jin", () => {
     render(<Home />);
-    expect(screen.getByRole("link", { name: "Email" })).toHaveAttribute("href", "mailto:devj49i@outlook.com");
-    const resume = screen.getByRole("link", { name: "Download résumé" });
+    expect(hero.link("Email")).toHaveAttribute("href", "mailto:devj49i@outlook.com");
+    const resume = hero.link("Download résumé");
     expect(resume).toHaveAttribute("href", "/reactportfolio/resume.pdf");
     expect(resume).toHaveAttribute("download", "Jinwoo_Lim_Resume.pdf"); // saved under his name, not "resume.pdf"
     // No booking link yet: the button stays off until Jin has one.
@@ -41,20 +48,44 @@ describe("home page", () => {
   it("lets a visitor without a mail app copy the email address", async () => {
     const user = userEvent.setup(); // installs a clipboard stub
     render(<Home />);
-    await user.click(screen.getByRole("button", { name: "Copy email address" }));
+    await user.click(hero.copy());
     expect(await navigator.clipboard.readText()).toBe("devj49i@outlook.com");
-    expect(screen.getByRole("status")).toHaveTextContent("Email address copied");
+    expect(hero.status()).toHaveTextContent("Email address copied");
   });
 
   it("counts which contact action a visitor uses", async () => {
     const user = userEvent.setup();
     render(<Home />);
     for (const name of ["Email", "Download résumé"]) {
-      const link = screen.getByRole("link", { name });
+      const link = hero.link(name);
       link.addEventListener("click", (e) => e.preventDefault()); // jsdom can't navigate
       await user.click(link);
     }
-    await user.click(screen.getByRole("button", { name: "Copy email address" }));
+    await user.click(hero.copy());
+    expect(vi.mocked(track).mock.calls).toEqual([["email"], ["resume"], ["copy_email"]]);
+  });
+
+  it("offers the same ways to reach Jin again in a Contact section below the island", async () => {
+    const user = userEvent.setup(); // installs a clipboard stub
+    render(<Home />);
+    const contact = screen.getByRole("region", { name: "Contact" });
+    const island = screen.getByRole("navigation", { name: "Featured work" });
+    expect(island.compareDocumentPosition(contact) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+    const email = within(contact).getByRole("link", { name: "Email" });
+    expect(email).toHaveAttribute("href", "mailto:devj49i@outlook.com");
+    const resume = within(contact).getByRole("link", { name: "Download résumé" });
+    expect(resume).toHaveAttribute("href", "/reactportfolio/resume.pdf");
+    expect(resume).toHaveAttribute("download", "Jinwoo_Lim_Resume.pdf");
+    expect(within(contact).queryByRole("link", { name: "Book a call" })).not.toBeInTheDocument();
+
+    for (const link of [email, resume]) {
+      link.addEventListener("click", (e) => e.preventDefault()); // jsdom can't navigate
+      await user.click(link);
+    }
+    await user.click(within(contact).getByRole("button", { name: "Copy email address" }));
+    expect(await navigator.clipboard.readText()).toBe("devj49i@outlook.com");
+    expect(within(contact).getByRole("status")).toHaveTextContent("Email address copied");
     expect(vi.mocked(track).mock.calls).toEqual([["email"], ["resume"], ["copy_email"]]);
   });
 

@@ -1,11 +1,13 @@
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { track } from "@/lib/analytics";
 import { setReducedMotion } from "@/test/setup";
 import Page from "./[slug]/page";
 
-// Boundaries faked for Seam A: WebGL can't run in jsdom, so each 3D canvas is a stub.
+// Boundaries faked for Seam A: the analytics client, and WebGL can't run in jsdom, so each 3D canvas is a stub.
 vi.mock("next/navigation", () => ({ notFound: vi.fn() }));
+vi.mock("@/lib/analytics", () => ({ track: vi.fn() }));
 vi.mock("@/components/case/three/SwingFigure", () => ({ default: () => <div data-testid="swing-figure" /> }));
 vi.mock("@/components/case/three/NetworkGraph", () => ({ default: () => <div data-testid="network-graph" /> }));
 vi.mock("@/components/case/three/BuildingShowcase", () => ({ default: () => <div data-testid="building-showcase" /> }));
@@ -53,6 +55,34 @@ describe("case study page", () => {
     const next = screen.getByRole("navigation", { name: "Next project" });
     expect(within(next).getByRole("link", { name: "Pro-Link AI" })).toHaveAttribute("href", "/work/pro-link-ai");
   });
+
+  it.each(["pro-link-ai", "software-factory", "jepa", "turfgame", "claude-api-agent", "patent"])(
+    "lets a visitor who has just read %s reach Jin before moving on",
+    async (slug) => {
+      const user = userEvent.setup(); // installs a clipboard stub
+      await visit(slug);
+      const contact = screen.getByRole("region", { name: "Contact" });
+      // At the end of the case study, before the way on to the next project.
+      const next = screen.getByRole("navigation", { name: "Next project" });
+      expect(contact.compareDocumentPosition(next) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+      const email = within(contact).getByRole("link", { name: "Email" });
+      expect(email).toHaveAttribute("href", "mailto:devj49i@outlook.com");
+      const resume = within(contact).getByRole("link", { name: "Download résumé" });
+      expect(resume).toHaveAttribute("href", "/reactportfolio/resume.pdf");
+      expect(resume).toHaveAttribute("download", "Jinwoo_Lim_Resume.pdf");
+      expect(within(contact).queryByRole("link", { name: "Book a call" })).not.toBeInTheDocument();
+
+      for (const link of [email, resume]) {
+        link.addEventListener("click", (e) => e.preventDefault()); // jsdom can't navigate
+        await user.click(link);
+      }
+      await user.click(within(contact).getByRole("button", { name: "Copy email address" }));
+      expect(await navigator.clipboard.readText()).toBe("devj49i@outlook.com");
+      expect(within(contact).getByRole("status")).toHaveTextContent("Email address copied");
+      expect(vi.mocked(track).mock.calls).toEqual([["email"], ["resume"], ["copy_email"]]);
+    },
+  );
 });
 
 describe("particle intro", () => {
