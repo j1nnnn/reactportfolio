@@ -1,3 +1,4 @@
-# https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+
+Sitemap: https://j1nnnn.github.io/reactportfolio/sitemap.xml
