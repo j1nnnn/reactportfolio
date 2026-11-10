@@ -45,6 +45,14 @@ for (const f of htmlFiles) {
   if (!/<meta property="og:title" content="[^"]+"/.test(html)) fail(f, "no og:title (link previews)");
 }
 
+// 2b. Every page, error pages included, carries the CSP meta tag (Pages can't send it as a header).
+for (const f of htmlFiles) {
+  const html = readFileSync(f, "utf8");
+  if (!/<meta http-equiv="Content-Security-Policy" content="[^"]+"/i.test(html)) {
+    fail(f, "no Content-Security-Policy meta tag");
+  }
+}
+
 // 3. Every internal link and asset sits under the base path and resolves to a built file.
 const resolves = (urlPath) => {
   const clean = decodeURIComponent(urlPath.split(/[?#]/)[0]).slice(BASE_PATH.length) || "/";
