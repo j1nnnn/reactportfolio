@@ -90,6 +90,43 @@ describe("particle intro", () => {
   });
 });
 
+describe("screenshot slots", () => {
+  it.each([
+    ["pro-link-ai", "The live swing view, with the pose overlay and fault markers"],
+    ["software-factory", "A draft pull request opened by a worker, with its verify and secret-scan results"],
+    ["jepa", "A time-blocked daily plan, as posted to Discord"],
+    ["turfgame", "The Godot map, with the eight factions' territory"],
+  ])("shows the visitor what screens are coming on %s", async (slug, caption) => {
+    await visit(slug);
+    const screens = screen.getByRole("region", { name: "Screens" });
+    expect(within(screens).getByText(caption)).toBeInTheDocument();
+    expect(within(screens).getAllByText("Screenshot coming soon").length).toBeGreaterThan(0);
+  });
+
+  it.each(["claude-api-agent", "patent"])("shows no slots on %s", async (slug) => {
+    await visit(slug);
+    expect(screen.queryByRole("region", { name: "Screens" })).not.toBeInTheDocument();
+  });
+
+  it("shows a shot's image once it has one, with its caption as the alt text", async () => {
+    const { byId } = await import("@/content/projects");
+    const jepa = byId("jepa");
+    const original = jepa.shots;
+    jepa.shots = [{ caption: "A time-blocked daily plan, as posted to Discord", image: "/shots/jepa-plan.png" }];
+    try {
+      await visit("jepa");
+      const screens = screen.getByRole("region", { name: "Screens" });
+      expect(within(screens).getByRole("img", { name: "A time-blocked daily plan, as posted to Discord" })).toHaveAttribute(
+        "src",
+        "/reactportfolio/shots/jepa-plan.png", // a file in public/, served under the site's base path
+      );
+      expect(within(screens).queryByText("Screenshot coming soon")).not.toBeInTheDocument();
+    } finally {
+      jepa.shots = original;
+    }
+  });
+});
+
 describe("Pro-Link AI case study", () => {
   /** jsdom has no layout: place the scroll track as the browser would, then scroll. */
   function scrollTrackTo(track: HTMLElement, progress: number) {
