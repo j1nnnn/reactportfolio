@@ -28,35 +28,34 @@ describe("home page", () => {
     expect(screen.getByText("I build AI products and the systems that ship them")).toBeInTheDocument();
   });
 
-  it("offers three ways to reach Jin", () => {
+  it("offers ways to reach Jin", () => {
     render(<Home />);
-    // Placeholder addresses until Jin supplies the real ones; the deploy guard refuses example.com.
-    expect(screen.getByRole("link", { name: "Email" })).toHaveAttribute("href", "mailto:jin@example.com");
-    expect(screen.getByRole("link", { name: "Download résumé" })).toHaveAttribute("href", "/reactportfolio/resume.pdf");
-    const book = screen.getByRole("link", { name: "Book a call" });
-    expect(book).toHaveAttribute("href", "https://calendar.example.com/jin-intro-call");
-    expect(book).toHaveAttribute("target", "_blank");
-    expect(book).toHaveAttribute("rel", "noopener noreferrer");
+    expect(screen.getByRole("link", { name: "Email" })).toHaveAttribute("href", "mailto:devj49i@outlook.com");
+    const resume = screen.getByRole("link", { name: "Download résumé" });
+    expect(resume).toHaveAttribute("href", "/reactportfolio/resume.pdf");
+    expect(resume).toHaveAttribute("download", "Jinwoo_Lim_Resume.pdf"); // saved under his name, not "resume.pdf"
+    // No booking link yet: the button stays off until Jin has one.
+    expect(screen.queryByRole("link", { name: "Book a call" })).not.toBeInTheDocument();
   });
 
   it("lets a visitor without a mail app copy the email address", async () => {
     const user = userEvent.setup(); // installs a clipboard stub
     render(<Home />);
     await user.click(screen.getByRole("button", { name: "Copy email address" }));
-    expect(await navigator.clipboard.readText()).toBe("jin@example.com");
+    expect(await navigator.clipboard.readText()).toBe("devj49i@outlook.com");
     expect(screen.getByRole("status")).toHaveTextContent("Email address copied");
   });
 
   it("counts which contact action a visitor uses", async () => {
     const user = userEvent.setup();
     render(<Home />);
-    for (const name of ["Email", "Download résumé", "Book a call"]) {
+    for (const name of ["Email", "Download résumé"]) {
       const link = screen.getByRole("link", { name });
       link.addEventListener("click", (e) => e.preventDefault()); // jsdom can't navigate
       await user.click(link);
     }
     await user.click(screen.getByRole("button", { name: "Copy email address" }));
-    expect(vi.mocked(track).mock.calls).toEqual([["email"], ["resume"], ["book_call"], ["copy_email"]]);
+    expect(vi.mocked(track).mock.calls).toEqual([["email"], ["resume"], ["copy_email"]]);
   });
 
   it("lets a visitor open any featured project without the 3D scene", async () => {

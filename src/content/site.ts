@@ -9,9 +9,10 @@ export const site = {
   subline: "I build AI products and the systems that ship them",
 };
 
-// PLACEHOLDERS until Jin supplies the real values. The deploy guard refuses to publish example.com.
+// Public contact details (Jin, 2026-11-09). Never add a phone number: the deploy guard refuses one.
 export const contact = {
-  email: "jin@example.com",
+  email: "devj49i@outlook.com",
   resumePath: `${BASE_PATH}/resume.pdf`,
-  bookingUrl: "https://calendar.example.com/jin-intro-call",
+  /** No booking link yet: the "Book a call" button stays hidden until this is set. */
+  bookingUrl: null as string | null,
 };
