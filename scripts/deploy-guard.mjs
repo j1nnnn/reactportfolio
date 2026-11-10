@@ -61,7 +61,39 @@ for (const f of htmlFiles) {
   }
 }
 
-// 4. Nothing private or placeholder ships.
+// 4. Search engines get a sitemap, a robots file pointing to it, and Person data on the home page.
+const SITE_URL = `https://j1nnnn.github.io${BASE_PATH}/`;
+const sitemapFile = join(outDir, "sitemap.xml");
+if (!existsSync(sitemapFile)) fail(outDir, "missing sitemap.xml");
+else {
+  const locs = [...readFileSync(sitemapFile, "utf8").matchAll(/<loc>([^<]*)<\/loc>/g)].map(([, u]) => u.trim());
+  if (!locs.length) fail(sitemapFile, "sitemap lists no URLs");
+  for (const url of locs) {
+    if (!url.startsWith(SITE_URL) && url !== SITE_URL.slice(0, -1)) fail(sitemapFile, `sitemap URL not under ${SITE_URL}: ${url}`);
+    else if (!resolves(new URL(url).pathname)) fail(sitemapFile, `sitemap URL has no built page: ${url}`);
+  }
+}
+const robotsFile = join(outDir, "robots.txt");
+if (!existsSync(robotsFile)) fail(outDir, "missing robots.txt");
+else {
+  const robots = readFileSync(robotsFile, "utf8");
+  if (!new RegExp(`^Sitemap:\\s*${SITE_URL}sitemap\\.xml\\s*$`, "mi").test(robots))
+    fail(robotsFile, `robots.txt does not point to ${SITE_URL}sitemap.xml`);
+  if (/^Disallow:\s*\/\s*$/mi.test(robots)) fail(robotsFile, "robots.txt blocks crawling");
+}
+const homeFile = join(outDir, "index.html");
+if (existsSync(homeFile)) {
+  const persons = [...readFileSync(homeFile, "utf8").matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)]
+    .map(([, json]) => { try { return JSON.parse(json); } catch { return null; } })
+    .filter((d) => d?.["@type"] === "Person" && d.name && d.url === SITE_URL);
+  if (!persons.length) fail(homeFile, `home page has no schema.org Person data (name, url ${SITE_URL})`);
+  // Person data repeats what the site shows; contact details beyond that stay off it.
+  for (const key of ["telephone", "address", "faxNumber", "birthDate"]) {
+    if (persons.some((d) => key in d)) fail(homeFile, `Person data has ${key}`);
+  }
+} else fail(outDir, "missing index.html (home page)");
+
+// 5. Nothing private or placeholder ships.
 const PHONE = /(?:\+?1[-.\s])?\(?\b\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b/;
 const PLACEHOLDER = /\bexample\.com\b/i;
 const blocklistFile = join(root, ".deploy-guard-blocklist");

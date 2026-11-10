@@ -35,6 +35,18 @@ describe("home page", () => {
     expect(screen.getByText("I build AI products and the systems that ship them")).toBeInTheDocument();
   });
 
+  it("tells search engines who Jin is, with nothing the site doesn't already show", () => {
+    const { container } = render(<Home />);
+    const script = container.querySelector('script[type="application/ld+json"]');
+    expect(JSON.parse(script!.textContent!)).toEqual({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name: "Jinwoo Lim",
+      description: "Engineer · Inventor · Builder",
+      url: "https://j1nnnn.github.io/reactportfolio/",
+    });
+  });
+
   it("offers ways to reach Jin", () => {
     render(<Home />);
     expect(hero.link("Email")).toHaveAttribute("href", "mailto:devj49i@outlook.com");
