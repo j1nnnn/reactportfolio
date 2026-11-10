@@ -74,16 +74,26 @@ export function CaseFacts({ project, builtTitle = "What I built" }: { project: P
   );
 }
 
-/** The way on: the next featured project, wrapping round after the last. */
+function ProjectLink({ label, to }: { label: string; to: Project }) {
+  return (
+    <nav className={s.next} aria-label={label}>
+      <span>{label}</span>
+      <Link href={`/work/${to.slug}`} className={s.nextLink} style={{ color: to.theme.accent }}>
+        {to.name}
+      </Link>
+    </nav>
+  );
+}
+
+/** The ways on: the next and previous featured projects, wrapping round at either end. */
 export function NextProject({ project }: { project: Project }) {
   const i = projects.findIndex((p) => p.id === project.id);
   const next = projects[(i + 1) % projects.length];
+  const previous = projects[(i - 1 + projects.length) % projects.length];
   return (
-    <nav className={s.next} aria-label="Next project">
-      <span>Next project</span>
-      <Link href={`/work/${next.slug}`} className={s.nextLink} style={{ color: next.theme.accent }}>
-        {next.name}
-      </Link>
-    </nav>
+    <div className={s.ways}>
+      <ProjectLink label="Next project" to={next} />
+      <ProjectLink label="Previous project" to={previous} />
+    </div>
   );
 }

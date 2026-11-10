@@ -53,6 +53,18 @@ describe("case study page", () => {
     const next = screen.getByRole("navigation", { name: "Next project" });
     expect(within(next).getByRole("link", { name: "Pro-Link AI" })).toHaveAttribute("href", "/work/pro-link-ai");
   });
+
+  it("offers the previous project, wrapping round from the first to the last", async () => {
+    await visit("pro-link-ai");
+    const previous = screen.getByRole("navigation", { name: "Previous project" });
+    expect(within(previous).getByRole("link", { name: "Patent US 12,470,530 B2" })).toHaveAttribute("href", "/work/patent");
+  });
+
+  it("offers the project before this one as the previous project", async () => {
+    await visit("jepa");
+    const previous = screen.getByRole("navigation", { name: "Previous project" });
+    expect(within(previous).getByRole("link", { name: "Software Factory" })).toHaveAttribute("href", "/work/software-factory");
+  });
 });
 
 describe("particle intro", () => {
