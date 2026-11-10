@@ -1,0 +1,8 @@
+:HL["/reactportfolio/_next/static/chunks/371-e0g2525g1.css","style"]
+:HL["/reactportfolio/_next/static/media/48eea41d8317494f-s.p.0wiir8udbzjvx.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/reactportfolio/_next/static/media/53897e768d329f66-s.p.3t6q91iet4nsy.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/reactportfolio/_next/static/media/d902bc2bfdd0a4cb-s.p.1g73gv09-xcb6.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/reactportfolio/_next/static/media/db545dba463279ae-s.p.1cp9-4nby68jc.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/reactportfolio/_next/static/chunks/2if-llrfjtmmy.css","style"]
+1:[["children",{"s":"__PAGE__","h":160}]]
+0:{"b":"0etCNOJIAPtG4R2YdhZjb","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
