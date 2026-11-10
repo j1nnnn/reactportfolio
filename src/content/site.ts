@@ -3,6 +3,9 @@
 /** Must match `basePath` in next.config.ts: plain <a> links to files don't get it added automatically. */
 export const BASE_PATH = "/reactportfolio";
 
+/** The live address on GitHub Pages: sitemap URLs and Person data are absolute under it. */
+export const SITE_URL = `https://j1nnnn.github.io${BASE_PATH}/`;
+
 export const site = {
   name: "Jinwoo Lim",
   identity: "Engineer · Inventor · Builder",
