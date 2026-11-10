@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CaseStudy } from "@/components/case/CaseStudy";
+import { previewMetadata } from "@/content/previews";
 import { bySlug, projects } from "@/content/projects";
 import { site } from "@/content/site";
 
@@ -14,7 +15,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const p = bySlug((await params).slug);
   if (!p) return {};
   const title = `${p.name} | ${site.name}`;
-  return { title, description: p.blurb, openGraph: { title, description: p.blurb, type: "article" } };
+  const preview = previewMetadata(`${p.slug}.png`, p.name);
+  return {
+    title,
+    description: p.blurb,
+    openGraph: { title, description: p.blurb, type: "article", images: [preview.image] },
+    twitter: preview.twitter,
+  };
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {

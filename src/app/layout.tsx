@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Sans, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { previewMetadata } from "@/content/previews";
 import { site } from "@/content/site";
 import "./globals.css";
 
@@ -10,11 +11,13 @@ const instrument = Instrument_Serif({ subsets: ["latin"], weight: "400", variabl
 const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
 
 const description = `${site.identity}. ${site.subline}.`;
+const preview = previewMetadata("home.png", site.name);
 
 export const metadata: Metadata = {
   title: site.name,
   description,
-  openGraph: { title: site.name, description, type: "website" },
+  openGraph: { title: site.name, description, type: "website", images: [preview.image] },
+  twitter: preview.twitter,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

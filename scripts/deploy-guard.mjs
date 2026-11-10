@@ -12,6 +12,9 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 
 const BASE_PATH = "/reactportfolio";
+// Link previews need absolute URLs: unfurlers don't resolve relative ones.
+const ORIGIN = "https://j1nnnn.github.io";
+const SITE_URL = `${ORIGIN}${BASE_PATH}`;
 const outDir = resolve(process.argv[2] ?? "out");
 const root = resolve(".");
 const failures = [];
@@ -36,21 +39,30 @@ const htmlFiles = files.filter((f) => f.endsWith(".html"));
 // 1. GitHub Pages runs Jekyll unless told not to, and Jekyll drops the _next/ folder.
 if (!existsSync(join(outDir, ".nojekyll"))) fail(outDir, "missing .nojekyll (Pages would drop _next/)");
 
-// 2. Every page has a title, a description and link-preview tags.
+const resolves = (urlPath) => {
+  const clean = decodeURIComponent(urlPath.split(/[?#]/)[0]).slice(BASE_PATH.length) || "/";
+  const p = join(outDir, clean);
+  return [p, `${p}.html`, join(p, "index.html")].some((c) => existsSync(c) && statSync(c).isFile());
+};
+
+// 2. Every page has a title, a description and link-preview tags, and its preview image ships.
 for (const f of htmlFiles) {
   if (f.endsWith("404.html") || f.includes(`${join("_not-found")}`)) continue;
   const html = readFileSync(f, "utf8");
   if (!/<title>[^<]+<\/title>/.test(html)) fail(f, "no <title>");
   if (!/<meta name="description" content="[^"]+"/.test(html)) fail(f, "no meta description");
   if (!/<meta property="og:title" content="[^"]+"/.test(html)) fail(f, "no og:title (link previews)");
+  const image = html.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
+  if (!image) fail(f, "no og:image (link previews)");
+  else if (!image.startsWith(`${SITE_URL}/`) || !resolves(image.slice(ORIGIN.length))) {
+    fail(f, `og:image not in the export: ${image}`);
+  }
+  if (!/<meta name="twitter:card" content="summary_large_image"/.test(html)) {
+    fail(f, "no twitter:card summary_large_image (link previews)");
+  }
 }
 
 // 3. Every internal link and asset sits under the base path and resolves to a built file.
-const resolves = (urlPath) => {
-  const clean = decodeURIComponent(urlPath.split(/[?#]/)[0]).slice(BASE_PATH.length) || "/";
-  const p = join(outDir, clean);
-  return [p, `${p}.html`, join(p, "index.html")].some((c) => existsSync(c) && statSync(c).isFile());
-};
 for (const f of htmlFiles) {
   const html = readFileSync(f, "utf8");
   for (const [, url] of html.matchAll(/(?:href|src)="(\/[^"]*)"/g)) {
