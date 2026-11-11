@@ -20,7 +20,8 @@
 
 /* A station's place on the stage. Before JavaScript runs it shows its panel as it holds. */
 .stationLeft,
-.stationRight {
+.stationRight,
+.stationCentre {
   position: absolute;
   inset: 0;
   display: flex;
@@ -35,16 +36,23 @@
 /* A panel taller than the screen slides up through it while it holds (Dive.tsx), so the page's own
    scroll reads it. Darker than the calm version's glass, so the world passing behind stays a blur. */
 .stationLeft > section,
-.stationRight > section {
+.stationRight > section,
+.stationCentre > section {
   pointer-events: auto;
   width: min(1000px, 100%);
   background-color: rgba(10, 16, 30, 0.72);
   backdrop-filter: blur(18px) saturate(1.2);
 }
 
+/* A centred station is wide enough for a row of cards on a laptop. */
+.stationCentre > section {
+  width: min(1240px, 100%);
+}
+
 /* Before JavaScript runs nothing moves the panels, so a tall one scrolls inside itself instead. */
 .dive:not([data-live]) .stationLeft > section,
-.dive:not([data-live]) .stationRight > section {
+.dive:not([data-live]) .stationRight > section,
+.dive:not([data-live]) .stationCentre > section {
   max-height: calc(100svh - 48px);
   overflow-y: auto;
 }

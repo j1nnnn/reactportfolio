@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useRef, type ComponentType, type CSSProperties } from "react";
 import { AboutSection } from "@/components/AboutSection";
+import { OtherProjectsSection } from "@/components/OtherProjectsSection";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { FLY_IN, FLY_OUT, stationArrival, stations, type Station, type StationId } from "./stations";
 import { setDiveInView } from "./diveInView";
@@ -11,7 +12,9 @@ import s from "./Dive.module.css";
 const DiveWorld = dynamic(() => import("./DiveWorld"), { ssr: false });
 
 /** Each station's section: real HTML, in document order. */
-const SECTIONS: Record<StationId, ComponentType> = { about: AboutSection };
+const SECTIONS: Record<StationId, ComponentType> = { about: AboutSection, projects: OtherProjectsSection };
+
+const PLACE = { left: s.stationLeft, right: s.stationRight, centre: s.stationCentre };
 
 /** How far the visitor has scrolled through the dive, from 0 at its top to 1 at its end. */
 function diveProgress(el: HTMLElement): number {
@@ -30,7 +33,7 @@ const ease = (t: number) => 1 - (1 - t) ** 3;
 function placePanel(el: HTMLElement, station: Station, last: boolean, p: number) {
   const [from, to] = station.range;
   const t = (p - from) / (to - from);
-  const tilt = station.side === "left" ? 1 : -1;
+  const tilt = { left: 1, right: -1, centre: 0 }[station.side];
   const panel = el.firstElementChild as HTMLElement | null;
   const overflow = Math.max(0, (panel?.offsetHeight ?? 0) - (window.innerHeight - 48));
   const held = Math.min(1, Math.max(0, (t - FLY_IN) / (FLY_OUT - FLY_IN)));
@@ -55,6 +58,8 @@ function placePanel(el: HTMLElement, station: Station, last: boolean, p: number)
   el.style.transform = `translate3d(0, ${slide}px, ${depth}px) rotateY(${tilt * 14 * turn}deg)`;
   el.style.filter = fade < 0.99 ? `blur(${(1 - fade) * 6}px)` : "";
   el.style.pointerEvents = fade > 0.5 ? "" : "none";
+  // How far the panel has arrived, 0 to 1, for anything inside that arrives with it (the projects' fan).
+  el.style.setProperty("--arrive", String(Math.min(1, Math.max(0, t / FLY_IN))));
 }
 
 /**
@@ -156,7 +161,7 @@ export function Dive() {
               ref={(el) => {
                 panels.current[i] = el;
               }}
-              className={st.side === "left" ? s.stationLeft : s.stationRight}
+              className={PLACE[st.side]}
               onFocus={() => onFocus(st)}
             >
               <Section />
