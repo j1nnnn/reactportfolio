@@ -4,10 +4,10 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useMemo, useRef, type RefObject } from "react";
 import * as THREE from "three";
 import { useDiveInView } from "./diveInView";
-import { DIVE_INTRO } from "./stations";
+import { DIVE_INTRO, FLY_IN, stations, type Station } from "./stations";
 
-// The dive's world (spec #13): drifting coloured particles and slowly turning low-poly crystals,
-// all procedural. Scroll progress flies the camera forward through it. Loaded in the browser only.
+// The dive's world (spec #13): drifting coloured particles, slowly turning low-poly crystals and a
+// ring gate per role, all procedural. Scroll progress flies the camera forward through it. Loaded in the browser only.
 
 const SKY = new THREE.Color("#cfe3f3"); // the island's pale sky
 const SPACE = new THREE.Color("#060a14");
@@ -85,6 +85,55 @@ function Crystals() {
   );
 }
 
+/** A date label for a gate, drawn once onto a canvas. */
+function labelTexture(text: string) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1024;
+  canvas.height = 160;
+  const ctx = canvas.getContext("2d")!;
+  ctx.font = "800 112px system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.shadowColor = "#7aa2ff";
+  ctx.shadowBlur = 24;
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = "#cfe0ff";
+  ctx.strokeText(text, 512, 84);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+/** A glowing ring gate the camera flies through as a role's panel flies in, labelled with its dates. */
+function Gate({ station }: { station: Station }) {
+  const ref = useRef<THREE.Group>(null);
+  const label = useMemo(() => labelTexture(station.gate!), [station.gate]);
+  const [from, to] = station.range;
+  // Passed by the camera partway through the panel's flight in, so the panel arrives just behind it.
+  const z = -(from + (to - from) * FLY_IN * 0.8) * DEPTH + 8;
+  useFrame((_, dt) => {
+    if (ref.current) ref.current.rotation.z += dt * 0.15;
+  });
+  return (
+    <group position={[0, 0, z]}>
+      <group ref={ref}>
+        <mesh>
+          <torusGeometry args={[3.4, 0.05, 12, 96]} />
+          <meshBasicMaterial color="#9fc0ff" toneMapped={false} />
+        </mesh>
+        <mesh>
+          <torusGeometry args={[3.4, 0.28, 12, 96]} />
+          <meshBasicMaterial color="#7aa2ff" transparent opacity={0.18} blending={THREE.AdditiveBlending} depthWrite={false} />
+        </mesh>
+      </group>
+      <mesh position={[0, 3.95, 0]}>
+        <planeGeometry args={[4.8, 0.75]} />
+        <meshBasicMaterial map={label} transparent depthWrite={false} toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
 /** Flies the camera along the progress, with a gentle sway; fades the sky to deep space. */
 function Flight({ progress }: { progress: RefObject<number> }) {
   const { camera, scene } = useThree();
@@ -119,6 +168,11 @@ export default function DiveWorld({ progress }: { progress: RefObject<number> })
       <Flight progress={progress} />
       <Particles />
       <Crystals />
+      {stations
+        .filter((st) => st.gate)
+        .map((st) => (
+          <Gate key={st.id} station={st} />
+        ))}
     </Canvas>
   );
 }
