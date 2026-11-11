@@ -17,7 +17,8 @@
 
 .intro {
   position: absolute;
-  top: clamp(24px, 5vh, 56px);
+  /* Below the site's bar (12px down, 46px tall at most), so it never covers the name and headline. */
+  top: calc(clamp(24px, 5vh, 56px) + 56px);
   left: clamp(20px, 4vw, 56px);
   max-width: 640px;
   z-index: 2;

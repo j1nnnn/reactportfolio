@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ParticleIntro } from "@/components/intro/ParticleIntro";
+import { SiteNav } from "@/components/SiteNav";
 import { bySlug } from "@/content/projects";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { FactoryCase } from "./FactoryCase";
@@ -21,6 +22,7 @@ export function CaseStudy({ slug }: { slug: string }) {
       className={s.root}
       style={{ "--bg": t.bg, "--ink": t.ink, "--muted": t.muted, "--accent": t.accent, "--panel": t.panel } as React.CSSProperties}
     >
+      <SiteNav />
       {!reduced && !introDone && (
         <ParticleIntro key={slug} word={project.introWord} bg={t.bg} color={t.accent} onDone={() => setIntroDone(true)} />
       )}

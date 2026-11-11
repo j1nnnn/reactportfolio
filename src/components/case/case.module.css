@@ -33,6 +33,13 @@
   color: var(--ink);
 }
 
+/* Where the site's bar would meet it; the page's title already names the project. */
+@media (max-width: 1100px) {
+  .headerName {
+    display: none;
+  }
+}
+
 .back:hover {
   border-color: var(--accent);
 }
