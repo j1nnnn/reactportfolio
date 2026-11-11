@@ -158,8 +158,10 @@ for (const f of files.filter((p) => p.toLowerCase().endsWith(".pdf"))) {
   checkPrivate(f, text);
 }
 
-// 6. The About section's placeholders don't ship. Read from the personal-sections module, so they
-// can't drift; if the guard can't find them there, it stops rather than check nothing.
+// 6. The About section's personal-line placeholder doesn't ship: that line must be Jin's own words.
+// (The photo placeholder may ship: Jin's call, the site can go live before he adds a photo.)
+// Read from the personal-sections module, so it can't drift; if the guard can't find it there, it
+// stops rather than check nothing.
 const personalSource = readFileSync(new URL("../src/content/personal.ts", import.meta.url), "utf8");
 const placeholder = (name) => {
   const m = personalSource.match(new RegExp(`export const ${name}\\s*=\\s*("(?:[^"\\\\]|\\\\.)*")`));
@@ -171,10 +173,7 @@ const placeholder = (name) => {
 };
 // React escapes these in HTML text and attributes.
 const escapeHtml = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
-const placeholders = [
-  ["photo", placeholder("PHOTO_PLACEHOLDER")],
-  ["personal-line", placeholder("PERSONAL_LINE_PLACEHOLDER")],
-];
+const placeholders = [["personal-line", placeholder("PERSONAL_LINE_PLACEHOLDER")]];
 for (const f of htmlFiles) {
   const html = readFileSync(f, "utf8");
   for (const [what, text] of placeholders) {

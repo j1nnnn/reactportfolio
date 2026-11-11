@@ -196,12 +196,12 @@ describe("deploy guard: résumé PDF", () => {
 });
 
 describe("deploy guard: About placeholders", () => {
-  it("fails when a page still shows the photo placeholder", () => {
+  it("lets the site ship without a photo yet: the photo placeholder doesn't block (Jin's call)", () => {
     goodExport();
     write("index.html", page({ extra: person + `<div aria-label="${PHOTO_PLACEHOLDER}"></div>` }));
     const r = guard();
-    expect(r.code).toBe(1);
-    expect(r.out).toMatch(/index\.html: still shows the About photo placeholder/);
+    expect(r.out).not.toContain("placeholder");
+    expect(r.code).toBe(0);
   });
 
   it("fails when a page still shows the personal-line placeholder", () => {
