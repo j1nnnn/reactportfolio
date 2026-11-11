@@ -1,0 +1,76 @@
+/* The dive: a tall scroll region with a pinned, full-screen stage. Its length sets the flight's pace. */
+.dive {
+  position: relative;
+  height: calc((1.6 + var(--stations, 1) * 2.4) * 100svh);
+  background: #060a14;
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  perspective: 1200px;
+}
+
+.world {
+  position: absolute;
+  inset: 0;
+}
+
+/* A station's place on the stage. Before JavaScript runs it shows its panel as it holds. */
+.stationLeft,
+.stationRight {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* The height budget: a panel never runs off the screen; longer content scrolls inside it. */
+.stationLeft > section,
+.stationRight > section {
+  pointer-events: auto;
+  width: min(1000px, 100%);
+  max-height: calc(100svh - 48px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  background-color: rgba(10, 16, 30, 0.5);
+}
+
+@media (min-width: 1100px) {
+  .stationLeft {
+    justify-content: flex-start;
+    padding-left: clamp(24px, 5vw, 80px);
+  }
+
+  .stationRight {
+    justify-content: flex-end;
+    padding-right: clamp(24px, 5vw, 80px);
+  }
+
+  .stationLeft > section,
+  .stationRight > section {
+    width: min(900px, 72vw);
+  }
+}
+
+/* The calm version: the sections stacked as plain glass panels. */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 72px clamp(16px, 4vw, 48px);
+  background: radial-gradient(120% 80% at 20% 0%, #1e3a52 0%, #0f1a24 55%, #0a1118 100%);
+}
+
+.stack > section {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+}

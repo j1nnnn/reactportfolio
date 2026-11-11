@@ -1,9 +1,10 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { renderToString } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import { PERSONAL_LINE_PLACEHOLDER, PHOTO_PLACEHOLDER } from "@/content/personal";
 import { track } from "@/lib/analytics";
-import { askForCalmVersion, setReducedMotion } from "@/test/setup";
+import { askForCalmVersion, bringOnScreen, setReducedMotion, takeOffScreen } from "@/test/setup";
 import Home from "./page";
 
 // Boundaries faked for Seam A: the router's search params, the analytics client, the 3D canvas.
@@ -20,6 +21,8 @@ vi.mock("@/components/island/IslandScene", () => ({
     </div>
   ),
 }));
+// The dive's WebGL world can't run in jsdom either.
+vi.mock("@/components/dive/DiveWorld", () => ({ default: () => <div data-testid="dive-world" /> }));
 
 /** The hero's contact actions: the first on the page, above the island's Contact section. */
 const hero = {
@@ -235,5 +238,57 @@ describe("home page", () => {
     setReducedMotion(true);
     render(<Home />);
     expect(await screen.findByTestId("island-scene")).toHaveAttribute("data-animate", "true");
+  });
+
+  describe("the dive below the island", () => {
+    it("pauses the island while the dive is on screen, and resumes it when the visitor scrolls back", async () => {
+      render(<Home />);
+      const island = await screen.findByTestId("island-scene");
+      expect(island).toHaveAttribute("data-animate", "true");
+
+      const about = screen.getByRole("region", { name: "About" });
+      act(() => bringOnScreen(about));
+      expect(island).toHaveAttribute("data-animate", "false");
+
+      act(() => takeOffScreen(about));
+      expect(island).toHaveAttribute("data-animate", "true");
+    });
+
+    it("flies the visitor through the dive's world below the island", async () => {
+      render(<Home />);
+      expect(await screen.findByTestId("dive-world")).toBeInTheDocument();
+    });
+
+    it("stacks the sections as plain panels, with no dive, in the calm version", async () => {
+      askForCalmVersion();
+      render(<Home />);
+      await screen.findByTestId("island-scene");
+      expect(screen.getByRole("region", { name: "About" })).toBeInTheDocument();
+      expect(screen.queryByTestId("dive-world")).not.toBeInTheDocument();
+    });
+
+    it("never hides a station from assistive technology, in view or not", () => {
+      render(<Home />);
+      const about = screen.getByRole("region", { name: "About" });
+      const check = () => {
+        for (let el: HTMLElement | null = about; el; el = el.parentElement) {
+          expect(el).not.toHaveAttribute("aria-hidden");
+          expect(getComputedStyle(el).visibility).not.toBe("hidden");
+        }
+        expect(screen.getByRole("heading", { level: 2, name: "Hi, I'm Jin." })).toBeInTheDocument();
+      };
+      check();
+      act(() => bringOnScreen(about));
+      check();
+      act(() => takeOffScreen(about));
+      check();
+    });
+
+    it("puts the About section in the prerendered page, readable with JavaScript off", () => {
+      const html = renderToString(<Home />);
+      expect(html).toContain('id="about"');
+      expect(html).toContain("critical defects across every release I gated");
+      expect(html).toContain("Beyond the code");
+    });
   });
 });

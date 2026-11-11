@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ContactActions } from "@/components/ContactActions";
+import { useDiveInView } from "@/components/dive/diveInView";
 import { projects, type ProjectId } from "@/content/projects";
 import { site } from "@/content/site";
 import { useReducedMotion } from "@/lib/useReducedMotion";
@@ -14,6 +15,7 @@ const IslandScene = dynamic(() => import("./IslandScene"), { ssr: false });
 /** The home page hero: the island (ADR 0002) with Jin's intro over it. */
 export function IslandHome({ initialFocus = null }: { initialFocus?: ProjectId | null }) {
   const reduced = useReducedMotion();
+  const diveInView = useDiveInView(); // only one 3D scene runs at a time
   const [hovered, setHovered] = useState<ProjectId | null>(null);
   const [selected, setSelected] = useState<ProjectId | null>(initialFocus);
   const card = projects.find((p) => p.id === selected);
@@ -44,7 +46,7 @@ export function IslandHome({ initialFocus = null }: { initialFocus?: ProjectId |
   return (
     <section className={s.section}>
       <div className={s.scene} aria-hidden="true">
-        <IslandScene animate={!reduced} hovered={hovered} selected={selected} onHover={setHovered} onSelect={open} />
+        <IslandScene animate={!reduced && !diveInView}hovered={hovered} selected={selected} onHover={setHovered} onSelect={open} />
       </div>
       <div className={s.intro}>
         <p className={s.name}>{site.name}</p>
@@ -85,6 +87,13 @@ export function IslandHome({ initialFocus = null }: { initialFocus?: ProjectId |
           </button>
         ))}
       </nav>
+      {/* There's more below: the dive. Decorative; the sections follow in document order. */}
+      <div className={s.cue} aria-hidden="true">
+        <span>Scroll</span>
+        <svg viewBox="0 0 16 10" className={s.cueArrow}>
+          <path d="M1 1l7 7 7-7" />
+        </svg>
+      </div>
     </section>
   );
 }

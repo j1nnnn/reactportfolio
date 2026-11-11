@@ -1,22 +1,12 @@
-/* A frosted-glass panel on a dark background, like the island's project cards. */
-.section {
+/* A frosted-glass panel for a dark background (the dive, or the calm version's stack). */
+.panel {
   --glass: rgba(255, 255, 255, 0.08);
   --glass-edge: rgba(255, 255, 255, 0.16);
   --ink: #eef3f7;
   --muted: #a9b7c3;
-  background: radial-gradient(120% 80% at 20% 0%, #1e3a52 0%, #0f1a24 55%, #0a1118 100%);
   color: var(--ink);
   font-family: var(--font-plex), system-ui, sans-serif;
-}
-
-.inner {
-  max-width: 1040px;
-  margin: 0 auto;
-  padding: 72px clamp(16px, 4vw, 48px);
-}
-
-.panel {
-  padding: clamp(20px, 4vw, 40px);
+  padding: clamp(20px, 3.4vw, 36px);
   border-radius: 20px;
   background: var(--glass);
   border: 1px solid var(--glass-edge);
@@ -33,10 +23,10 @@
 
 .lead {
   display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
+  grid-template-columns: 160px minmax(0, 1fr);
   gap: clamp(20px, 3vw, 36px);
   align-items: start;
-  margin-top: 24px;
+  margin-top: 20px;
 }
 
 .photo {
@@ -76,15 +66,15 @@
   }
 
   .photo {
-    width: min(200px, 100%);
+    width: min(140px, 100%);
   }
 }
 
 .intro {
-  margin: 16px 0 0;
-  max-width: 68ch;
-  font-size: 17px;
-  line-height: 1.6;
+  margin: 14px 0 0;
+  max-width: 72ch;
+  font-size: 16px;
+  line-height: 1.55;
   color: var(--muted);
 }
 
@@ -92,7 +82,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 12px;
-  margin: 32px 0 0;
+  margin: 24px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -101,7 +91,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 16px;
+  padding: 12px 14px;
   border-radius: 14px;
   background: var(--glass);
   border: 1px solid var(--glass-edge);
@@ -109,7 +99,7 @@
 
 .value {
   font-family: var(--font-archivo), sans-serif;
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 800;
   line-height: 1;
 }
@@ -121,16 +111,23 @@
 }
 
 .subtitle {
-  margin: 32px 0 0;
+  margin: 24px 0 0;
   font-family: var(--font-archivo), sans-serif;
   font-size: 20px;
   font-weight: 800;
 }
 
 .beyond {
-  margin: 12px 0 0;
+  margin: 10px 0 0;
   padding-left: 20px;
-  line-height: 1.7;
+  line-height: 1.6;
   color: var(--muted);
   overflow-wrap: anywhere;
+  column-gap: 40px;
+}
+
+@media (min-width: 900px) {
+  .beyond {
+    columns: 2;
+  }
 }
