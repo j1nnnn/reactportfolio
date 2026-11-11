@@ -1,0 +1,130 @@
+/* The Skills panel: the readout, then the grouped skill list and the proofs as chips. */
+.section {
+  --gold: #ffcf5a;
+}
+
+.readout {
+  min-height: 78px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-edge);
+}
+
+.hint {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.active {
+  margin: 0;
+  font-family: var(--font-archivo), sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  color: var(--gold);
+}
+
+.groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+  gap: 6px 18px;
+  margin-top: 14px;
+}
+
+.groupName {
+  margin: 10px 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  --dot: #7aa2ff;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px; /* a thumb-sized target on a phone */
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--glass-edge);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: opacity 0.2s, background-color 0.2s, border-color 0.2s;
+}
+
+.chip::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--dot);
+  box-shadow: 0 0 8px var(--dot);
+}
+
+.chip[data-group="1"] { --dot: #b18cff; }
+.chip[data-group="2"] { --dot: #5fe0d0; }
+.chip[data-group="3"] { --dot: #ffb38a; }
+.chip[data-group="4"] { --dot: #8fe07a; }
+.chip[data-group="5"] { --dot: #ff8fb8; }
+.chip[data-group="6"] { --dot: #f3f6ff; }
+
+.proof {
+  --dot: transparent;
+}
+
+.proof::before {
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 6px var(--gold);
+}
+
+.chip:focus-visible {
+  outline: 2px solid #9fc0ff;
+  outline-offset: 2px;
+}
+
+.chip[data-lit] {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.proof[data-lit] {
+  border-color: var(--gold);
+}
+
+.chip[data-dim] {
+  opacity: 0.45;
+}
+
+/* The calm version's still constellation. */
+.still {
+  display: block;
+  width: min(320px, 100%);
+  margin: 16px auto 0;
+}

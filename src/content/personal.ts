@@ -1,6 +1,8 @@
 // Copy for the personal sections below the island ("the dive"). DRAFT from Jin's CV: Jin may edit the
 // wording, but don't add a fact that isn't in cv.md. Never add a phone number or a certification.
 
+import { projects, type ProjectId } from "./projects";
+
 /** Placeholders until Jin supplies his photo and his own line; the deploy guard looks for these. */
 export const PHOTO_PLACEHOLDER = "photo goes here";
 export const PERSONAL_LINE_PLACEHOLDER =
@@ -97,9 +99,11 @@ export const experience: ExperienceEntry[] = [
   },
 ];
 
+export type OtherProjectId = "lifeos" | "sweep" | "citibike" | "aurora" | "humanintech";
+
 export type OtherProject = {
   /** Stable: the Skills section cites these as proof. */
-  id: string;
+  id: OtherProjectId;
   name: string;
   tag: string;
   blurb: string;
@@ -150,3 +154,63 @@ export const otherProjects: OtherProject[] = [
     stack: ["React", "Responsive design"],
   },
 ];
+
+/**
+ * A proof: the real work that backs a skill. An experience entry, a featured project or an other
+ * project, by its id. Pro-Link AI is both a role and a featured project; its id is the same in both.
+ */
+export type ProofId = ExperienceId | ProjectId | OtherProjectId;
+
+/** One skill in the Skills section. Every skill has at least one proof. */
+export type Skill = { name: string; group: SkillGroup; proofs: ProofId[] };
+
+export type SkillGroup = "AI & Agentic" | "Languages" | "Frontend" | "Backend" | "Data" | "Quality" | "Leadership";
+
+export const skillsHeading = "Every skill, with proof";
+
+/** From Jin's CV: only skills with real work behind them, no "familiar" or in-progress ones. */
+export const skills: Skill[] = [
+  { name: "Claude API", group: "AI & Agentic", proofs: ["wf-engineer", "prolink", "factory"] },
+  { name: "Agentic workflows", group: "AI & Agentic", proofs: ["wf-engineer", "factory", "jepa"] },
+  { name: "MCP servers", group: "AI & Agentic", proofs: ["wf-engineer", "factory"] },
+  { name: "Context engineering", group: "AI & Agentic", proofs: ["wf-engineer"] },
+  { name: "LLM evaluation", group: "AI & Agentic", proofs: ["wf-engineer", "factory"] },
+  { name: "RAG pipelines", group: "AI & Agentic", proofs: ["wf-analyst"] },
+  { name: "Computer vision", group: "AI & Agentic", proofs: ["prolink"] },
+  { name: "TypeScript", group: "Languages", proofs: ["wf-engineer", "prolink", "lifeos"] },
+  { name: "Python", group: "Languages", proofs: ["prolink", "factory", "jepa", "sweep", "citibike"] },
+  { name: "Java", group: "Languages", proofs: ["wf-engineer"] },
+  { name: "C# / .NET", group: "Languages", proofs: ["turf"] },
+  { name: "React", group: "Frontend", proofs: ["wf-engineer", "prolink", "lifeos", "aurora", "humanintech"] },
+  { name: "Next.js", group: "Frontend", proofs: ["prolink", "lifeos"] },
+  { name: "Angular", group: "Frontend", proofs: ["wf-engineer"] },
+  { name: "Micro-frontends", group: "Frontend", proofs: ["wf-engineer"] },
+  { name: "Spring Boot", group: "Backend", proofs: ["wf-engineer"] },
+  { name: "Kafka", group: "Backend", proofs: ["wf-engineer"] },
+  { name: "FastAPI", group: "Backend", proofs: ["prolink"] },
+  { name: "Cloudflare Workers", group: "Backend", proofs: ["prolink"] },
+  { name: "MongoDB", group: "Data", proofs: ["wf-engineer", "wf-analyst"] },
+  { name: "Data pipelines", group: "Data", proofs: ["citibike"] },
+  { name: "Playwright", group: "Quality", proofs: ["wf-engineer"] },
+  { name: "Release gates", group: "Quality", proofs: ["wf-engineer", "prolink"] },
+  { name: "Deterministic simulation", group: "Quality", proofs: ["turf"] },
+  { name: "Security automation", group: "Quality", proofs: ["sweep", "jepa"] },
+  { name: "Product ownership", group: "Leadership", proofs: ["wf-engineer", "prolink"] },
+  { name: "Cross-team leadership", group: "Leadership", proofs: ["wf-engineer"] },
+];
+
+/** The skill groups, in the order the section lists them. */
+export const skillGroups = [...new Set(skills.map((sk) => sk.group))];
+
+/**
+ * A proof's label, or undefined if the id names no real entry. A Wells Fargo role is named with its
+ * title ("Wells Fargo · Software Engineer"); anything else by its name.
+ */
+export function proofLabel(id: ProofId): string | undefined {
+  const role = experience.find((r) => r.id === id);
+  if (role) return role.org === "Wells Fargo" ? `${role.org} · ${role.title.split(" · ")[0]}` : role.org;
+  return (projects.find((p) => p.id === id) ?? otherProjects.find((p) => p.id === id))?.name;
+}
+
+/** The proofs the skills cite, in the order they first appear: the constellation's inner ring. */
+export const proofs: ProofId[] = [...new Set(skills.flatMap((sk) => sk.proofs))];

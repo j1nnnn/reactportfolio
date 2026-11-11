@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { AboutSection } from "@/components/AboutSection";
 import { ExperienceSection } from "@/components/ExperienceSection";
 import { OtherProjectsSection } from "@/components/OtherProjectsSection";
+import { SkillsSection } from "@/components/SkillsSection";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { FLY_IN, FLY_OUT, stationArrival, stationAt, stations, type Station, type StationId } from "./stations";
 import { setDiveInView } from "./diveInView";
@@ -60,7 +61,10 @@ function placePanel(el: HTMLElement, station: Station, last: boolean, p: number)
   // Its own perspective, so a role's panel inside the Experience section's markup moves as About's does.
   el.style.transform = `perspective(1200px) translate3d(0, ${slide}px, ${depth}px) rotateY(${tilt * 14 * turn}deg)`;
   el.style.filter = fade < 0.99 ? `blur(${(1 - fade) * 6}px)` : "";
-  el.style.pointerEvents = fade > 0.5 ? "" : "none";
+  // Set on the panel itself: its stylesheet turns pointer events on, which would beat "none" on the
+  // place around it, so a faded panel (gone, or not yet arrived) would still catch taps meant for the
+  // one in view.
+  if (panel) panel.style.pointerEvents = fade > 0.5 ? "" : "none";
   // How far the panel has arrived, 0 to 1, for anything inside that arrives with it (the projects' fan).
   el.style.setProperty("--arrive", String(Math.min(1, Math.max(0, t / FLY_IN))));
 }
@@ -149,6 +153,7 @@ export function Dive() {
       <div className={s.stack}>
         <AboutSection />
         <ExperienceSection />
+        <SkillsSection still />
         <OtherProjectsSection />
       </div>
     );
@@ -177,6 +182,10 @@ export function Dive() {
           <AboutSection />
         </div>
         <ExperienceSection className={s.experience} entryProps={(i) => place(roles[i].id)} />
+        {/* Narrower than the other panels: the skill constellation turns beside it. */}
+        <div {...place("skills")} className={`${PLACE[stations.find((st) => st.id === "skills")!.side]} ${s.skills}`}>
+          <SkillsSection />
+        </div>
         <div {...place("projects")}>
           <OtherProjectsSection />
         </div>

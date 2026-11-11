@@ -172,6 +172,12 @@
   .experience .stationRight > * {
     width: min(760px, 60vw);
   }
+
+  /* The Skills panel leaves the other half of the screen to the skill constellation. */
+  .stationLeft.skills > *,
+  .stationRight.skills > * {
+    width: min(560px, 46vw);
+  }
 }
 
 /* The calm version: the sections stacked as plain glass panels. */

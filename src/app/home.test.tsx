@@ -2,7 +2,15 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderToString } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import { PERSONAL_LINE_PLACEHOLDER, PHOTO_PLACEHOLDER, otherProjects } from "@/content/personal";
+import {
+  PERSONAL_LINE_PLACEHOLDER,
+  PHOTO_PLACEHOLDER,
+  experience,
+  otherProjects,
+  proofLabel,
+  skills,
+} from "@/content/personal";
+import { projects } from "@/content/projects";
 import { track } from "@/lib/analytics";
 import { askForCalmVersion, bringOnScreen, setReducedMotion, takeOffScreen } from "@/test/setup";
 import Home from "./page";
@@ -529,6 +537,156 @@ describe("home page", () => {
       expect(html).toContain('id="projects"');
       expect(html).toContain("More things I&#x27;ve built");
       for (const { name } of FIVE) expect(html).toContain(name);
+    });
+  });
+
+  describe("the Skills station", () => {
+    // From Jin's CV, as the ticket lists them (SOF-233).
+    const GROUPS = [
+      ["AI & Agentic", ["Claude API", "Agentic workflows", "MCP servers", "Context engineering", "LLM evaluation", "RAG pipelines", "Computer vision"]],
+      ["Languages", ["TypeScript", "Python", "Java", "C# / .NET"]],
+      ["Frontend", ["React", "Next.js", "Angular", "Micro-frontends"]],
+      ["Backend", ["Spring Boot", "Kafka", "FastAPI", "Cloudflare Workers"]],
+      ["Data", ["MongoDB", "Data pipelines"]],
+      ["Quality", ["Playwright", "Release gates", "Deterministic simulation", "Security automation"]],
+      ["Leadership", ["Product ownership", "Cross-team leadership"]],
+    ] as const;
+
+    const section = () => screen.getByRole("region", { name: "Skills" });
+    const skillButton = (name: string) =>
+      within(within(section()).getByRole("group", { name: "Skills by group" })).getByRole("button", { name });
+    /** What the readout says: the active node's name, then what it connects to. */
+    const readout = () => {
+      const r = within(section()).getByRole("status", { name: "Readout" });
+      return {
+        name: within(r).queryByRole("heading", { level: 3 })?.textContent,
+        links: within(r).queryAllByRole("listitem").map((li) => li.textContent),
+      };
+    };
+
+    it("sits between Experience and Other projects and lists every skill, grouped", () => {
+      render(<Home />);
+      const skills = section();
+      expect(skills).toHaveAttribute("id", "skills");
+      expect(within(skills).getByRole("heading", { level: 2, name: "Every skill, with proof" })).toBeInTheDocument();
+      const experience = screen.getByRole("region", { name: "Experience" });
+      const projects = screen.getByRole("region", { name: "Other projects" });
+      expect(experience.compareDocumentPosition(skills) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(skills.compareDocumentPosition(projects) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+      const list = within(skills).getByRole("group", { name: "Skills by group" });
+      const shown = within(list)
+        .getAllByRole("list")
+        .map((ul) => [ul.getAttribute("aria-label"), within(ul).getAllByRole("button").map((b) => b.textContent)]);
+      expect(shown).toEqual(GROUPS);
+    });
+
+    // jsdom never scrolls, so the station's panel never arrives and stays pointer-events: none. Its
+    // arrival is tested with #skills below; here the visitor's pointer reaches it regardless.
+    const pointer = () => userEvent.setup({ pointerEventsCheck: 0 });
+
+    it("names a hovered or focused skill in the readout with exactly its proofs", async () => {
+      const user = pointer();
+      render(<Home />);
+      await user.hover(skillButton("Claude API"));
+      expect(readout()).toEqual({
+        name: "Claude API",
+        links: ["Wells Fargo · Software Engineer", "Pro-Link AI", "Software Factory"],
+      });
+
+      act(() => skillButton("RAG pipelines").focus());
+      expect(readout()).toEqual({ name: "RAG pipelines", links: ["Wells Fargo · Technology Analyst"] });
+    });
+
+    it("names an activated proof in the readout with the skills it proves", async () => {
+      const user = pointer();
+      render(<Home />);
+      const proofs = within(section()).getByRole("list", { name: "Proofs" });
+      await user.hover(within(proofs).getByRole("button", { name: "TurfGame, proof" }));
+      expect(readout()).toEqual({ name: "TurfGame", links: ["C# / .NET", "Deterministic simulation"] });
+
+      act(() => within(proofs).getByRole("button", { name: "Security Sweep, proof" }).focus());
+      expect(readout()).toEqual({ name: "Security Sweep", links: ["Python", "Security automation"] });
+    });
+
+    it("backs every skill with at least one proof, each naming a real entry", () => {
+      expect(skills.map((sk) => sk.name)).toEqual(GROUPS.flatMap(([, names]) => names));
+      const entries = new Set<string>([
+        ...experience.map((e) => e.id),
+        ...projects.map((p) => p.id),
+        ...otherProjects.map((p) => p.id),
+      ]);
+      for (const sk of skills) {
+        expect(sk.proofs.length, sk.name).toBeGreaterThan(0);
+        for (const id of sk.proofs) {
+          expect(entries.has(id), `${sk.name} → ${id}`).toBe(true);
+          expect(proofLabel(id), id).toBeTruthy();
+        }
+      }
+    });
+
+    it("lets a phone visitor tap a skill to do what hover does", async () => {
+      const user = pointer();
+      render(<Home />);
+      await user.pointer({ keys: "[TouchA]", target: skillButton("Kafka") });
+      expect(readout()).toEqual({ name: "Kafka", links: ["Wells Fargo · Software Engineer"] });
+    });
+
+    it("lands #skills on the station", () => {
+      // As for #projects: a 768px screen, the dive 1000px down a 9000px page.
+      let scrollY = 0;
+      const isDive = (el: HTMLElement) => !!el.querySelector("#about") && !!el.querySelector("#skills");
+      const spies = [
+        vi.spyOn(window, "scrollY", "get").mockImplementation(() => scrollY),
+        vi.spyOn(window, "scrollTo").mockImplementation(((opts: ScrollToOptions) => {
+          scrollY = opts.top ?? 0;
+          window.dispatchEvent(new Event("scroll"));
+        }) as typeof window.scrollTo),
+        vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(function (this: HTMLElement) {
+          return isDive(this) ? 9000 : 400;
+        }),
+        vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
+          const top = isDive(this) ? 1000 - scrollY : 0;
+          const height = isDive(this) ? 9000 : 400;
+          return { top, bottom: top + height, height, left: 0, right: 0, width: 0, x: 0, y: top } as DOMRect;
+        }),
+      ];
+      const shown = (el: HTMLElement) => {
+        for (let n: HTMLElement | null = el; n; n = n.parentElement) {
+          if (Number(getComputedStyle(n).opacity || 1) < 1 || n.style.pointerEvents === "none") return false;
+        }
+        return true;
+      };
+      try {
+        window.history.replaceState(null, "", "/#skills");
+        render(<Home />);
+        expect(shown(section())).toBe(true);
+        expect(shown(screen.getByRole("region", { name: "Experience" }).querySelector("li")!)).toBe(false);
+        expect(shown(screen.getByRole("region", { name: "Other projects" }))).toBe(false);
+      } finally {
+        spies.forEach((spy) => spy.mockRestore());
+        window.history.replaceState(null, "", "/");
+      }
+    });
+
+    it("shows the list and readout in the calm version, with no dive", async () => {
+      askForCalmVersion();
+      const user = userEvent.setup(); // the calm stack has no flight: the panel is always reachable
+      render(<Home />);
+      await screen.findByTestId("island-scene");
+      expect(screen.queryByTestId("dive-world")).not.toBeInTheDocument();
+      await user.hover(skillButton("Claude API"));
+      expect(readout()).toEqual({
+        name: "Claude API",
+        links: ["Wells Fargo · Software Engineer", "Pro-Link AI", "Software Factory"],
+      });
+    });
+
+    it("puts the skill list in the prerendered page, readable with JavaScript off", () => {
+      const html = renderToString(<Home />);
+      expect(html).toContain('id="skills"');
+      expect(html).toContain("Every skill, with proof");
+      expect(html).toContain("Cross-team leadership");
     });
   });
 
