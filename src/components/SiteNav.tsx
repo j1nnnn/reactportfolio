@@ -49,6 +49,26 @@ function useSectionsInView(on: boolean): Set<SectionId> {
   return seen;
 }
 
+/** Whether the page is scrolled to its bottom, where the short Contact section can't reach mid-screen. */
+function useAtBottom(on: boolean) {
+  const [atBottom, setAtBottom] = useState(false);
+  useEffect(() => {
+    if (!on) return;
+    const check = () => {
+      const end = document.documentElement.scrollHeight - window.innerHeight; // 0 when nothing scrolls
+      setAtBottom(end > 0 && window.scrollY >= end - 2);
+    };
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    return () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+    };
+  }, [on]);
+  return atBottom;
+}
+
 /**
  * The site-wide bar: a frosted pill at the top centre of every page, linking to the home page's
  * sections. On the home page it marks the section in view; on a phone it folds into a Menu button.
@@ -60,15 +80,34 @@ export function SiteNav({ home = false }: { home?: boolean }) {
   const seen = useSectionsInView(home);
   const diveInView = useDiveInView();
   const station = useDiveSection();
+  const atBottom = useAtBottom(home);
   // The dive's panels share one pinned stage, so while it's on screen its station says which is in view.
-  const current = home ? ((diveInView && station) || SECTIONS.find(({ id }) => seen.has(id))?.id) : undefined;
-  // Pale glass over the island's sky, dark glass once the visitor has scrolled past it.
-  const tone = !home ? "theme" : !current || current === "work" ? "sky" : "dark";
+  // At the very bottom it's Contact, which is too short to reach the middle of the screen.
+  const current = !home
+    ? undefined
+    : atBottom
+      ? "contact"
+      : (diveInView && station) || SECTIONS.find(({ id }) => seen.has(id))?.id;
+  // Pale glass over the island's sky, dark glass once the visitor has scrolled past it: over the dive
+  // even between stations, when no section is in view.
+  const pastIsland = diveInView || (current !== undefined && current !== "work");
+  const tone = !home ? "theme" : pastIsland ? "dark" : "sky";
 
   const choose = (id: SectionId) => {
     setOpen(false);
-    // Choosing the section already in the address bar fires no hashchange: tell the dive to land it again.
-    if (home && window.location.hash === `#${id}`) window.dispatchEvent(new HashChangeEvent("hashchange"));
+  };
+
+  /**
+   * On the home page the bar lands a section itself rather than leaving it to the browser's anchor jump,
+   * which scrolls to wherever a dive panel happens to sit and fights the dive's own landing. The dive
+   * lands its stations on the hashchange; Work and Contact are ordinary sections.
+   */
+  const land = (e: React.MouseEvent, id: SectionId) => {
+    choose(id);
+    e.preventDefault();
+    if (window.location.hash !== `#${id}`) window.history.pushState(null, "", `#${id}`);
+    window.dispatchEvent(new HashChangeEvent("hashchange"));
+    if (id === "work" || id === "contact") document.getElementById(id)?.scrollIntoView?.();
   };
 
   return (
@@ -97,7 +136,7 @@ export function SiteNav({ home = false }: { home?: boolean }) {
         {SECTIONS.map(({ id, label }) => (
           <li key={id}>
             {home ? (
-              <a href={`#${id}`} className={s.link} aria-current={id === current ? "location" : undefined} onClick={() => choose(id)}>
+              <a href={`#${id}`} className={s.link} aria-current={id === current ? "location" : undefined} onClick={(e) => land(e, id)}>
                 {label}
               </a>
             ) : (

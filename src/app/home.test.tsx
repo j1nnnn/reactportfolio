@@ -733,6 +733,33 @@ describe("home page", () => {
       expect(link("Experience")).toHaveAttribute("aria-current", "location");
     });
 
+    it("turns dark over the dive, even between stations where no section is in view", async () => {
+      render(<Home />);
+      expect(bar()).toHaveAttribute("data-tone", "sky");
+      // The dive's world on screen with no section box crossing the middle: a gap between stations.
+      act(() => bringOnScreen(screen.getByTestId("dive-world")));
+      expect(bar().querySelectorAll("[aria-current]")).toHaveLength(0);
+      expect(bar()).toHaveAttribute("data-tone", "dark");
+    });
+
+    it("marks Contact once the visitor reaches the bottom of the page, short as the section is", () => {
+      render(<Home />);
+      // Contact is too short to reach the middle of the screen, and the dive's last station is still above it.
+      act(() => bringOnScreen(screen.getByRole("region", { name: "Other projects" })));
+      expect(link("Projects")).toHaveAttribute("aria-current", "location");
+
+      Object.defineProperty(document.documentElement, "scrollHeight", { configurable: true, value: 5000 });
+      Object.defineProperty(window, "innerHeight", { configurable: true, value: 800 });
+      Object.defineProperty(window, "scrollY", { configurable: true, value: 4200 });
+      act(() => {
+        window.dispatchEvent(new Event("scroll"));
+      });
+      expect(link("Contact")).toHaveAttribute("aria-current", "location");
+      expect(bar().querySelectorAll("[aria-current]")).toHaveLength(1);
+      Object.defineProperty(window, "scrollY", { configurable: true, value: 0 });
+      Object.defineProperty(document.documentElement, "scrollHeight", { configurable: true, value: 0 });
+    });
+
     it("folds into a Menu button a phone visitor can open and close from the keyboard", async () => {
       const user = userEvent.setup();
       render(<Home />);
