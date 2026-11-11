@@ -1,0 +1,126 @@
+/* Above the page and the case studies' header, below the particle intro (z-index 900), so it never
+   covers the intro's controls. */
+.bar {
+  --nav-ink: #1d2a35;
+  --nav-glass: rgba(255, 255, 255, 0.55);
+  --nav-edge: rgba(255, 255, 255, 0.85);
+  --nav-on: rgba(29, 42, 53, 0.1);
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  font: 500 14px/1 var(--font-plex), system-ui, sans-serif;
+}
+
+.bar[data-tone="dark"] {
+  --nav-ink: #e8eef5;
+  --nav-glass: rgba(10, 16, 30, 0.5);
+  --nav-edge: rgba(255, 255, 255, 0.16);
+  --nav-on: rgba(255, 255, 255, 0.14);
+}
+
+/* A case study's own colours. */
+.bar[data-tone="theme"] {
+  --nav-ink: var(--ink);
+  --nav-glass: color-mix(in srgb, var(--panel) 70%, transparent);
+  --nav-edge: color-mix(in srgb, var(--ink) 18%, transparent);
+  --nav-on: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.links,
+.menu {
+  border: 1px solid var(--nav-edge);
+  background: var(--nav-glass);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  color: var(--nav-ink);
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.links {
+  display: flex;
+  gap: 2px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border-radius: 999px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.link:hover,
+.link[aria-current] {
+  background: var(--nav-on);
+}
+
+.link[aria-current] {
+  font-weight: 600;
+}
+
+.link:focus-visible,
+.menu:focus-visible {
+  outline: 2px solid var(--nav-ink);
+  outline-offset: 2px;
+}
+
+.menu {
+  display: none;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Narrower screens: a tighter pill, still clear of a case study's back link. */
+@media (max-width: 1100px) {
+  .link {
+    padding: 0 10px;
+    font-size: 13px;
+  }
+}
+
+/* Phones (and screens too narrow for the pill beside a case study's back link): the Menu button,
+   top right, clear of the hero's text and the back link. */
+@media (max-width: 900px) {
+  .bar {
+    left: auto;
+    right: 12px;
+    transform: none;
+  }
+
+  .menu {
+    display: block;
+    margin-left: auto;
+  }
+
+  .links {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    flex-direction: column;
+    min-width: 180px;
+    border-radius: 18px;
+  }
+
+  .links[data-open] {
+    display: flex;
+  }
+
+  .link {
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
+}

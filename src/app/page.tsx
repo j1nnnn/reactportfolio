@@ -3,6 +3,7 @@ import { ContactSection } from "@/components/ContactSection";
 import { Dive } from "@/components/dive/Dive";
 import { IslandHome } from "@/components/island/IslandHome";
 import { IslandHomeWithFocus } from "@/components/island/IslandHomeWithFocus";
+import { SiteNav } from "@/components/SiteNav";
 import { SITE_URL, site } from "@/content/site";
 
 // Only what the site already shows: no phone, no address, no profile the site doesn't link to.
@@ -22,11 +23,12 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(person).replace(/</g, "\\u003c") }}
       />
+      <SiteNav home />
       <Suspense fallback={<IslandHome />}>
         <IslandHomeWithFocus />
       </Suspense>
       <Dive />
-      <ContactSection />
+      <ContactSection anchor="contact" />
     </>
   );
 }

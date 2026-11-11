@@ -21,3 +21,18 @@ function subscribe(listener: () => void) {
 export function useDiveInView() {
   return useSyncExternalStore(subscribe, () => inView, () => false);
 }
+
+// The home page section whose station is in the dive's view, if any: read by the site's bar.
+export type DiveSection = "about" | "experience" | "skills" | "projects";
+let section: DiveSection | undefined;
+
+export function setDiveSection(value: DiveSection | undefined) {
+  if (value === section) return;
+  section = value;
+  listeners.forEach((l) => l());
+}
+
+/** The section of the station the dive holds, while it holds one. */
+export function useDiveSection() {
+  return useSyncExternalStore(subscribe, () => section, () => undefined);
+}

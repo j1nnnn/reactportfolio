@@ -97,6 +97,25 @@ describe("case study page", () => {
   );
 });
 
+describe("the navigation bar", () => {
+  it.each(["pro-link-ai", "software-factory", "jepa", "turfgame", "claude-api-agent", "patent"])(
+    "takes a visitor on %s back to any of the home page's sections",
+    async (slug) => {
+      await visit(slug);
+      const bar = screen.getByRole("navigation", { name: "Site" });
+      expect(within(bar).getAllByRole("link").map((a) => [a.textContent, a.getAttribute("href")])).toEqual([
+        ["Work", "/#work"],
+        ["About", "/#about"],
+        ["Experience", "/#experience"],
+        ["Skills", "/#skills"],
+        ["Projects", "/#projects"],
+        ["Contact", "/#contact"],
+      ]);
+      expect(within(bar).getByRole("button", { name: "Menu" })).toHaveAttribute("aria-expanded", "false");
+    },
+  );
+});
+
 describe("particle intro", () => {
   it("opens a case study with the project's title intro, which the visitor can skip", async () => {
     const user = userEvent.setup();

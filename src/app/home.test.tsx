@@ -690,6 +690,97 @@ describe("home page", () => {
     });
   });
 
+  describe("the navigation bar", () => {
+    const bar = () => screen.getByRole("navigation", { name: "Site" });
+    const link = (name: string) => within(bar()).getByRole("link", { name });
+
+    it("links to the home page's six sections, in order, from the top of the page", () => {
+      render(<Home />);
+      const links = within(bar()).getAllByRole("link");
+      expect(links.map((a) => [a.textContent, a.getAttribute("href")])).toEqual([
+        ["Work", "#work"],
+        ["About", "#about"],
+        ["Experience", "#experience"],
+        ["Skills", "#skills"],
+        ["Projects", "#projects"],
+        ["Contact", "#contact"],
+      ]);
+      for (const a of links) {
+        const id = a.getAttribute("href")!.slice(1);
+        expect(document.getElementById(id), id).not.toBeNull();
+      }
+      const island = screen.getByRole("navigation", { name: "Featured work" });
+      expect(bar().compareDocumentPosition(island) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it("marks the link for the section in view", () => {
+      render(<Home />);
+      act(() => bringOnScreen(screen.getByRole("region", { name: "Skills" })));
+      expect(link("Skills")).toHaveAttribute("aria-current", "location");
+      expect(bar().querySelectorAll("[aria-current]")).toHaveLength(1);
+
+      act(() => takeOffScreen(screen.getByRole("region", { name: "Skills" })));
+      act(() => bringOnScreen(screen.getByRole("region", { name: "Contact" })));
+      expect(link("Contact")).toHaveAttribute("aria-current", "location");
+      expect(link("Skills")).not.toHaveAttribute("aria-current");
+    });
+
+    it("marks the link for the section in view in the calm version too", async () => {
+      askForCalmVersion();
+      render(<Home />);
+      await screen.findByTestId("island-scene");
+      act(() => bringOnScreen(screen.getByRole("region", { name: "Experience" })));
+      expect(link("Experience")).toHaveAttribute("aria-current", "location");
+    });
+
+    it("turns dark over the dive, even between stations where no section is in view", async () => {
+      render(<Home />);
+      expect(bar()).toHaveAttribute("data-tone", "sky");
+      // The dive's world on screen with no section box crossing the middle: a gap between stations.
+      act(() => bringOnScreen(screen.getByTestId("dive-world")));
+      expect(bar().querySelectorAll("[aria-current]")).toHaveLength(0);
+      expect(bar()).toHaveAttribute("data-tone", "dark");
+    });
+
+    it("marks Contact once the visitor reaches the bottom of the page, short as the section is", () => {
+      render(<Home />);
+      // Contact is too short to reach the middle of the screen, and the dive's last station is still above it.
+      act(() => bringOnScreen(screen.getByRole("region", { name: "Other projects" })));
+      expect(link("Projects")).toHaveAttribute("aria-current", "location");
+
+      Object.defineProperty(document.documentElement, "scrollHeight", { configurable: true, value: 5000 });
+      Object.defineProperty(window, "innerHeight", { configurable: true, value: 800 });
+      Object.defineProperty(window, "scrollY", { configurable: true, value: 4200 });
+      act(() => {
+        window.dispatchEvent(new Event("scroll"));
+      });
+      expect(link("Contact")).toHaveAttribute("aria-current", "location");
+      expect(bar().querySelectorAll("[aria-current]")).toHaveLength(1);
+      Object.defineProperty(window, "scrollY", { configurable: true, value: 0 });
+      Object.defineProperty(document.documentElement, "scrollHeight", { configurable: true, value: 0 });
+    });
+
+    it("folds into a Menu button a phone visitor can open and close from the keyboard", async () => {
+      const user = userEvent.setup();
+      render(<Home />);
+      const menu = within(bar()).getByRole("button", { name: "Menu" });
+      expect(menu).toHaveAttribute("aria-expanded", "false");
+      expect(document.getElementById(menu.getAttribute("aria-controls")!)).toContainElement(link("About"));
+
+      menu.focus();
+      await user.keyboard("{Enter}");
+      expect(menu).toHaveAttribute("aria-expanded", "true");
+      await user.keyboard("{Escape}");
+      expect(menu).toHaveAttribute("aria-expanded", "false");
+      expect(menu).toHaveFocus();
+
+      await user.click(menu);
+      expect(menu).toHaveAttribute("aria-expanded", "true");
+      await user.click(link("Skills"));
+      expect(menu).toHaveAttribute("aria-expanded", "false");
+    });
+  });
+
   describe("the dive below the island", () => {
     it("pauses the island while the dive is on screen, and resumes it when the visitor scrolls back", async () => {
       render(<Home />);

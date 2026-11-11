@@ -8,7 +8,7 @@ import { OtherProjectsSection } from "@/components/OtherProjectsSection";
 import { SkillsSection } from "@/components/SkillsSection";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { FLY_IN, FLY_OUT, stationArrival, stationAt, stations, type Station, type StationId } from "./stations";
-import { setDiveInView } from "./diveInView";
+import { setDiveInView, setDiveSection, type DiveSection } from "./diveInView";
 import s from "./Dive.module.css";
 
 const DiveWorld = dynamic(() => import("./DiveWorld"), { ssr: false });
@@ -105,6 +105,7 @@ export function Dive() {
       progress.current = p;
       const here = stationAt(p);
       setRole(here?.gate ? here.id : undefined);
+      setDiveSection(here && ((here.gate ? "experience" : here.anchor) as DiveSection));
       stations.forEach((st, i) => {
         const panel = panels.current[i];
         if (panel) placePanel(panel, st, i === stations.length - 1, p);
@@ -117,6 +118,7 @@ export function Dive() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      setDiveSection(undefined);
     };
   }, [reduced]);
 

@@ -33,6 +33,14 @@
   color: var(--ink);
 }
 
+/* Below 900px the site's bar folds into a Menu button at the top right, where this name sits; the
+   page's title already names the project. Wider screens keep it: the bar's pill is clear of it. */
+@media (max-width: 900px) {
+  .headerName {
+    display: none;
+  }
+}
+
 .back:hover {
   border-color: var(--accent);
 }
