@@ -7,7 +7,7 @@
 export type StationId = "about";
 
 export type Station = {
-  /** Also the section's anchor: `#about` lands where the station is centred. */
+  /** Also the section's anchor: `#about` lands where the station's panel has arrived. */
   id: StationId;
   /** The slice of the dive's progress this station owns, [from, to]. */
   range: [number, number];
@@ -24,7 +24,7 @@ export const stations: Station[] = [{ id: "about", range: [DIVE_INTRO, 1], side:
 export const FLY_IN = 0.3;
 export const FLY_OUT = 0.7;
 
-/** The progress at which a station's panel is centred and held. */
-export function stationCentre({ range: [from, to] }: Station): number {
-  return from + (to - from) * ((FLY_IN + FLY_OUT) / 2);
+/** The progress at which a station's panel has just arrived and holds, its top in view. */
+export function stationArrival({ range: [from, to] }: Station): number {
+  return from + (to - from) * (FLY_IN + 0.001);
 }

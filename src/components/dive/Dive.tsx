@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, type ComponentType, type CSSProperties } from "react";
 import { AboutSection } from "@/components/AboutSection";
 import { useReducedMotion } from "@/lib/useReducedMotion";
-import { FLY_IN, FLY_OUT, stationCentre, stations, type Station, type StationId } from "./stations";
+import { FLY_IN, FLY_OUT, stationArrival, stations, type Station, type StationId } from "./stations";
 import { setDiveInView } from "./diveInView";
 import s from "./Dive.module.css";
 
@@ -22,11 +22,19 @@ function diveProgress(el: HTMLElement): number {
 
 const ease = (t: number) => 1 - (1 - t) ** 3;
 
-/** A station's panel at progress p: flies in from depth, holds, flies past toward the viewer. */
+/**
+ * A station's panel at progress p: flies in from depth, holds, flies past toward the viewer. A panel
+ * taller than the screen (About on a phone) slides up through the screen while it holds, top first,
+ * so the visitor reads it by scrolling the page: it never scrolls on its own, which would trap them.
+ */
 function placePanel(el: HTMLElement, station: Station, last: boolean, p: number) {
   const [from, to] = station.range;
   const t = (p - from) / (to - from);
   const tilt = station.side === "left" ? 1 : -1;
+  const panel = el.firstElementChild as HTMLElement | null;
+  const overflow = Math.max(0, (panel?.offsetHeight ?? 0) - (window.innerHeight - 48));
+  const held = Math.min(1, Math.max(0, (t - FLY_IN) / (FLY_OUT - FLY_IN)));
+  const slide = overflow / 2 - overflow * held; // px; centred on a flex line, so ±overflow/2 shows top/bottom
   let depth = 0; // px; negative is away from the viewer
   let fade = 1;
   let turn = 0; // 0 when facing the viewer, 1 at full tilt
@@ -41,9 +49,10 @@ function placePanel(el: HTMLElement, station: Station, last: boolean, p: number)
     fade = 1 - k;
     turn = -k * 0.5;
   }
-  // Faded and moved, never hidden: screen readers can still read every station.
-  el.style.opacity = String(fade);
-  el.style.transform = `translate3d(0, 0, ${depth}px) rotateY(${tilt * 14 * turn}deg)`;
+  // Faded and moved, never hidden: screen readers can still read every station. Opacity is cleared
+  // when held, because opacity below 1 would stop the panel's frosted glass from blurring the world.
+  el.style.opacity = fade < 0.999 ? String(fade) : "";
+  el.style.transform = `translate3d(0, ${slide}px, ${depth}px) rotateY(${tilt * 14 * turn}deg)`;
   el.style.filter = fade < 0.99 ? `blur(${(1 - fade) * 6}px)` : "";
   el.style.pointerEvents = fade > 0.5 ? "" : "none";
 }
@@ -85,6 +94,7 @@ export function Dive() {
         if (panel) placePanel(panel, st, i === stations.length - 1, p);
       });
     };
+    el.dataset.live = ""; // JavaScript is placing the panels: the no-JS inner scroll is off
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
@@ -94,7 +104,7 @@ export function Dive() {
     };
   }, [reduced]);
 
-  // A station's anchor (#about) lands where the station is centred, not at the pinned stage.
+  // A station's anchor (#about) lands where its panel has arrived (top in view), not at the pinned stage.
   useEffect(() => {
     if (reduced) return;
     const onHash = () => {
@@ -111,7 +121,7 @@ export function Dive() {
     if (!el) return;
     const top = el.getBoundingClientRect().top + window.scrollY;
     const run = el.offsetHeight - window.innerHeight;
-    window.scrollTo({ top: top + run * stationCentre(st), behavior: "instant" });
+    window.scrollTo({ top: top + run * stationArrival(st), behavior: "instant" });
   };
 
   // Tabbing into a station brings it to the front.

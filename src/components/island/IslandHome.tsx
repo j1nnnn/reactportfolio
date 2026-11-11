@@ -46,7 +46,7 @@ export function IslandHome({ initialFocus = null }: { initialFocus?: ProjectId |
   return (
     <section className={s.section}>
       <div className={s.scene} aria-hidden="true">
-        <IslandScene animate={!reduced && !diveInView}hovered={hovered} selected={selected} onHover={setHovered} onSelect={open} />
+        <IslandScene animate={!reduced && !diveInView} hovered={hovered} selected={selected} onHover={setHovered} onSelect={open} />
       </div>
       <div className={s.intro}>
         <p className={s.name}>{site.name}</p>

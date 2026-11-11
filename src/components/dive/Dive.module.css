@@ -28,19 +28,25 @@
   justify-content: center;
   padding: 24px 16px;
   pointer-events: none;
-  will-change: transform, opacity;
+  /* transform only: will-change on opacity would stop the panel's frosted glass blurring the world */
+  will-change: transform;
 }
 
-/* The height budget: a panel never runs off the screen; longer content scrolls inside it. */
+/* A panel taller than the screen slides up through it while it holds (Dive.tsx), so the page's own
+   scroll reads it. Darker than the calm version's glass, so the world passing behind stays a blur. */
 .stationLeft > section,
 .stationRight > section {
   pointer-events: auto;
   width: min(1000px, 100%);
+  background-color: rgba(10, 16, 30, 0.72);
+  backdrop-filter: blur(18px) saturate(1.2);
+}
+
+/* Before JavaScript runs nothing moves the panels, so a tall one scrolls inside itself instead. */
+.dive:not([data-live]) .stationLeft > section,
+.dive:not([data-live]) .stationRight > section {
   max-height: calc(100svh - 48px);
   overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  background-color: rgba(10, 16, 30, 0.5);
 }
 
 @media (min-width: 1100px) {
