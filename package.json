@@ -7,6 +7,7 @@
     "dev": "next dev -p 5181",
     "build": "next build",
     "guard": "node scripts/deploy-guard.mjs",
+    "deploy": "next build && node scripts/deploy-guard.mjs out --deploy && gh-pages -d out --dotfiles",
     "test": "vitest run",
     "test:watch": "vitest"
   },

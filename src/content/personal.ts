@@ -3,7 +3,7 @@
 
 import { projects, type ProjectId } from "./projects";
 
-/** Placeholders until Jin supplies his photo and his own line; the deploy guard looks for these. */
+/** Placeholders until Jin supplies his photo and his own line; the deploy guard blocks only the line. */
 export const PHOTO_PLACEHOLDER = "photo goes here";
 export const PERSONAL_LINE_PLACEHOLDER =
   "Your own two or three sentences go here: what drives you, and who you are outside work.";
