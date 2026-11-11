@@ -10,7 +10,6 @@
   top: 0;
   height: 100svh;
   overflow: hidden;
-  perspective: 1200px;
 }
 
 .world {
@@ -34,8 +33,8 @@
 
 /* A panel taller than the screen slides up through it while it holds (Dive.tsx), so the page's own
    scroll reads it. Darker than the calm version's glass, so the world passing behind stays a blur. */
-.stationLeft > section,
-.stationRight > section {
+.stationLeft > *,
+.stationRight > * {
   pointer-events: auto;
   width: min(1000px, 100%);
   background-color: rgba(10, 16, 30, 0.72);
@@ -43,10 +42,100 @@
 }
 
 /* Before JavaScript runs nothing moves the panels, so a tall one scrolls inside itself instead. */
-.dive:not([data-live]) .stationLeft > section,
-.dive:not([data-live]) .stationRight > section {
+.dive:not([data-live]) .stationLeft > *,
+.dive:not([data-live]) .stationRight > * {
   max-height: calc(100svh - 48px);
   overflow-y: auto;
+}
+
+/* The Experience section's markup stays in the stage's flow (static, unstyled), so each role's
+   station is placed on the stage itself. Its heading is for screen readers; the gates show the way. */
+.experience {
+  display: block;
+}
+
+.experience > h2 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Before JavaScript runs, only About shows: the roles would all sit on top of one another. */
+.dive:not([data-live]) .experience {
+  opacity: 0;
+}
+
+/* The year rail, at the screen's right edge while a role is in view. */
+.rail {
+  position: absolute;
+  top: 50%;
+  right: clamp(8px, 1.6vw, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform: translateY(-50%);
+  font-family: var(--font-archivo), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: rgba(238, 243, 247, 0.45);
+  text-align: right;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.rail[data-on] {
+  opacity: 1;
+}
+
+.rail li {
+  padding-right: 12px;
+  border-right: 2px solid rgba(238, 243, 247, 0.2);
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.rail li[aria-current] {
+  color: #eef3f7;
+  border-right-color: #7aa2ff;
+  text-shadow: 0 0 12px rgba(122, 162, 255, 0.8);
+}
+
+/* On a phone the rail runs along the top edge, above the panel. */
+@media (max-width: 760px) {
+  .rail {
+    top: 10px;
+    right: 8px;
+    left: 8px;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 6px;
+    transform: none;
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .rail li {
+    padding: 0 0 4px;
+    border-right: 0;
+    border-bottom: 2px solid rgba(238, 243, 247, 0.2);
+    white-space: nowrap;
+  }
+
+  .rail li[aria-current] {
+    border-bottom-color: #7aa2ff;
+  }
+
+  .experience .stationLeft,
+  .experience .stationRight {
+    padding-top: 40px;
+  }
 }
 
 @media (min-width: 1100px) {
@@ -60,9 +149,19 @@
     padding-right: clamp(24px, 5vw, 80px);
   }
 
-  .stationLeft > section,
-  .stationRight > section {
+  .stationLeft > *,
+  .stationRight > * {
     width: min(900px, 72vw);
+  }
+
+  /* Room for the year rail at the right edge. */
+  .experience .stationRight {
+    padding-right: clamp(140px, 12vw, 180px);
+  }
+
+  .experience .stationLeft > *,
+  .experience .stationRight > * {
+    width: min(760px, 60vw);
   }
 }
 

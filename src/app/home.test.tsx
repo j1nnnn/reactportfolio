@@ -185,6 +185,164 @@ describe("home page", () => {
     expect(about.textContent).toBe(fullText);
   });
 
+  describe("the Experience section", () => {
+    const roles = [
+      {
+        dates: "2023 – present",
+        org: "Wells Fargo",
+        title: "Software Engineer · Acting Technical Product Owner",
+        scope: "Wealth & Investment Management Technology",
+        points: [
+          "Building a greenfield investment management platform, touching millions in client assets, that financial advisors use to maintain and reallocate client portfolios.",
+          "Sole architect of the Playwright test-automation framework that is the release gate for a 20-person program: zero critical defects across every production release.",
+          "Designed a production Claude API agent that generates, validates and self-heals test scripts, with its evaluation framework and confidence-gated rollouts.",
+          "Led a workstream across a US and an India-based team, and acted as Product Owner during the test-automation phase.",
+        ],
+      },
+      {
+        dates: "2026 – present",
+        org: "Pro-Link AI",
+        title: "Creator and Engineer · Personal project",
+        scope: "Built for a golf coach in South Korea, in use by him in production",
+        points: [
+          "Real-time pose estimation, 9 biomechanical fault detectors and a pro-swing comparator.",
+          "A Claude coaching layer in English and Korean, guarded against prompt injection and invented numbers.",
+          "1,000+ automated tests and smoke-test-gated rollouts with automatic rollback.",
+        ],
+        link: { name: "Read the case study", href: /\/work\/pro-link-ai$/ },
+      },
+      {
+        dates: "2022 – 2023",
+        org: "Wells Fargo",
+        title: "Technology Analyst",
+        scope: "Cloud Modernization & Innovation",
+        points: [
+          "Co-inventor, US Patent 12,470,530 B2, System and Method for Securing Financial Entity Networks (granted November 2025).",
+          "Three top-5 hackathon finishes, each a 48-hour build: top 3, top 4 (with executive sponsorship) and top 5.",
+          "Zero-downtime cloud migration of legacy investment apps.",
+        ],
+        link: { name: "About the patent", href: /\/work\/patent$/ },
+      },
+      {
+        dates: "2021",
+        org: "Wells Fargo",
+        title: "Technology Intern",
+        scope: "Early Careers program",
+        points: [
+          "Built automated unit test suites that caught critical pre-production defects.",
+          "Co-led onboarding for 50+ incoming engineers; leadership adopted the model for future cohorts.",
+        ],
+      },
+    ];
+
+    /** The timeline's entries, newest first, as the visitor's screen reader lists them. */
+    const entries = () => {
+      const experience = screen.getByRole("region", { name: "Experience" });
+      const timeline = within(experience).getByRole("list", { name: "Timeline" });
+      expect(timeline.tagName).toBe("OL");
+      return within(timeline).getAllByRole("listitem").filter((li) => li.parentElement === timeline);
+    };
+
+    it("follows About and lists Jin's four roles newest first, in his CV's words", () => {
+      render(<Home />);
+      const about = screen.getByRole("region", { name: "About" });
+      const experience = screen.getByRole("region", { name: "Experience" });
+      expect(experience).toHaveAttribute("id", "experience");
+      expect(about.compareDocumentPosition(experience) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      const contact = screen.getByRole("region", { name: "Contact" });
+      expect(experience.compareDocumentPosition(contact) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+      const items = entries();
+      expect(items).toHaveLength(4);
+      items.forEach((item, i) => {
+        const role = roles[i];
+        const shown = [role.dates, role.org, role.title, role.scope, ...role.points].map((text) => within(item).getByText(text));
+        for (let k = 1; k < shown.length; k++) {
+          expect(shown[k - 1].compareDocumentPosition(shown[k]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        }
+        expect(within(item).getAllByRole("listitem")).toHaveLength(role.points.length);
+      });
+      expect(experience).not.toHaveTextContent(/\+?\d[\d\s().-]{8,}\d/); // no phone number
+    });
+
+    it("links the Pro-Link AI and Technology Analyst roles to their case studies, and only those", () => {
+      render(<Home />);
+      entries().forEach((item, i) => {
+        const { link } = roles[i];
+        const links = within(item).queryAllByRole("link");
+        expect(links).toHaveLength(link ? 1 : 0);
+        if (link) {
+          expect(links[0]).toHaveAccessibleName(link.name);
+          expect(links[0]).toHaveAttribute("href", expect.stringMatching(link.href));
+        }
+      });
+    });
+
+    it("stacks the same four roles as a plain list in the calm version, with no dive or year rail", async () => {
+      const full = render(<Home />);
+      const fullText = entries().map((li) => li.textContent);
+      full.unmount();
+
+      askForCalmVersion();
+      render(<Home />);
+      await screen.findByTestId("island-scene");
+      expect(entries().map((li) => li.textContent)).toEqual(fullText);
+      expect(screen.queryByTestId("dive-world")).not.toBeInTheDocument();
+      expect(screen.queryByRole("list", { name: "Years", hidden: true })).not.toBeInTheDocument();
+    });
+
+    /**
+     * jsdom has no layout or scrolling. Fakes a page whose every box starts at the top of the document
+     * and is far taller than the screen, so the dive's progress is how far the window has scrolled.
+     */
+    function fakeTallPage() {
+      const spies = [
+        vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockReturnValue(40_000),
+        vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(
+          () => ({ top: -window.scrollY, height: 40_000 }) as DOMRect,
+        ),
+        vi.spyOn(window, "scrollTo").mockImplementation(((opts: ScrollToOptions) => {
+          Object.defineProperty(window, "scrollY", { configurable: true, value: opts.top });
+          window.dispatchEvent(new Event("scroll"));
+        }) as typeof window.scrollTo),
+      ];
+      return () => {
+        spies.forEach((spy) => spy.mockRestore());
+        Object.defineProperty(window, "scrollY", { configurable: true, value: 0 });
+      };
+    }
+
+    it("lands #experience on the first role's station, with the year rail marking its dates", () => {
+      const restore = fakeTallPage();
+      try {
+        window.history.replaceState(null, "", "/#experience");
+        render(<Home />);
+        const rail = screen.getByRole("list", { name: "Years" });
+        expect(within(rail).getAllByRole("listitem").map((li) => li.textContent)).toEqual([
+          "2023 – present",
+          "2026 – present",
+          "2022 – 2023",
+          "2021",
+        ]);
+        expect(within(rail).getByText("2023 – present")).toHaveAttribute("aria-current", "step");
+        expect(rail.querySelectorAll("[aria-current]")).toHaveLength(1);
+      } finally {
+        restore();
+      }
+    });
+
+    it("shows the year rail only while a role's station is in view", () => {
+      const restore = fakeTallPage();
+      try {
+        window.history.replaceState(null, "", "/#about");
+        render(<Home />);
+        expect(screen.queryByRole("list", { name: "Years" })).not.toBeInTheDocument();
+      } finally {
+        restore();
+      }
+    });
+  });
+
   it("lets a visitor open any featured project without the 3D scene", async () => {
     const user = userEvent.setup();
     render(<Home />);
