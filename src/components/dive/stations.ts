@@ -6,7 +6,7 @@ import { experience, type ExperienceId } from "@/content/personal";
  * Read by both the 3D world and the panels. Adding a station is adding an entry here and its
  * section in Dive.tsx.
  */
-export type StationId = "about" | ExperienceId | "projects";
+export type StationId = "about" | ExperienceId | "skills" | "projects";
 
 export type Station = {
   id: StationId;
@@ -27,6 +27,8 @@ const order = [
   { id: "about" as StationId, anchor: "about" },
   // Experience: one station per role, newest first; #experience lands on the first.
   ...experience.map((role, i) => ({ id: role.id, anchor: i === 0 ? "experience" : undefined, gate: role.dates })),
+  // Skills: the panel holds on one side, the skill constellation turns on the other.
+  { id: "skills" as StationId, anchor: "skills" },
   // Other projects: the last station, a fan of cards held centre stage.
   { id: "projects" as StationId, anchor: "projects", side: "centre" as const },
 ];

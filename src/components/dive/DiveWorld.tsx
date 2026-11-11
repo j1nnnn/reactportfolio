@@ -4,10 +4,11 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useMemo, useRef, type RefObject } from "react";
 import * as THREE from "three";
 import { useDiveInView } from "./diveInView";
+import { SkillConstellation } from "./SkillConstellation";
 import { DIVE_INTRO, FLY_IN, stations, type Station } from "./stations";
 
 // The dive's world (spec #13): drifting coloured particles, slowly turning low-poly crystals and a
-// ring gate per role, all procedural. Scroll progress flies the camera forward through it. Loaded in the browser only.
+// ring gate per role and the skill constellation, all procedural. Scroll progress flies the camera forward through it. Loaded in the browser only.
 
 const SKY = new THREE.Color("#cfe3f3"); // the island's pale sky
 const SPACE = new THREE.Color("#060a14");
@@ -173,6 +174,7 @@ export default function DiveWorld({ progress }: { progress: RefObject<number> })
         .map((st) => (
           <Gate key={st.id} station={st} />
         ))}
+      <SkillConstellation depth={DEPTH} />
     </Canvas>
   );
 }

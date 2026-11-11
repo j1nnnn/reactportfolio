@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { AboutSection } from "@/components/AboutSection";
 import { ExperienceSection } from "@/components/ExperienceSection";
 import { OtherProjectsSection } from "@/components/OtherProjectsSection";
+import { SkillsSection } from "@/components/SkillsSection";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { FLY_IN, FLY_OUT, stationArrival, stationAt, stations, type Station, type StationId } from "./stations";
 import { setDiveInView } from "./diveInView";
@@ -149,6 +150,7 @@ export function Dive() {
       <div className={s.stack}>
         <AboutSection />
         <ExperienceSection />
+        <SkillsSection still />
         <OtherProjectsSection />
       </div>
     );
@@ -177,6 +179,10 @@ export function Dive() {
           <AboutSection />
         </div>
         <ExperienceSection className={s.experience} entryProps={(i) => place(roles[i].id)} />
+        {/* Narrower than the other panels: the skill constellation turns beside it. */}
+        <div {...place("skills")} className={`${PLACE[stations.find((st) => st.id === "skills")!.side]} ${s.skills}`}>
+          <SkillsSection />
+        </div>
         <div {...place("projects")}>
           <OtherProjectsSection />
         </div>
