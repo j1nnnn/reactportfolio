@@ -86,9 +86,11 @@ export function SkillConstellation({ depth }: { depth: number }) {
   const station = stations.find((st) => st.id === "skills")!;
   const [from, to] = station.range;
   // Held in front of the camera while the panel holds, on the side the panel leaves free.
-  const z = -(from + (to - from) * ((FLY_IN + FLY_OUT) / 2)) * depth - 1;
+  // 7.5 units in front of the camera at mid-hold (the camera rides 8 units behind the flight line):
+  // close enough that the labels read, far enough that the whole cluster fits beside the panel.
+  const z = -(from + (to - from) * ((FLY_IN + FLY_OUT) / 2)) * depth + 0.5;
   const wide = size.width / size.height > 1.1;
-  const x = wide ? (station.side === "right" ? -3.4 : 3.4) : 0;
+  const x = wide ? (station.side === "right" ? -3.0 : 3.0) : 0;
 
   const all = useMemo(() => lineGeometry(links), [links]);
   const litLinks = useMemo(
