@@ -1,0 +1,136 @@
+/* A frosted-glass panel on a dark background, like the island's project cards. */
+.section {
+  --glass: rgba(255, 255, 255, 0.08);
+  --glass-edge: rgba(255, 255, 255, 0.16);
+  --ink: #eef3f7;
+  --muted: #a9b7c3;
+  background: radial-gradient(120% 80% at 20% 0%, #1e3a52 0%, #0f1a24 55%, #0a1118 100%);
+  color: var(--ink);
+  font-family: var(--font-plex), system-ui, sans-serif;
+}
+
+.inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 72px clamp(16px, 4vw, 48px);
+}
+
+.panel {
+  padding: clamp(20px, 4vw, 40px);
+  border-radius: 20px;
+  background: var(--glass);
+  border: 1px solid var(--glass-edge);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-archivo), sans-serif;
+  font-size: clamp(28px, 3.4vw, 44px);
+  font-weight: 800;
+}
+
+.lead {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 36px);
+  align-items: start;
+  margin-top: 24px;
+}
+
+.photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  aspect-ratio: 4 / 5;
+  border-radius: 16px;
+  border: 1px dashed var(--glass-edge);
+  background: var(--glass);
+}
+
+.silhouette {
+  width: 55%;
+  fill: rgba(255, 255, 255, 0.18);
+}
+
+.photoNote {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Marked so nobody mistakes it for Jin's own words. */
+.placeholder {
+  padding-left: 12px;
+  border-left: 3px dashed var(--muted);
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .lead {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .photo {
+    width: min(200px, 100%);
+  }
+}
+
+.intro {
+  margin: 16px 0 0;
+  max-width: 68ch;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.number {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-edge);
+}
+
+.value {
+  font-family: var(--font-archivo), sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.label {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.subtitle {
+  margin: 32px 0 0;
+  font-family: var(--font-archivo), sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.beyond {
+  margin: 12px 0 0;
+  padding-left: 20px;
+  line-height: 1.7;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
