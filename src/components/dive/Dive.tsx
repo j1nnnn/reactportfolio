@@ -1,20 +1,22 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useRef, type ComponentType, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { AboutSection } from "@/components/AboutSection";
+import { ExperienceSection } from "@/components/ExperienceSection";
 import { OtherProjectsSection } from "@/components/OtherProjectsSection";
 import { useReducedMotion } from "@/lib/useReducedMotion";
-import { FLY_IN, FLY_OUT, stationArrival, stations, type Station, type StationId } from "./stations";
+import { FLY_IN, FLY_OUT, stationArrival, stationAt, stations, type Station, type StationId } from "./stations";
 import { setDiveInView } from "./diveInView";
 import s from "./Dive.module.css";
 
 const DiveWorld = dynamic(() => import("./DiveWorld"), { ssr: false });
 
-/** Each station's section: real HTML, in document order. */
-const SECTIONS: Record<StationId, ComponentType> = { about: AboutSection, projects: OtherProjectsSection };
-
+/** A station's place on the stage, by where its panel holds. */
 const PLACE = { left: s.stationLeft, right: s.stationRight, centre: s.stationCentre };
+
+/** The role stations, newest first: the year rail lists their dates. */
+const roles = stations.filter((st) => st.gate);
 
 /** How far the visitor has scrolled through the dive, from 0 at its top to 1 at its end. */
 function diveProgress(el: HTMLElement): number {
@@ -55,7 +57,8 @@ function placePanel(el: HTMLElement, station: Station, last: boolean, p: number)
   // Faded and moved, never hidden: screen readers can still read every station. Opacity is cleared
   // when held, because opacity below 1 would stop the panel's frosted glass from blurring the world.
   el.style.opacity = fade < 0.999 ? String(fade) : "";
-  el.style.transform = `translate3d(0, ${slide}px, ${depth}px) rotateY(${tilt * 14 * turn}deg)`;
+  // Its own perspective, so a role's panel inside the Experience section's markup moves as About's does.
+  el.style.transform = `perspective(1200px) translate3d(0, ${slide}px, ${depth}px) rotateY(${tilt * 14 * turn}deg)`;
   el.style.filter = fade < 0.99 ? `blur(${(1 - fade) * 6}px)` : "";
   el.style.pointerEvents = fade > 0.5 ? "" : "none";
   // How far the panel has arrived, 0 to 1, for anything inside that arrives with it (the projects' fan).
@@ -70,8 +73,10 @@ function placePanel(el: HTMLElement, station: Station, last: boolean, p: number)
 export function Dive() {
   const reduced = useReducedMotion();
   const region = useRef<HTMLDivElement>(null);
-  const panels = useRef<(HTMLDivElement | null)[]>([]);
+  const panels = useRef<(HTMLElement | null)[]>([]);
   const progress = useRef(0);
+  // The role station in view, if any: the year rail shows while there is one.
+  const [role, setRole] = useState<StationId>();
 
   // The island pauses while the dive covers the top of the screen.
   useEffect(() => {
@@ -94,6 +99,8 @@ export function Dive() {
     const onScroll = () => {
       const p = diveProgress(el);
       progress.current = p;
+      const here = stationAt(p);
+      setRole(here?.gate ? here.id : undefined);
       stations.forEach((st, i) => {
         const panel = panels.current[i];
         if (panel) placePanel(panel, st, i === stations.length - 1, p);
@@ -109,11 +116,12 @@ export function Dive() {
     };
   }, [reduced]);
 
-  // A station's anchor (#about) lands where its panel has arrived (top in view), not at the pinned stage.
+  // A section's anchor (#about, #experience) lands where its station's panel has arrived (top in view),
+  // not at the pinned stage.
   useEffect(() => {
     if (reduced) return;
     const onHash = () => {
-      const st = stations.find((x) => `#${x.id}` === window.location.hash);
+      const st = stations.find((x) => x.anchor && `#${x.anchor}` === window.location.hash);
       if (st) scrollToStation(st);
     };
     onHash();
@@ -139,13 +147,25 @@ export function Dive() {
   if (reduced) {
     return (
       <div className={s.stack}>
-        {stations.map((st) => {
-          const Section = SECTIONS[st.id];
-          return <Section key={st.id} />;
-        })}
+        <AboutSection />
+        <ExperienceSection />
+        <OtherProjectsSection />
       </div>
     );
   }
+
+  /** A station's place on the stage: the element its panel sits in, which placePanel moves. */
+  const place = (id: StationId) => {
+    const i = stations.findIndex((st) => st.id === id);
+    const st = stations[i];
+    return {
+      ref: (el: HTMLElement | null) => {
+        panels.current[i] = el;
+      },
+      className: PLACE[st.side],
+      onFocus: () => onFocus(st),
+    };
+  };
 
   return (
     <div ref={region} className={s.dive} style={{ "--stations": stations.length } as CSSProperties}>
@@ -153,21 +173,21 @@ export function Dive() {
         <div className={s.world} aria-hidden="true">
           <DiveWorld progress={progress} />
         </div>
-        {stations.map((st, i) => {
-          const Section = SECTIONS[st.id];
-          return (
-            <div
-              key={st.id}
-              ref={(el) => {
-                panels.current[i] = el;
-              }}
-              className={PLACE[st.side]}
-              onFocus={() => onFocus(st)}
-            >
-              <Section />
-            </div>
-          );
-        })}
+        <div {...place("about")}>
+          <AboutSection />
+        </div>
+        <ExperienceSection className={s.experience} entryProps={(i) => place(roles[i].id)} />
+        <div {...place("projects")}>
+          <OtherProjectsSection />
+        </div>
+        {/* The year rail: while a role is in view, all four roles' dates, the current one marked. */}
+        <ol className={s.rail} aria-label="Years" aria-hidden={role ? undefined : true} data-on={role ? "" : undefined}>
+          {roles.map((st) => (
+            <li key={st.id} aria-current={st.id === role ? "step" : undefined}>
+              {st.gate}
+            </li>
+          ))}
+        </ol>
       </div>
     </div>
   );

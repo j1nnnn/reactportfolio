@@ -30,6 +30,73 @@ export const about = {
   ],
 };
 
+/** One role in the Experience section. Its id is the role's station in the dive and a skill's proof. */
+export type ExperienceEntry = {
+  id: ExperienceId;
+  org: string;
+  title: string;
+  dates: string;
+  scope: string;
+  points: string[];
+  link?: { label: string; href: string };
+};
+
+export type ExperienceId = "wf-engineer" | "prolink" | "wf-analyst" | "wf-intern";
+
+/** Jin's roles, newest first, from his CV. Never add an internal project name. */
+export const experience: ExperienceEntry[] = [
+  {
+    id: "wf-engineer",
+    org: "Wells Fargo",
+    title: "Software Engineer · Acting Technical Product Owner",
+    dates: "2023 – present",
+    scope: "Wealth & Investment Management Technology",
+    points: [
+      "Building a greenfield investment management platform, touching millions in client assets, that financial advisors use to maintain and reallocate client portfolios.",
+      "Sole architect of the Playwright test-automation framework that is the release gate for a 20-person program: zero critical defects across every production release.",
+      "Designed a production Claude API agent that generates, validates and self-heals test scripts, with its evaluation framework and confidence-gated rollouts.",
+      "Led a workstream across a US and an India-based team, and acted as Product Owner during the test-automation phase.",
+    ],
+  },
+  {
+    id: "prolink",
+    org: "Pro-Link AI",
+    title: "Creator and Engineer · Personal project",
+    dates: "2026 – present",
+    scope: "Built for a golf coach in South Korea, in use by him in production",
+    points: [
+      "Real-time pose estimation, 9 biomechanical fault detectors and a pro-swing comparator.",
+      "A Claude coaching layer in English and Korean, guarded against prompt injection and invented numbers.",
+      "1,000+ automated tests and smoke-test-gated rollouts with automatic rollback.",
+    ],
+    link: { label: "Read the case study", href: "/work/pro-link-ai" },
+  },
+  {
+    id: "wf-analyst",
+    org: "Wells Fargo",
+    title: "Technology Analyst",
+    dates: "2022 – 2023",
+    scope: "Cloud Modernization & Innovation",
+    points: [
+      "Co-inventor, US Patent 12,470,530 B2, System and Method for Securing Financial Entity Networks (granted November 2025).",
+      "Three top-5 hackathon finishes, each a 48-hour build: top 3, top 4 (with executive sponsorship) and top 5.",
+      "Zero-downtime cloud migration of legacy investment apps.",
+    ],
+    link: { label: "About the patent", href: "/work/patent" },
+  },
+  {
+    id: "wf-intern",
+    org: "Wells Fargo",
+    title: "Technology Intern",
+    dates: "2021",
+    scope: "Early Careers program",
+    points: [
+      "Built automated unit test suites that caught critical pre-production defects.",
+      "Co-led onboarding for 50+ incoming engineers; leadership adopted the model for future cohorts.",
+    ],
+  },
+];
+
 export type OtherProject = {
   /** Stable: the Skills section cites these as proof. */
   id: string;
