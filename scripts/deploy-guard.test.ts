@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { deflateSync } from "node:zlib";
 import { dirname, join, resolve } from "node:path";
@@ -37,10 +37,12 @@ const sitemap = (urls: string[]) =>
 
 // A one-page PDF built the way Chromium prints the résumé: a Type0 font with Identity-H glyph codes, a
 // ToUnicode map back to characters, and a deflated content stream.
-const pdf = (text: string) => {
+const pdf = (text: string, { toUnicode = true } = {}) => {
   const chars = [...new Set(text)];
   const hex = (n: number) => n.toString(16).padStart(4, "0").toUpperCase();
-  const glyph = (c: string) => hex(chars.indexOf(c) + 3);
+  // Without a ToUnicode map the glyph codes are all a reader has; start them at "AA" so that misreading
+  // them as characters would look like text rather than fail by luck.
+  const glyph = (c: string) => hex(chars.indexOf(c) + (toUnicode ? 3 : 0x4141));
   const cmap =
     `/CIDInit /ProcSet findresource begin 12 dict begin begincmap\n1 begincodespacerange\n<0000> <FFFF>\nendcodespacerange\n` +
     `${chars.length} beginbfchar\n${chars.map((c) => `<${glyph(c)}> <${hex(c.charCodeAt(0))}>`).join("\n")}\nendbfchar\n` +
@@ -52,7 +54,7 @@ const pdf = (text: string) => {
     ["<< /Type /Pages /Kids [3 0 R] /Count 1 >>"],
     ["<< /Type /Page /Parent 2 0 R /Resources << /Font << /F4 5 0 R >> >> /Contents 4 0 R >>"],
     stream(content, "/Filter /FlateDecode"),
-    ["<< /Type /Font /Subtype /Type0 /BaseFont /AAAAAA+Invented /Encoding /Identity-H /ToUnicode 6 0 R >>"],
+    [`<< /Type /Font /Subtype /Type0 /BaseFont /AAAAAA+Invented /Encoding /Identity-H${toUnicode ? " /ToUnicode 6 0 R" : ""} >>`],
     stream(Buffer.from(cmap, "latin1")),
   ];
   const parts: (string | Buffer)[] = ["%PDF-1.4\n%\xd3\xeb\xe9\xe1\n"];
@@ -121,13 +123,21 @@ describe("deploy guard: deploy mode", () => {
     expect(r.out).toContain("private checks were skipped");
   });
 
+  it("fails in deploy mode when the list has no names in it", () => {
+    goodExport();
+    writeBlocklist();
+    const r = guard("--deploy");
+    expect(r.code).toBe(1);
+    expect(r.out).toContain(".deploy-guard-blocklist has no names");
+  });
+
   it("fails when a page contains a name on the list", () => {
     goodExport();
     writeBlocklist("Zorblax Quentaro");
     write("work/jepa.html", page({ preview: previewTags(`${SITE}og/jepa.png`), extra: "<i>zorblax quentaro</i>" }));
     const r = guard("--deploy");
     expect(r.code).toBe(1);
-    expect(r.out).toMatch(/work[\\/]jepa\.html: contains a blocked name/);
+    expect(r.out).toMatch(/work[\\/]jepa\.html: contains the blocked name on line 2 of/);
   });
 });
 
@@ -138,7 +148,7 @@ describe("deploy guard: résumé PDF", () => {
     write("resume.pdf", pdf("Jinwoo Lim · Led the ZORBLAX QUENTARO migration"));
     const r = guard("--deploy");
     expect(r.code).toBe(1);
-    expect(r.out).toContain("resume.pdf: contains a blocked name");
+    expect(r.out).toContain("resume.pdf: contains the blocked name on line 2 of");
   });
 
   it("fails when the résumé contains a phone number", () => {
@@ -147,6 +157,33 @@ describe("deploy guard: résumé PDF", () => {
     const r = guard();
     expect(r.code).toBe(1);
     expect(r.out).toContain('resume.pdf: looks like a phone number: "(201) 555-0143"');
+  });
+
+  it("says which line of the list each blocked name is on, without printing the name", () => {
+    goodExport();
+    writeBlocklist("Zorblax Quentaro", "Mirvane Oxtell");
+    write("resume.pdf", pdf("Jinwoo Lim · Built Mirvane Oxtell at the Zorblax Quentaro hackathon"));
+    const r = guard("--deploy");
+    expect(r.code).toBe(1);
+    expect(r.out).toContain("resume.pdf: contains the blocked name on line 2 of .deploy-guard-blocklist");
+    expect(r.out).toContain("resume.pdf: contains the blocked name on line 3 of .deploy-guard-blocklist");
+    expect(r.out.toLowerCase()).not.toContain("mirvane");
+  });
+
+  it("fails when a résumé font has no map back to characters, rather than reading it as gibberish", () => {
+    goodExport();
+    write("resume.pdf", pdf("Jinwoo Lim · Software Engineer", { toUnicode: false }));
+    const r = guard();
+    expect(r.code).toBe(1);
+    expect(r.out).toContain("resume.pdf: can't read this PDF");
+  });
+
+  it("reads the real résumé the site ships, and finds no phone number in it", () => {
+    goodExport();
+    copyFileSync(resolve("public/resume.pdf"), join(dir, "resume.pdf"));
+    const r = guard();
+    expect(r.out).not.toContain("resume.pdf:");
+    expect(r.code).toBe(0);
   });
 
   it("fails when it can't read the résumé", () => {

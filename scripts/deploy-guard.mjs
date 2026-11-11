@@ -121,18 +121,24 @@ if (existsSync(homeFile)) {
 const PHONE = /(?:\+?1[-.\s])?\(?\b\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b/;
 const PLACEHOLDER = /\bexample\.com\b/i;
 const blocklistFile = join(root, ".deploy-guard-blocklist");
+// Each name keeps its line number, so a failure can say which entry it hit without printing the name.
 const blocked = existsSync(blocklistFile)
-  ? readFileSync(blocklistFile, "utf8").split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !l.startsWith("#"))
+  ? readFileSync(blocklistFile, "utf8").split(/\r?\n/)
+      .map((l, i) => ({ name: l.trim(), line: i + 1 }))
+      .filter(({ name }) => name && !name.startsWith("#"))
   : null;
 if (!blocked && deployMode) {
   fail(blocklistFile, "no .deploy-guard-blocklist, so the blocked-name checks can't run in deploy mode. " +
     "Create it at the repo root with one name per line (# starts a comment); it is gitignored, never commit it");
+} else if (blocked?.length === 0 && deployMode) {
+  fail(blocklistFile, ".deploy-guard-blocklist has no names in it, so deploy mode would check nothing. Add one name per line");
 }
 const checkPrivate = (f, text) => {
   const phone = text.match(PHONE);
   if (phone) fail(f, `looks like a phone number: "${phone[0]}"`);
-  for (const name of blocked ?? []) {
-    if (text.toLowerCase().includes(name.toLowerCase())) fail(f, "contains a blocked name from .deploy-guard-blocklist");
+  const lower = text.toLowerCase();
+  for (const { name, line } of blocked ?? []) {
+    if (lower.includes(name.toLowerCase())) fail(f, `contains the blocked name on line ${line} of .deploy-guard-blocklist`);
   }
 };
 for (const f of textFiles) {

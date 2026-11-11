@@ -48,8 +48,12 @@ export function pdfText(buf) {
     for (const [, inline, ref] of dict.matchAll(/\/Font\s*(?:<<([\s\S]*?)>>|(\d+\s+\d+\s+R))/g)) {
       const list = inline ?? objects.get(refs(ref)[0])?.dict ?? "";
       for (const [, name, num] of list.matchAll(/\/([^\s/<>[\]()]+)\s+(\d+)\s+\d+\s+R/g)) {
-        const toUnicode = objects.get(num)?.dict.match(/\/ToUnicode\s+(\d+)\s+\d+\s+R/)?.[1];
-        fonts.set(name, toUnicode ? parseCMap(decoded(toUnicode)) : null);
+        const fontDict = objects.get(num)?.dict ?? "";
+        const toUnicode = fontDict.match(/\/ToUnicode\s+(\d+)\s+\d+\s+R/)?.[1];
+        // A composite (Type0) font's codes are glyph numbers: without a ToUnicode map they can't be
+        // turned back into text, and reading them as characters would yield gibberish that passes.
+        const composite = /\/Subtype\s*\/Type0\b/.test(fontDict);
+        fonts.set(name, toUnicode ? parseCMap(decoded(toUnicode)) : composite ? { unreadable: name } : null);
       }
     }
   }
@@ -99,6 +103,7 @@ function showText(s, fonts) {
   const stack = [];
   const decode = (bytes) => {
     if (!font) return String.fromCharCode(...bytes);
+    if (font.unreadable) throw new Error(`font ${font.unreadable} has no ToUnicode map`);
     let t = "";
     for (let i = 0; i + font.width <= bytes.length; i += font.width) {
       let code = 0;
