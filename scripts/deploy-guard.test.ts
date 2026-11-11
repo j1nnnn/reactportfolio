@@ -1,8 +1,10 @@
 import { spawnSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
+import { deflateSync } from "node:zlib";
 import { dirname, join, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { PERSONAL_LINE_PLACEHOLDER, PHOTO_PLACEHOLDER } from "../src/content/personal";
 
 // Seam B: the deploy guard run over a built export. goodExport() is a minimal export that passes every
 // check; each test breaks one thing and expects the guard to name it.
@@ -33,8 +35,34 @@ const sitemap = (urls: string[]) =>
   urls.map((u) => `<url><loc>${u}</loc></url>`).join("") +
   `</urlset>`;
 
+// A one-page PDF built the way Chromium prints the résumé: a Type0 font with Identity-H glyph codes, a
+// ToUnicode map back to characters, and a deflated content stream.
+const pdf = (text: string) => {
+  const chars = [...new Set(text)];
+  const hex = (n: number) => n.toString(16).padStart(4, "0").toUpperCase();
+  const glyph = (c: string) => hex(chars.indexOf(c) + 3);
+  const cmap =
+    `/CIDInit /ProcSet findresource begin 12 dict begin begincmap\n1 begincodespacerange\n<0000> <FFFF>\nendcodespacerange\n` +
+    `${chars.length} beginbfchar\n${chars.map((c) => `<${glyph(c)}> <${hex(c.charCodeAt(0))}>`).join("\n")}\nendbfchar\n` +
+    `endcmap CMapName currentdict /CMap defineresource pop end end`;
+  const content = deflateSync(`BT /F4 11 Tf 1 0 0 -1 72 720 Tm [<${[...text].map(glyph).join("")}>] TJ ET`);
+  const stream = (data: Buffer, dict = "") => [`<< ${dict} /Length ${data.length} >>\nstream\n`, data, "\nendstream"];
+  const objects = [
+    ["<< /Type /Catalog /Pages 2 0 R >>"],
+    ["<< /Type /Pages /Kids [3 0 R] /Count 1 >>"],
+    ["<< /Type /Page /Parent 2 0 R /Resources << /Font << /F4 5 0 R >> >> /Contents 4 0 R >>"],
+    stream(content, "/Filter /FlateDecode"),
+    ["<< /Type /Font /Subtype /Type0 /BaseFont /AAAAAA+Invented /Encoding /Identity-H /ToUnicode 6 0 R >>"],
+    stream(Buffer.from(cmap, "latin1")),
+  ];
+  const parts: (string | Buffer)[] = ["%PDF-1.4\n%\xd3\xeb\xe9\xe1\n"];
+  objects.forEach((o, i) => parts.push(`${i + 1} 0 obj\n`, ...o, "\nendobj\n"));
+  parts.push(`trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\n%%EOF\n`);
+  return Buffer.concat(parts.map((p) => (typeof p === "string" ? Buffer.from(p, "latin1") : p)));
+};
+
 let dir: string;
-const write = (path: string, text: string) => {
+const write = (path: string, text: string | Buffer) => {
   mkdirSync(dirname(join(dir, path)), { recursive: true });
   writeFileSync(join(dir, path), text);
 };
@@ -45,11 +73,12 @@ const goodExport = () => {
   write("work/jepa.html", page({ preview: previewTags(`${SITE}og/jepa.png`) }));
   write("og/home.png", "png");
   write("og/jepa.png", "png");
+  write("resume.pdf", pdf("Jinwoo Lim · Software Engineer · jin@j1nnnn.dev"));
   write("sitemap.xml", sitemap([SITE, `${SITE}work/jepa`]));
   write("robots.txt", `User-agent: *\nAllow: /\n\nSitemap: ${SITE}sitemap.xml\n`);
 };
-const guard = () => {
-  const r = spawnSync(process.execPath, [GUARD, dir], { cwd: dir, encoding: "utf8" });
+const guard = (...flags: string[]) => {
+  const r = spawnSync(process.execPath, [GUARD, dir, ...flags], { cwd: dir, encoding: "utf8" });
   return { code: r.status, out: r.stdout + r.stderr };
 };
 
@@ -61,6 +90,89 @@ describe("deploy guard", () => {
     const r = guard();
     expect(r.out).toContain("deploy guard: passed");
     expect(r.code).toBe(0);
+  });
+});
+
+// The blocked-name list lives at the root the guard runs from (here, the fixture dir). Names are invented.
+const writeBlocklist = (...names: string[]) => write(".deploy-guard-blocklist", `# invented\n${names.join("\n")}\n`);
+
+describe("deploy guard: deploy mode", () => {
+  it("fails in deploy mode when there is no blocked-name list, and says how to create it", () => {
+    goodExport();
+    const r = guard("--deploy");
+    expect(r.code).toBe(1);
+    expect(r.out).toContain("no .deploy-guard-blocklist");
+    expect(r.out).toContain("one name per line");
+    expect(r.out).not.toContain("deploy guard: passed");
+  });
+
+  it("passes in deploy mode when the list is there and nothing on it ships", () => {
+    goodExport();
+    writeBlocklist("Zorblax Quentaro");
+    const r = guard("--deploy");
+    expect(r.out).toContain("deploy guard: passed");
+    expect(r.code).toBe(0);
+  });
+
+  it("without deploy mode (CI), runs the public checks and says the private checks were skipped", () => {
+    goodExport();
+    const r = guard();
+    expect(r.code).toBe(0);
+    expect(r.out).toContain("private checks were skipped");
+  });
+
+  it("fails when a page contains a name on the list", () => {
+    goodExport();
+    writeBlocklist("Zorblax Quentaro");
+    write("work/jepa.html", page({ preview: previewTags(`${SITE}og/jepa.png`), extra: "<i>zorblax quentaro</i>" }));
+    const r = guard("--deploy");
+    expect(r.code).toBe(1);
+    expect(r.out).toMatch(/work[\\/]jepa\.html: contains a blocked name/);
+  });
+});
+
+describe("deploy guard: résumé PDF", () => {
+  it("fails when the résumé contains a name on the list", () => {
+    goodExport();
+    writeBlocklist("Zorblax Quentaro");
+    write("resume.pdf", pdf("Jinwoo Lim · Led the ZORBLAX QUENTARO migration"));
+    const r = guard("--deploy");
+    expect(r.code).toBe(1);
+    expect(r.out).toContain("resume.pdf: contains a blocked name");
+  });
+
+  it("fails when the résumé contains a phone number", () => {
+    goodExport();
+    write("resume.pdf", pdf("Jinwoo Lim · (201) 555-0143 · Software Engineer"));
+    const r = guard();
+    expect(r.code).toBe(1);
+    expect(r.out).toContain('resume.pdf: looks like a phone number: "(201) 555-0143"');
+  });
+
+  it("fails when it can't read the résumé", () => {
+    goodExport();
+    write("resume.pdf", Buffer.from("%PDF-1.4\n1 0 obj\n<< /Length 9 /Filter /FlateDecode >>\nstream\nnot zlib!\nendstream\nendobj\n"));
+    const r = guard();
+    expect(r.code).toBe(1);
+    expect(r.out).toContain("resume.pdf: can't read this PDF");
+  });
+});
+
+describe("deploy guard: About placeholders", () => {
+  it("fails when a page still shows the photo placeholder", () => {
+    goodExport();
+    write("index.html", page({ extra: person + `<div aria-label="${PHOTO_PLACEHOLDER}"></div>` }));
+    const r = guard();
+    expect(r.code).toBe(1);
+    expect(r.out).toMatch(/index\.html: still shows the About photo placeholder/);
+  });
+
+  it("fails when a page still shows the personal-line placeholder", () => {
+    goodExport();
+    write("index.html", page({ extra: person + `<p>${PERSONAL_LINE_PLACEHOLDER}</p>` }));
+    const r = guard();
+    expect(r.code).toBe(1);
+    expect(r.out).toMatch(/index\.html: still shows the About personal-line placeholder/);
   });
 });
 
