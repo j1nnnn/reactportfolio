@@ -4,12 +4,16 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { AboutSection } from "@/components/AboutSection";
 import { ExperienceSection } from "@/components/ExperienceSection";
+import { OtherProjectsSection } from "@/components/OtherProjectsSection";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { FLY_IN, FLY_OUT, stationArrival, stationAt, stations, type Station, type StationId } from "./stations";
 import { setDiveInView } from "./diveInView";
 import s from "./Dive.module.css";
 
 const DiveWorld = dynamic(() => import("./DiveWorld"), { ssr: false });
+
+/** A station's place on the stage, by where its panel holds. */
+const PLACE = { left: s.stationLeft, right: s.stationRight, centre: s.stationCentre };
 
 /** The role stations, newest first: the year rail lists their dates. */
 const roles = stations.filter((st) => st.gate);
@@ -31,7 +35,7 @@ const ease = (t: number) => 1 - (1 - t) ** 3;
 function placePanel(el: HTMLElement, station: Station, last: boolean, p: number) {
   const [from, to] = station.range;
   const t = (p - from) / (to - from);
-  const tilt = station.side === "left" ? 1 : -1;
+  const tilt = { left: 1, right: -1, centre: 0 }[station.side];
   const panel = el.firstElementChild as HTMLElement | null;
   const overflow = Math.max(0, (panel?.offsetHeight ?? 0) - (window.innerHeight - 48));
   const held = Math.min(1, Math.max(0, (t - FLY_IN) / (FLY_OUT - FLY_IN)));
@@ -57,6 +61,8 @@ function placePanel(el: HTMLElement, station: Station, last: boolean, p: number)
   el.style.transform = `perspective(1200px) translate3d(0, ${slide}px, ${depth}px) rotateY(${tilt * 14 * turn}deg)`;
   el.style.filter = fade < 0.99 ? `blur(${(1 - fade) * 6}px)` : "";
   el.style.pointerEvents = fade > 0.5 ? "" : "none";
+  // How far the panel has arrived, 0 to 1, for anything inside that arrives with it (the projects' fan).
+  el.style.setProperty("--arrive", String(Math.min(1, Math.max(0, t / FLY_IN))));
 }
 
 /**
@@ -143,6 +149,7 @@ export function Dive() {
       <div className={s.stack}>
         <AboutSection />
         <ExperienceSection />
+        <OtherProjectsSection />
       </div>
     );
   }
@@ -155,7 +162,7 @@ export function Dive() {
       ref: (el: HTMLElement | null) => {
         panels.current[i] = el;
       },
-      className: st.side === "left" ? s.stationLeft : s.stationRight,
+      className: PLACE[st.side],
       onFocus: () => onFocus(st),
     };
   };
@@ -170,6 +177,9 @@ export function Dive() {
           <AboutSection />
         </div>
         <ExperienceSection className={s.experience} entryProps={(i) => place(roles[i].id)} />
+        <div {...place("projects")}>
+          <OtherProjectsSection />
+        </div>
         {/* The year rail: while a role is in view, all four roles' dates, the current one marked. */}
         <ol className={s.rail} aria-label="Years" aria-hidden={role ? undefined : true} data-on={role ? "" : undefined}>
           {roles.map((st) => (

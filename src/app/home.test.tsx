@@ -2,7 +2,7 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderToString } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import { PERSONAL_LINE_PLACEHOLDER, PHOTO_PLACEHOLDER } from "@/content/personal";
+import { PERSONAL_LINE_PLACEHOLDER, PHOTO_PLACEHOLDER, otherProjects } from "@/content/personal";
 import { track } from "@/lib/analytics";
 import { askForCalmVersion, bringOnScreen, setReducedMotion, takeOffScreen } from "@/test/setup";
 import Home from "./page";
@@ -396,6 +396,140 @@ describe("home page", () => {
     setReducedMotion(true);
     render(<Home />);
     expect(await screen.findByTestId("island-scene")).toHaveAttribute("data-animate", "true");
+  });
+
+  describe("the Other projects station", () => {
+    const cards = () => {
+      const section = screen.getByRole("region", { name: "Other projects" });
+      return within(section).getAllByRole("article").map((card) => ({
+        tag: within(card).getByTestId("tag").textContent,
+        name: within(card).getByRole("heading", { level: 3 }).textContent,
+        blurb: within(card).getByTestId("blurb").textContent,
+        stack: within(within(card).getByRole("list", { name: "Stack" }))
+          .getAllByRole("listitem")
+          .map((li) => li.textContent),
+      }));
+    };
+    const FIVE = [
+      {
+        tag: "Personal · active",
+        name: "Life OS",
+        blurb: "My daily execution engine: a web app and PWA for goals, tasks, schedules and reflections, organized goal-first.",
+        stack: ["Next.js 16", "TypeScript", "Dexie.js", "Zustand"],
+      },
+      {
+        tag: "Personal · daily use",
+        name: "Security Sweep",
+        blurb: "A read-only sweep of 21 GitHub repos' security settings, alerts and new commits, failing closed on read errors.",
+        stack: ["Python", "GitHub CLI", "64 unit tests"],
+      },
+      {
+        tag: "Georgia Tech · team project",
+        name: "Citi Bike demand forecasting",
+        blurb: "A pipeline turning public Citi Bike, subway, weather and bike-route data into an H3 cell-by-hour panel under a fixed data contract.",
+        stack: ["Python", "H3", "pytest"],
+      },
+      {
+        tag: "University · 1st place midterm",
+        name: "Smart City of Aurora",
+        blurb: "A full-stack smart city platform for the City of Aurora, IL; top 5 overall.",
+        stack: ["React", "Python", "Google Maps API", "IoT"],
+      },
+      {
+        tag: "Personal",
+        name: "Human In Tech",
+        blurb: "A professional website for a family business.",
+        stack: ["React", "Responsive design"],
+      },
+    ];
+
+    it("shows Jin's five smaller projects, in order, after About and before Contact", () => {
+      render(<Home />);
+      const section = screen.getByRole("region", { name: "Other projects" });
+      expect(section).toHaveAttribute("id", "projects");
+      expect(within(section).getByRole("heading", { level: 2, name: "More things I've built" })).toBeInTheDocument();
+      expect(cards()).toEqual(FIVE);
+      const about = screen.getByRole("region", { name: "About" });
+      const contact = screen.getByRole("region", { name: "Contact" });
+      expect(about.compareDocumentPosition(section) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(section.compareDocumentPosition(contact) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it("links a card only to a live site, and only once one is set: the code is private", () => {
+      const { unmount } = render(<Home />);
+      const section = () => screen.getByRole("region", { name: "Other projects" });
+      expect(within(section()).queryAllByRole("link")).toEqual([]);
+      unmount();
+
+      const lifeOs = otherProjects.find((p) => p.id === "lifeos")!;
+      lifeOs.liveUrl = "https://lifeos.example.com/";
+      try {
+        render(<Home />);
+        const links = within(section()).getAllByRole("link");
+        expect(links).toHaveLength(1);
+        expect(links[0]).toHaveAccessibleName("Life OS");
+        expect(links[0]).toHaveAttribute("href", "https://lifeos.example.com/");
+      } finally {
+        delete lifeOs.liveUrl;
+      }
+    });
+
+    it("lands #projects on the station, which stays as the visitor scrolls on to the end of the dive", () => {
+      // jsdom has no layout: fake a 768px-tall screen with the dive starting 1000px down a page, 9000px
+      // tall, and a page scroll that the dive can read back.
+      let scrollY = 0;
+      const isDive = (el: HTMLElement) => !!el.querySelector("#about") && !!el.querySelector("#projects");
+      const spies = [
+        vi.spyOn(window, "scrollY", "get").mockImplementation(() => scrollY),
+        vi.spyOn(window, "scrollTo").mockImplementation(((opts: ScrollToOptions) => {
+          scrollY = opts.top ?? 0;
+          window.dispatchEvent(new Event("scroll"));
+        }) as typeof window.scrollTo),
+        vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(function (this: HTMLElement) {
+          return isDive(this) ? 9000 : 400;
+        }),
+        vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
+          const top = isDive(this) ? 1000 - scrollY : 0;
+          const height = isDive(this) ? 9000 : 400;
+          return { top, bottom: top + height, height, left: 0, right: 0, width: 0, x: 0, y: top } as DOMRect;
+        }),
+      ];
+      const shown = (el: HTMLElement) => {
+        for (let n: HTMLElement | null = el; n; n = n.parentElement) {
+          if (Number(getComputedStyle(n).opacity || 1) < 1) return false;
+        }
+        return true;
+      };
+      try {
+        window.history.replaceState(null, "", "/#projects");
+        render(<Home />);
+        const projects = screen.getByRole("region", { name: "Other projects" });
+        const about = screen.getByRole("region", { name: "About" });
+        expect(scrollY).toBeGreaterThan(1000);
+        expect(shown(projects)).toBe(true);
+        expect(shown(about)).toBe(false);
+
+        act(() => window.scrollTo({ top: 1000 + 9000 - 768 })); // the end of the dive
+        expect(shown(projects)).toBe(true);
+      } finally {
+        spies.forEach((spy) => spy.mockRestore());
+      }
+    });
+
+    it("shows the same five cards in the calm version, with no dive", async () => {
+      askForCalmVersion();
+      render(<Home />);
+      await screen.findByTestId("island-scene");
+      expect(cards()).toEqual(FIVE);
+      expect(screen.queryByTestId("dive-world")).not.toBeInTheDocument();
+    });
+
+    it("puts the five cards in the prerendered page, readable with JavaScript off", () => {
+      const html = renderToString(<Home />);
+      expect(html).toContain('id="projects"');
+      expect(html).toContain("More things I&#x27;ve built");
+      for (const { name } of FIVE) expect(html).toContain(name);
+    });
   });
 
   describe("the dive below the island", () => {

@@ -96,3 +96,57 @@ export const experience: ExperienceEntry[] = [
     ],
   },
 ];
+
+export type OtherProject = {
+  /** Stable: the Skills section cites these as proof. */
+  id: string;
+  name: string;
+  tag: string;
+  blurb: string;
+  stack: string[];
+  /** The repositories are private: a card links out only to a live site, and only when one is set here. */
+  liveUrl?: string;
+};
+
+export const otherProjectsHeading = "More things I've built";
+
+export const otherProjects: OtherProject[] = [
+  {
+    id: "lifeos",
+    name: "Life OS",
+    tag: "Personal · active",
+    blurb:
+      "My daily execution engine: a web app and PWA for goals, tasks, schedules and reflections, organized goal-first.",
+    stack: ["Next.js 16", "TypeScript", "Dexie.js", "Zustand"],
+  },
+  {
+    id: "sweep",
+    name: "Security Sweep",
+    tag: "Personal · daily use",
+    blurb:
+      "A read-only sweep of 21 GitHub repos' security settings, alerts and new commits, failing closed on read errors.",
+    stack: ["Python", "GitHub CLI", "64 unit tests"],
+  },
+  {
+    id: "citibike",
+    name: "Citi Bike demand forecasting",
+    tag: "Georgia Tech · team project",
+    blurb:
+      "A pipeline turning public Citi Bike, subway, weather and bike-route data into an H3 cell-by-hour panel under a fixed data contract.",
+    stack: ["Python", "H3", "pytest"],
+  },
+  {
+    id: "aurora",
+    name: "Smart City of Aurora",
+    tag: "University · 1st place midterm",
+    blurb: "A full-stack smart city platform for the City of Aurora, IL; top 5 overall.",
+    stack: ["React", "Python", "Google Maps API", "IoT"],
+  },
+  {
+    id: "humanintech",
+    name: "Human In Tech",
+    tag: "Personal",
+    blurb: "A professional website for a family business.",
+    stack: ["React", "Responsive design"],
+  },
+];

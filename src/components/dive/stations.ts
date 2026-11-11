@@ -6,7 +6,7 @@ import { experience, type ExperienceId } from "@/content/personal";
  * Read by both the 3D world and the panels. Adding a station is adding an entry here and its
  * section in Dive.tsx.
  */
-export type StationId = "about" | ExperienceId;
+export type StationId = "about" | ExperienceId | "projects";
 
 export type Station = {
   id: StationId;
@@ -14,8 +14,8 @@ export type Station = {
   anchor?: string;
   /** The slice of the dive's progress this station owns, [from, to]. */
   range: [number, number];
-  /** Which side of the screen the panel holds on, on wide screens. */
-  side: "left" | "right";
+  /** Where on the screen the panel holds, on wide screens. A centred panel flies in head-on. */
+  side: "left" | "right" | "centre";
   /** A role station's dates: the label on the ring gate the camera flies through, and its place on the year rail. */
   gate?: string;
 };
@@ -27,14 +27,16 @@ const order = [
   { id: "about" as StationId, anchor: "about" },
   // Experience: one station per role, newest first; #experience lands on the first.
   ...experience.map((role, i) => ({ id: role.id, anchor: i === 0 ? "experience" : undefined, gate: role.dates })),
+  // Other projects: the last station, a fan of cards held centre stage.
+  { id: "projects" as StationId, anchor: "projects", side: "centre" as const },
 ];
 
 const slice = (1 - DIVE_INTRO) / order.length;
 
 export const stations: Station[] = order.map((st, i): Station => ({
+  side: i % 2 === 0 ? "left" : "right",
   ...st,
   range: [DIVE_INTRO + slice * i, DIVE_INTRO + slice * (i + 1)],
-  side: i % 2 === 0 ? "left" : "right",
 }));
 
 /** Where within a station's slice its panel is fully in and fully held: fly in, hold, fly out. */
