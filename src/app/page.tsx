@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { AboutSection } from "@/components/AboutSection";
 import { ContactSection } from "@/components/ContactSection";
+import { Dive } from "@/components/dive/Dive";
 import { IslandHome } from "@/components/island/IslandHome";
 import { IslandHomeWithFocus } from "@/components/island/IslandHomeWithFocus";
 import { SITE_URL, site } from "@/content/site";
@@ -25,7 +25,7 @@ export default function Home() {
       <Suspense fallback={<IslandHome />}>
         <IslandHomeWithFocus />
       </Suspense>
-      <AboutSection />
+      <Dive />
       <ContactSection />
     </>
   );
