@@ -160,8 +160,8 @@ describe("home page", () => {
     expect(about).not.toHaveTextContent(/\+?\d[\d\s().-]{8,}\d/); // no phone number
   });
 
-  it("holds marked places for Jin's photo and his own personal line until he supplies them", () => {
-    // Exported so the deploy guard can refuse to publish them.
+  it("opens About with Jin's own words, and keeps a marked place only for his photo", () => {
+    // Exported so the deploy guard can refuse to publish the line placeholder.
     expect(PHOTO_PLACEHOLDER).toBe("photo goes here");
     expect(PERSONAL_LINE_PLACEHOLDER).toBe(
       "Your own two or three sentences go here: what drives you, and who you are outside work.",
@@ -169,13 +169,12 @@ describe("home page", () => {
     render(<Home />);
     const about = screen.getByRole("region", { name: "About" });
     const photo = within(about).getByText("photo goes here");
-    const firstIntro = within(about).getByText(/^I'm a full-stack engineer at Wells Fargo/);
-    const lastIntro = within(about).getByText(/^Outside work I built Pro-Link AI/);
     const line = within(about).getByText(
-      "Your own two or three sentences go here: what drives you, and who you are outside work.",
+      "I'm a builder, an inventor, an engineer and an architect, and to me technology and business are one craft. I see every problem from the top view, put the sharpest AI tools to work on everything below, and experiment in my own sandbox until an idea works and earns. The edge is no longer who can write the code but who can combine what's out there into the best product: share ideas openly, iterate fast, then build the niche.",
     );
-    const numbers = within(about).getByRole("list", { name: "Headline numbers" });
-    for (const [a, b] of [[photo, firstIntro], [lastIntro, line], [line, numbers]]) {
+    const firstIntro = within(about).getByText(/^I'm a full-stack engineer at Wells Fargo/);
+    expect(about).not.toHaveTextContent(PERSONAL_LINE_PLACEHOLDER);
+    for (const [a, b] of [[photo, line], [line, firstIntro]]) {
       expect(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     }
   });

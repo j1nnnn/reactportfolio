@@ -53,13 +53,6 @@
   color: var(--muted);
 }
 
-/* Marked so nobody mistakes it for Jin's own words. */
-.placeholder {
-  padding-left: 12px;
-  border-left: 3px dashed var(--muted);
-  font-style: italic;
-}
-
 @media (max-width: 640px) {
   .lead {
     grid-template-columns: minmax(0, 1fr);
