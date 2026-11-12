@@ -43,8 +43,10 @@ describe("home page", () => {
   it("tells the visitor who Jin is", () => {
     render(<Home />);
     expect(screen.getByText("Jinwoo Lim")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 1, name: "Engineer · Inventor · Builder" })).toBeInTheDocument();
-    expect(screen.getByText("I build AI products and the systems that ship them")).toBeInTheDocument();
+    // Non-breaking spaces keep each "·" off the start of a line; they read as plain spaces.
+    const title = screen.getByRole("heading", { level: 1 });
+    expect(title.textContent!.replace(/\s+/g, " ")).toBe("Engineer · Inventor · Builder · Architect");
+    expect(screen.getByText("An engineer first: I solve real-world problems, with the business sense to lead")).toBeInTheDocument();
   });
 
   it("tells search engines who Jin is, with nothing the site doesn't already show", () => {
@@ -54,7 +56,7 @@ describe("home page", () => {
       "@context": "https://schema.org",
       "@type": "Person",
       name: "Jinwoo Lim",
-      description: "Engineer · Inventor · Builder",
+      description: "Engineer · Inventor · Builder · Architect",
       url: "https://j1nnnn.github.io/reactportfolio/",
     });
   });

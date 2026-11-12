@@ -50,7 +50,8 @@ export function IslandHome({ initialFocus = null }: { initialFocus?: ProjectId |
       </div>
       <div className={s.intro}>
         <p className={s.name}>{site.name}</p>
-        <h1 className={s.identity}>{site.identity}</h1>
+        {/* A non-breaking space keeps each "·" with the word before it, so no line starts with one. */}
+        <h1 className={s.identity}>{site.identity.replaceAll(" · ", " · ")}</h1>
         <p className={s.subline}>{site.subline}</p>
         <ContactActions />
       </div>
