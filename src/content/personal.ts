@@ -3,14 +3,16 @@
 
 import { projects, type ProjectId } from "./projects";
 
-/** Placeholders until Jin supplies his photo and his own line; the deploy guard blocks only the line. */
+/** The photo placeholder may ship (Jin's call). The line placeholder is kept so the deploy guard can refuse it. */
 export const PHOTO_PLACEHOLDER = "photo goes here";
 export const PERSONAL_LINE_PLACEHOLDER =
   "Your own two or three sentences go here: what drives you, and who you are outside work.";
 
 export const about = {
   heading: "Hi, I'm Jin.",
-  personalLine: PERSONAL_LINE_PLACEHOLDER,
+  /** Jin's own words (2026-11-11), not drafted from the CV: change only on his say-so. */
+  personalLine:
+    "I'm a builder, an inventor, an engineer and an architect, and to me technology and business are one craft. I see every problem from the top view, put the sharpest AI tools to work on everything below, and experiment in my own sandbox until an idea works and earns. The edge is no longer who can write the code but who can combine what's out there into the best product: share ideas openly, iterate fast, then build the niche.",
   intro: [
     "I'm a full-stack engineer at Wells Fargo, with four-plus years building and running production systems in Wealth & Investment Management, one of the most regulated corners of financial services.",
     "I work across the whole stack, from React and TypeScript to Java and Spring Boot, and I build the AI layer on top: Claude API agents, MCP servers, and the context that makes them reliable. What I like most is turning an ambiguous, high-stakes problem into software people actually use.",

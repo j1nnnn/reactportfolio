@@ -18,12 +18,12 @@ export function AboutSection() {
           <span className={s.photoNote}>{PHOTO_PLACEHOLDER}</span>
         </div>
         <div>
+          <p className={s.intro}>{about.personalLine}</p>
           {about.intro.map((paragraph) => (
             <p key={paragraph} className={s.intro}>
               {paragraph}
             </p>
           ))}
-          <p className={`${s.intro} ${s.placeholder}`}>{about.personalLine}</p>
         </div>
       </div>
       <ul className={s.numbers} aria-label="Headline numbers">
