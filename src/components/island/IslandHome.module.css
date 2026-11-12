@@ -44,6 +44,8 @@
   font-size: clamp(30px, 3.4vw, 50px);
   line-height: 1.02;
   letter-spacing: -0.02em;
+  /* Four roles wrap as two even pairs instead of three plus a lone word. */
+  text-wrap: balance;
 }
 
 .subline {
@@ -51,6 +53,8 @@
   font-size: 19px;
   line-height: 1.45;
   color: var(--muted);
+  /* No single word left alone on the last line. */
+  text-wrap: pretty;
 }
 
 .card {

@@ -8,8 +8,8 @@ export const SITE_URL = `https://j1nnnn.github.io${BASE_PATH}/`;
 
 export const site = {
   name: "Jinwoo Lim",
-  identity: "Engineer · Inventor · Builder",
-  subline: "I build AI products and the systems that ship them",
+  identity: "Engineer · Inventor · Builder · Architect",
+  subline: "An engineer first: I solve real-world problems, with the business sense to lead",
 };
 
 // Public contact details (Jin, 2026-11-09). Never add a phone number: the deploy guard refuses one.
