@@ -13,10 +13,11 @@ export const about = {
   /** Jin's own words (2026-11-11), not drafted from the CV: change only on his say-so. */
   personalLine:
     "I'm a builder, an inventor, an engineer and an architect, and to me technology and business are one craft. I see every problem from the top view, put the sharpest AI tools to work on everything below, and experiment in my own sandbox until an idea works and earns. The edge is no longer who can write the code but who can combine what's out there into the best product: share ideas openly, iterate fast, then build the niche.",
+  /** Drafted with the career-ops agent from cv.md and approved by Jin (2026-11-13). */
   intro: [
-    "I'm a full-stack engineer at Wells Fargo, with four-plus years building and running production systems in Wealth & Investment Management, one of the most regulated corners of financial services.",
-    "I work across the whole stack, from React and TypeScript to Java and Spring Boot, and I build the AI layer on top: Claude API agents, MCP servers, and the context that makes them reliable. What I like most is turning an ambiguous, high-stakes problem into software people actually use.",
-    "Outside work I built Pro-Link AI, real-time swing analysis now in use by a golf coach in South Korea, and I'm a co-inventor on a granted US patent.",
+    "By day I'm a full-stack engineer at Wells Fargo, building investment software for financial advisors in Wealth & Investment Management, one of the most regulated corners of finance. My range runs from the UI to the microservices and APIs behind it, down to SQL and NoSQL databases and the cloud, with an AI layer on top, like a Claude agent that writes our tests and repairs them. I'm taking the analytics side further in my M.S. at Georgia Tech.",
+    "The business side came with the work. I stepped in as my team's acting technical product owner, and I still design stories with our product owners while I take on more of the engineering, from new features to defects. Advisors and business partners send us requirements and defects as they test, so I build close to the people who use it. I brief senior leadership on release readiness every cycle, and I've led a workstream across the US and India.",
+    "Outside work I keep building. Pro-Link AI is a coaching assistant for a golf coach in South Korea: it spots faults in a student's swing and measures it against a pro's to give tips. He uses it at least twice a week to plan lessons and make every session more productive, and I'm building the metrics that show how much a student improves. My software factory runs like an agile team on Linear, routing each ticket to the model and development method that fit it while keeping token spend down, then opening pull requests for my review. And now I'm building an agent for Human In Tech, my family's business.",
   ],
   numbers: [
     { value: "4+", label: "years shipping production systems" },
@@ -52,7 +53,7 @@ export const experience: ExperienceEntry[] = [
   {
     id: "wf-engineer",
     org: "Wells Fargo",
-    title: "Software Engineer · Acting Technical Product Owner",
+    title: "Software Engineer",
     dates: "2023 – present",
     scope: "Wealth & Investment Management Technology",
     points: [
