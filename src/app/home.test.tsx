@@ -497,6 +497,9 @@ describe("home page", () => {
         vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(function (this: HTMLElement) {
           return isDive(this) ? 9000 : 400;
         }),
+        vi.spyOn(HTMLElement.prototype, "offsetTop", "get").mockImplementation(function (this: HTMLElement) {
+          return isDive(this) ? 1000 : 0;
+        }),
         vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
           const top = isDive(this) ? 1000 - scrollY : 0;
           const height = isDive(this) ? 9000 : 400;
@@ -645,6 +648,9 @@ describe("home page", () => {
         }) as typeof window.scrollTo),
         vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(function (this: HTMLElement) {
           return isDive(this) ? 9000 : 400;
+        }),
+        vi.spyOn(HTMLElement.prototype, "offsetTop", "get").mockImplementation(function (this: HTMLElement) {
+          return isDive(this) ? 1000 : 0;
         }),
         vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
           const top = isDive(this) ? 1000 - scrollY : 0;

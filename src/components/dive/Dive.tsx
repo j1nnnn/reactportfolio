@@ -138,7 +138,11 @@ export function Dive() {
   const scrollToStation = (st: Station) => {
     const el = region.current;
     if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY;
+    // The region's place on the page from layout alone. Measuring it as rect.top + scrollY read it
+    // 183px too far down on a phone opened at /#about, while the browser's own jump to the anchor
+    // was still under way, so the visitor landed past About's heading.
+    let top = 0;
+    for (let n: HTMLElement | null = el; n; n = n.offsetParent as HTMLElement | null) top += n.offsetTop;
     const run = el.offsetHeight - window.innerHeight;
     window.scrollTo({ top: top + run * stationArrival(st), behavior: "instant" });
   };

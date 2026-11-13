@@ -9,7 +9,11 @@
   position: sticky;
   top: 0;
   height: 100svh;
+  /* clip, not hidden: a hidden box can still be scrolled, and opening /#about on a phone let the
+     browser's own jump to the anchor scroll the stage, landing About's tall panel past its heading.
+     hidden stays as the fallback for browsers without clip. */
   overflow: hidden;
+  overflow: clip;
 }
 
 .world {
