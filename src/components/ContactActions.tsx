@@ -8,12 +8,17 @@ import s from "./ContactActions.module.css";
 /** The contact actions, used everywhere the site offers a way to reach Jin. "Book a call" shows only once a
  * booking link is set. */
 export function ContactActions() {
-  const [copied, setCopied] = useState(false);
+  const [copyResult, setCopyResult] = useState<"copied" | "failed" | null>(null);
 
   const copyEmail = async () => {
     track("copy_email");
-    await navigator.clipboard.writeText(contact.email);
-    setCopied(true);
+    try {
+      // Throws when the clipboard API is missing (insecure context, old browser); rejects when the write is refused.
+      await navigator.clipboard.writeText(contact.email);
+      setCopyResult("copied");
+    } catch {
+      setCopyResult("failed");
+    }
   };
 
   return (
@@ -39,7 +44,8 @@ export function ContactActions() {
         Copy email address
       </button>
       <span role="status" className={s.status}>
-        {copied ? "Email address copied" : ""}
+        {copyResult === "copied" && "Email address copied"}
+        {copyResult === "failed" && `Couldn't copy. The address is ${contact.email}`}
       </span>
     </div>
   );
