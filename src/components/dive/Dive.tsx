@@ -58,6 +58,9 @@ function placePanel(el: HTMLElement, station: Station, last: boolean, p: number)
   // Faded and moved, never hidden: screen readers can still read every station. Opacity is cleared
   // when held, because opacity below 1 would stop the panel's frosted glass from blurring the world.
   el.style.opacity = fade < 0.999 ? String(fade) : "";
+  // Without the blur the world would show sharp through the glass, so a fading panel's glass darkens
+  // instead (Dive.module.css). On a phone, About's bottom is still being read as it starts to fade.
+  el.toggleAttribute("data-fading", fade < 0.999);
   // Its own perspective, so a role's panel inside the Experience section's markup moves as About's does.
   el.style.transform = `perspective(1200px) translate3d(0, ${slide}px, ${depth}px) rotateY(${tilt * 14 * turn}deg)`;
   el.style.filter = fade < 0.99 ? `blur(${(1 - fade) * 6}px)` : "";

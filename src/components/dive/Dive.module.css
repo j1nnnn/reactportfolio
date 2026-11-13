@@ -47,6 +47,14 @@
   backdrop-filter: blur(18px) saturate(1.2);
 }
 
+/* Fading switches the blur off (opacity below 1 stops it), so the glass darkens instead: the gates
+   and their dates stay behind the text rather than running sharp through it. */
+.stationLeft[data-fading] > *,
+.stationRight[data-fading] > *,
+.stationCentre[data-fading] > * {
+  background-color: rgba(10, 16, 30, 0.94);
+}
+
 /* A centred station is wide enough for a row of cards on a laptop. */
 .stationCentre > * {
   width: min(1240px, 100%);
