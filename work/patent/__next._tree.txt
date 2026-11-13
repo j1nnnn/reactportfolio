@@ -3,8 +3,8 @@
 :HL["/reactportfolio/_next/static/media/53897e768d329f66-s.p.3t6q91iet4nsy.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/reactportfolio/_next/static/media/d902bc2bfdd0a4cb-s.p.1g73gv09-xcb6.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/reactportfolio/_next/static/media/db545dba463279ae-s.p.1cp9-4nby68jc.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/reactportfolio/_next/static/chunks/1w_oawsgjqs8s.css","style"]
+:HL["/reactportfolio/_next/static/chunks/2ncr854azuge4.css","style"]
 3:[["children",{"s":"__PAGE__","h":160}]]
 2:[["children",{"s":{"n":"slug","t":"d","k":"patent","s":[]},"h":65632,"c":"$Q3"}]]
 1:[["children",{"s":"work","h":131168,"c":"$Q2"}]]
-0:{"b":"3vIg0nRqt8lhMT4gpJshQ","t":{"t":{"s":"","h":131152,"c":"$Q1"}}}
+0:{"b":"tnfyaBKzTOto4jYfssqOQ","t":{"t":{"s":"","h":131152,"c":"$Q1"}}}
