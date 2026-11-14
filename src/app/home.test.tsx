@@ -47,6 +47,8 @@ describe("home page", () => {
     const title = screen.getByRole("heading", { level: 1 });
     expect(title.textContent!.replace(/\s+/g, " ")).toBe("Engineer · Inventor · Builder · Architect");
     expect(screen.getByText("An engineer first: I solve real-world problems, with the business sense to lead")).toBeInTheDocument();
+    // Jin's own words, moved from About (2026-11-13) so About fits one laptop screen.
+    expect(within(document.getElementById("work")!).getByText("To me, technology and business are one craft. I see every problem from the top view, put the sharpest AI tools to work on everything below, and experiment until an idea works.")).toBeInTheDocument();
   });
 
   it("tells search engines who Jin is, with nothing the site doesn't already show", () => {
@@ -130,9 +132,8 @@ describe("home page", () => {
     render(<Home />);
     const about = screen.getByRole("region", { name: "About" });
     const intro = [
-      "By day I'm a full-stack engineer at Wells Fargo, building investment software for financial advisors in Wealth & Investment Management, one of the most regulated corners of finance. My range runs from the UI to the microservices and APIs behind it, down to SQL and NoSQL databases and the cloud, with an AI layer on top, like a Claude agent that writes our tests and repairs them. I'm taking the analytics side further in my M.S. at Georgia Tech.",
-      "The business side came with the work. I stepped in as my team's acting technical product owner, and I still design stories with our product owners while I take on more of the engineering, from new features to defects. Advisors and business partners send us requirements and defects as they test, so I build close to the people who use it. I brief senior leadership on release readiness every cycle, and I've led a workstream across the US and India.",
-      "Outside work I keep building. Pro-Link AI is a coaching assistant for a golf coach in South Korea: it spots faults in a student's swing and measures it against a pro's to give tips. He uses it at least twice a week to plan lessons and make every session more productive, and I'm building the metrics that show how much a student improves. My software factory runs like an agile team on Linear, routing each ticket to the model and development method that fit it while keeping token spend down, then opening pull requests for my review. And now I'm building an agent for Human In Tech, my family's business.",
+      "By day I'm a full-stack engineer at Wells Fargo, building investment software for financial advisors, from the UI and microservices down to the databases and the cloud, with an AI layer on top. I stepped in as my team's acting technical product owner and still design stories with our product owners, so I build close to the people who use it, and I brief senior leadership on release readiness every cycle.",
+      "Outside work I keep building. Pro-Link AI is a coaching assistant that a golf coach in South Korea uses at least twice a week to plan lessons. My software factory runs like an agile team on Linear, routing each ticket to the model and method that fit it. And now I'm building an agent for Human In Tech, my family's business.",
     ].map((text) => within(about).getByText(text));
 
     const numbers = within(about).getByRole("list", { name: "Headline numbers" });
@@ -155,14 +156,14 @@ describe("home page", () => {
     expect(within(about).getByRole("heading", { level: 3, name: "Beyond the code" })).toBeInTheDocument();
 
     // In order: intro, then the numbers, then beyond the code.
-    for (const [a, b] of [[intro[0], intro[1]], [intro[1], intro[2]], [intro[2], numbers], [numbers, beyond]]) {
+    for (const [a, b] of [[intro[0], intro[1]], [intro[1], numbers], [numbers, beyond]]) {
       expect(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     }
     expect(about).not.toHaveTextContent(/certif/i);
     expect(about).not.toHaveTextContent(/\+?\d[\d\s().-]{8,}\d/); // no phone number
   });
 
-  it("opens About with Jin's own words, and keeps a marked place only for his photo", () => {
+  it("opens About with the photo and the intro, keeping a marked place only for his photo", () => {
     // Exported so the deploy guard can refuse to publish the line placeholder.
     expect(PHOTO_PLACEHOLDER).toBe("photo goes here");
     expect(PERSONAL_LINE_PLACEHOLDER).toBe(
@@ -171,14 +172,10 @@ describe("home page", () => {
     render(<Home />);
     const about = screen.getByRole("region", { name: "About" });
     const photo = within(about).getByText("photo goes here");
-    const line = within(about).getByText(
-      "I'm a builder, an inventor, an engineer and an architect, and to me technology and business are one craft. I see every problem from the top view, put the sharpest AI tools to work on everything below, and experiment in my own sandbox until an idea works and earns. The edge is no longer who can write the code but who can combine what's out there into the best product: share ideas openly, iterate fast, then build the niche.",
-    );
     const firstIntro = within(about).getByText(/^By day I'm a full-stack engineer at Wells Fargo/);
+    expect(photo.compareDocumentPosition(firstIntro) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(about).not.toHaveTextContent(PERSONAL_LINE_PLACEHOLDER);
-    for (const [a, b] of [[photo, line], [line, firstIntro]]) {
-      expect(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    }
+    expect(about).not.toHaveTextContent(/one craft/); // Jin's line lives on the island now
   });
 
   it("shows the same About section in the calm version (ADR 0003)", () => {

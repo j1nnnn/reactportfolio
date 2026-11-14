@@ -57,6 +57,21 @@
   text-wrap: pretty;
 }
 
+/* Jin's line, on frosted glass like the buttons below it, so it reads over the island. */
+.description {
+  margin: 14px 0 0;
+  max-width: min(540px, calc(100vw - 2 * clamp(20px, 4vw, 56px)));
+  padding: 10px 14px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 14px;
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
 .card {
   position: absolute;
   right: clamp(16px, 3vw, 48px);
