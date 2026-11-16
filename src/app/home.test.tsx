@@ -23,8 +23,8 @@ vi.mock("@/lib/analytics", () => ({ track: vi.fn() }));
 vi.mock("@/components/island/IslandScene", () => ({
   default: (props: { onSelect: (id: string) => void; animate: boolean }) => (
     <div data-testid="island-scene" data-animate={String(props.animate)}>
-      <button type="button" onClick={() => props.onSelect("patent")}>
-        Fake building: patent
+      <button type="button" onClick={() => props.onSelect("sweep")}>
+        Fake building: sweep
       </button>
     </div>
   ),
@@ -133,7 +133,7 @@ describe("home page", () => {
     const about = screen.getByRole("region", { name: "About" });
     const intro = [
       "By day I'm a full-stack engineer at Wells Fargo, building investment software for financial advisors, from the UI and microservices down to the databases and the cloud, with an AI layer on top. I stepped in as my team's acting technical product owner and still design stories with our product owners, so I build close to the people who use it, and I brief senior leadership on release readiness every cycle.",
-      "Outside work I keep building. Pro-Link AI is a coaching assistant that a golf coach in South Korea uses at least twice a week to plan lessons. My software factory runs like an agile team on Linear, routing each ticket to the model and method that fit it. And now I'm building an agent for Human In Tech, my family's business.",
+      "Outside work I keep building, and two of my projects bring AI and automation into small businesses: Pro-Link AI, a coaching assistant a golf coach in South Korea uses at least twice a week to plan lessons, and a back-office agent that grows outreach for Human In Tech, my family's business. My software factory runs like an agile team on Linear, routing each ticket to the model and method that fit it.",
     ].map((text) => within(about).getByText(text));
 
     const numbers = within(about).getByRole("list", { name: "Headline numbers" });
@@ -204,6 +204,7 @@ describe("home page", () => {
           "Designed a production Claude API agent that generates, validates and self-heals test scripts, with its evaluation framework and confidence-gated rollouts.",
           "Led a workstream across a US and an India-based team, and acted as Product Owner during the test-automation phase.",
         ],
+        link: { name: "About the Claude API agent", href: /\/work\/claude-api-agent$/ },
       },
       {
         dates: "2026 – present",
@@ -213,7 +214,7 @@ describe("home page", () => {
         points: [
           "Real-time pose estimation, 9 biomechanical fault detectors and a pro-swing comparator.",
           "A Claude coaching layer in English and Korean, guarded against prompt injection and invented numbers.",
-          "1,000+ automated tests and smoke-test-gated rollouts with automatic rollback.",
+          "1,100+ automated tests and smoke-test-gated rollouts with automatic rollback.",
         ],
         link: { name: "Read the case study", href: /\/work\/pro-link-ai$/ },
       },
@@ -271,7 +272,7 @@ describe("home page", () => {
       expect(experience).not.toHaveTextContent(/\+?\d[\d\s().-]{8,}\d/); // no phone number
     });
 
-    it("links the Pro-Link AI and Technology Analyst roles to their case studies, and only those", () => {
+    it("links the Software Engineer, Pro-Link AI and Technology Analyst roles to their case studies, and only those", () => {
       render(<Home />);
       entries().forEach((item, i) => {
         const { link } = roles[i];
@@ -354,11 +355,20 @@ describe("home page", () => {
     render(<Home />);
     const featured = screen.getByRole("navigation", { name: "Featured work" });
     const names = within(featured).getAllByRole("button").map((b) => b.textContent);
-    expect(names).toEqual(["Pro-Link AI", "Software Factory", "JEPA", "TurfGame", "Claude API agent", "Patent US 12,470,530 B2"]);
+    // Jin's main projects (2026-11-15). The Wells Fargo agent and the patent keep pages, linked from Experience.
+    expect(names).toEqual([
+      "Pro-Link AI",
+      "Software Factory",
+      "JEPA",
+      "Human In Tech Agent",
+      "Security Sweep",
+      "Fantasy Forecast",
+      "Citi Bike demand forecasting",
+    ]);
 
     await user.click(within(featured).getByRole("button", { name: "Software Factory" }));
     const card = screen.getByRole("region", { name: "Software Factory" });
-    expect(within(card).getByText("Personal prototype: draft PRs opened, none merged yet")).toBeInTheDocument();
+    expect(within(card).getByText("Personal, in use on my own repos: worker PRs reviewed and merged by me")).toBeInTheDocument();
     expect(within(card).getByRole("link", { name: "Read the case study" })).toHaveAttribute(
       "href",
       expect.stringMatching(/\/work\/software-factory$/),
@@ -372,9 +382,9 @@ describe("home page", () => {
     const user = userEvent.setup();
     render(<Home />);
     // The canvas is aria-hidden (the chip row is its accessible twin), so reach it as a pointer would.
-    await user.click(await screen.findByRole("button", { name: "Fake building: patent", hidden: true }));
-    const card = screen.getByRole("region", { name: "Patent US 12,470,530 B2" });
-    expect(within(card).getByText("System and Method for Securing Financial Entity Networks.")).toBeInTheDocument();
+    await user.click(await screen.findByRole("button", { name: "Fake building: sweep", hidden: true }));
+    const card = screen.getByRole("region", { name: "Security Sweep" });
+    expect(within(card).getByText("Personal, in daily use since October 2026")).toBeInTheDocument();
   });
 
   it("reopens a project's card when the visitor comes back from its case study", () => {
@@ -416,24 +426,19 @@ describe("home page", () => {
           .map((li) => li.textContent),
       }));
     };
-    const FIVE = [
+    const OTHERS = [
       {
-        tag: "Personal · active",
-        name: "Life OS",
-        blurb: "My daily execution engine: a web app and PWA for goals, tasks, schedules and reflections, organized goal-first.",
-        stack: ["Next.js 16", "TypeScript", "Dexie.js", "Zustand"],
+        tag: "Personal · in development",
+        name: "TurfGame",
+        blurb:
+          "A deterministic, engine-free simulation of an 8-faction territory game with a Godot front end; milestones M0 to M3 closed, M4 in progress.",
+        stack: ["C#", ".NET 10", "Godot 4", "580+ xUnit tests"],
       },
       {
-        tag: "Personal · daily use",
-        name: "Security Sweep",
-        blurb: "A read-only sweep of 21 GitHub repos' security settings, alerts and new commits, failing closed on read errors.",
-        stack: ["Python", "GitHub CLI", "64 unit tests"],
-      },
-      {
-        tag: "Georgia Tech · team project",
-        name: "Citi Bike demand forecasting",
-        blurb: "A pipeline turning public Citi Bike, subway, weather and bike-route data into an H3 cell-by-hour panel under a fixed data contract.",
-        stack: ["Python", "H3", "pytest"],
+        tag: "Family business · live",
+        name: "Human In Tech website",
+        blurb: "The live website for my family's business, with security headers, consent-gated analytics and SEO structured data.",
+        stack: ["Next.js 14", "TypeScript", "Tailwind"],
       },
       {
         tag: "University · 1st place midterm",
@@ -441,20 +446,14 @@ describe("home page", () => {
         blurb: "A full-stack smart city platform for the City of Aurora, IL; top 5 overall.",
         stack: ["React", "Python", "Google Maps API", "IoT"],
       },
-      {
-        tag: "Personal",
-        name: "Human In Tech",
-        blurb: "A professional website for a family business.",
-        stack: ["React", "Responsive design"],
-      },
     ];
 
-    it("shows Jin's five smaller projects, in order, after About and before Contact", () => {
+    it("shows Jin's smaller projects, in order, after About and before Contact", () => {
       render(<Home />);
       const section = screen.getByRole("region", { name: "Other projects" });
       expect(section).toHaveAttribute("id", "projects");
-      expect(within(section).getByRole("heading", { level: 2, name: "More things I've built" })).toBeInTheDocument();
-      expect(cards()).toEqual(FIVE);
+      expect(within(section).getByRole("heading", { level: 2, name: "Some others I've built" })).toBeInTheDocument();
+      expect(cards()).toEqual(OTHERS);
       const about = screen.getByRole("region", { name: "About" });
       const contact = screen.getByRole("region", { name: "Contact" });
       expect(about.compareDocumentPosition(section) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -467,16 +466,16 @@ describe("home page", () => {
       expect(within(section()).queryAllByRole("link")).toEqual([]);
       unmount();
 
-      const lifeOs = otherProjects.find((p) => p.id === "lifeos")!;
-      lifeOs.liveUrl = "https://lifeos.example.com/";
+      const aurora = otherProjects.find((p) => p.id === "aurora")!;
+      aurora.liveUrl = "https://aurora.example.com/";
       try {
         render(<Home />);
         const links = within(section()).getAllByRole("link");
         expect(links).toHaveLength(1);
-        expect(links[0]).toHaveAccessibleName("Life OS");
-        expect(links[0]).toHaveAttribute("href", "https://lifeos.example.com/");
+        expect(links[0]).toHaveAccessibleName("Smart City of Aurora");
+        expect(links[0]).toHaveAttribute("href", "https://aurora.example.com/");
       } finally {
-        delete lifeOs.liveUrl;
+        delete aurora.liveUrl;
       }
     });
 
@@ -525,30 +524,30 @@ describe("home page", () => {
       }
     });
 
-    it("shows the same five cards in the calm version, with no dive", async () => {
+    it("shows the same cards in the calm version, with no dive", async () => {
       askForCalmVersion();
       render(<Home />);
       await screen.findByTestId("island-scene");
-      expect(cards()).toEqual(FIVE);
+      expect(cards()).toEqual(OTHERS);
       expect(screen.queryByTestId("dive-world")).not.toBeInTheDocument();
     });
 
-    it("puts the five cards in the prerendered page, readable with JavaScript off", () => {
+    it("puts the cards in the prerendered page, readable with JavaScript off", () => {
       const html = renderToString(<Home />);
       expect(html).toContain('id="projects"');
-      expect(html).toContain("More things I&#x27;ve built");
-      for (const { name } of FIVE) expect(html).toContain(name);
+      expect(html).toContain("Some others I&#x27;ve built");
+      for (const { name } of OTHERS) expect(html).toContain(name);
     });
   });
 
   describe("the Skills station", () => {
-    // From Jin's CV, as the ticket lists them (SOF-233).
+    // From Jin's CV, as the ticket lists them (SOF-233), plus the main projects' skills (2026-11-15).
     const GROUPS = [
       ["AI & Agentic", ["Claude API", "Agentic workflows", "MCP servers", "Context engineering", "LLM evaluation", "RAG pipelines", "Computer vision"]],
       ["Languages", ["TypeScript", "Python", "Java", "C# / .NET"]],
-      ["Frontend", ["React", "Next.js", "Angular", "Micro-frontends"]],
-      ["Backend", ["Spring Boot", "Kafka", "FastAPI", "Cloudflare Workers"]],
-      ["Data", ["MongoDB", "Data pipelines"]],
+      ["Frontend", ["React", "Next.js", "deck.gl", "Angular", "Micro-frontends"]],
+      ["Backend", ["Spring Boot", "Kafka", "FastAPI", "Cloudflare Workers", "Google Apps Script"]],
+      ["Data", ["MongoDB", "Data pipelines", "Model backtesting"]],
       ["Quality", ["Playwright", "Release gates", "Deterministic simulation", "Security automation"]],
       ["Leadership", ["Product ownership", "Cross-team leadership"]],
     ] as const;

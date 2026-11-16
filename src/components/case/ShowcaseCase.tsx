@@ -11,7 +11,7 @@ const BuildingShowcase = dynamic(() => import("./three/BuildingShowcase"), { ssr
 const LiquidMetal = dynamic(() => import("./three/LiquidMetal"), { ssr: false });
 
 /**
- * JEPA, TurfGame, the Claude API agent and the patent (ADR 0002). Each opens on its own building
+ * Every case study but Pro-Link AI and Software Factory (ADR 0002). Each opens on its own building
  * from the island, enlarged and turning, in that project's colours. The patent sits on a
  * liquid-metal shader, a Rune-inspired effect.
  */
@@ -38,8 +38,8 @@ export function ShowcaseCase({ project, reduced }: { project: Project; reduced: 
           </div>
         </section>
         {project.id === "agent" && <AgentLoop />}
-        {/* A co-invented patent: name Jin's share, never the whole invention. */}
-        <CaseFacts project={project} builtTitle={project.id === "patent" ? "My part" : "What I built"} />
+        {/* A co-invented patent and a team project: name Jin's share, never the whole work. */}
+        <CaseFacts project={project} builtTitle={project.id === "patent" || project.id === "citibike" ? "My part" : "What I built"} />
         <ContactSection />
         <NextProject project={project} />
       </main>

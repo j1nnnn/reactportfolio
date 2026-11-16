@@ -22,13 +22,13 @@ describe("case study page", () => {
   it("tells the visitor what the project is and what Jin built", async () => {
     await visit("software-factory");
     expect(screen.getByRole("heading", { level: 1, name: "Software Factory" })).toBeInTheDocument();
-    expect(screen.getByText("Personal prototype: draft PRs opened, none merged yet")).toBeInTheDocument();
+    expect(screen.getByText("Personal, in use on my own repos: worker PRs reviewed and merged by me")).toBeInTheDocument();
 
     const built = screen.getByRole("region", { name: "What I built" });
     expect(within(built).getByText("A clean-checkout verify step and a fail-closed secret scan before any draft PR is opened.")).toBeInTheDocument();
 
     const numbers = screen.getByRole("region", { name: "By the numbers" });
-    expect(within(numbers).getByText("443")).toBeInTheDocument();
+    expect(within(numbers).getByText("540+")).toBeInTheDocument();
     expect(within(numbers).getByText("test functions")).toBeInTheDocument();
 
     expect(within(screen.getByRole("region", { name: "Stack" })).getByText("Linear GraphQL")).toBeInTheDocument();
@@ -68,7 +68,17 @@ describe("case study page", () => {
     expect(within(previous).getByRole("link", { name: "Software Factory" })).toHaveAttribute("href", "/work/software-factory");
   });
 
-  it.each(["pro-link-ai", "software-factory", "jepa", "turfgame", "claude-api-agent", "patent"])(
+  it.each([
+    "pro-link-ai",
+    "software-factory",
+    "jepa",
+    "human-in-tech-agent",
+    "security-sweep",
+    "fantasy-forecast",
+    "citi-bike-forecasting",
+    "claude-api-agent",
+    "patent",
+  ])(
     "lets a visitor who has just read %s reach Jin before moving on",
     async (slug) => {
       const user = userEvent.setup(); // installs a clipboard stub
@@ -98,7 +108,17 @@ describe("case study page", () => {
 });
 
 describe("the navigation bar", () => {
-  it.each(["pro-link-ai", "software-factory", "jepa", "turfgame", "claude-api-agent", "patent"])(
+  it.each([
+    "pro-link-ai",
+    "software-factory",
+    "jepa",
+    "human-in-tech-agent",
+    "security-sweep",
+    "fantasy-forecast",
+    "citi-bike-forecasting",
+    "claude-api-agent",
+    "patent",
+  ])(
     "takes a visitor on %s back to any of the home page's sections",
     async (slug) => {
       await visit(slug);
@@ -161,8 +181,7 @@ describe("screenshot slots", () => {
   it.each([
     ["pro-link-ai", "The live swing view, with the pose overlay and fault markers"],
     ["software-factory", "A draft pull request opened by a worker, with its verify and secret-scan results"],
-    ["jepa", "A time-blocked daily plan, as posted to Discord"],
-    ["turfgame", "The Godot map, with the eight factions' territory"],
+    ["jepa", "A time-blocked daily plan, as a GitHub issue"],
   ])("shows the visitor what screens are coming on %s", async (slug, caption) => {
     await visit(slug);
     const screens = screen.getByRole("region", { name: "Screens" });
@@ -170,7 +189,7 @@ describe("screenshot slots", () => {
     expect(within(screens).getAllByText("Screenshot coming soon").length).toBeGreaterThan(0);
   });
 
-  it.each(["claude-api-agent", "patent"])("shows no slots on %s", async (slug) => {
+  it.each(["human-in-tech-agent", "security-sweep", "fantasy-forecast", "citi-bike-forecasting", "claude-api-agent", "patent"])("shows no slots on %s", async (slug) => {
     await visit(slug);
     expect(screen.queryByRole("region", { name: "Screens" })).not.toBeInTheDocument();
   });
@@ -179,11 +198,11 @@ describe("screenshot slots", () => {
     const { byId } = await import("@/content/projects");
     const jepa = byId("jepa");
     const original = jepa.shots;
-    jepa.shots = [{ caption: "A time-blocked daily plan, as posted to Discord", image: "/shots/jepa-plan.png" }];
+    jepa.shots = [{ caption: "A time-blocked daily plan, as a GitHub issue", image: "/shots/jepa-plan.png" }];
     try {
       await visit("jepa");
       const screens = screen.getByRole("region", { name: "Screens" });
-      expect(within(screens).getByRole("img", { name: "A time-blocked daily plan, as posted to Discord" })).toHaveAttribute(
+      expect(within(screens).getByRole("img", { name: "A time-blocked daily plan, as a GitHub issue" })).toHaveAttribute(
         "src",
         "/reactportfolio/shots/jepa-plan.png", // a file in public/, served under the site's base path
       );

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ContactActions } from "@/components/ContactActions";
 import { useDiveInView } from "@/components/dive/diveInView";
-import { projects, type ProjectId } from "@/content/projects";
+import { islandProjects, type ProjectId } from "@/content/projects";
 import { site } from "@/content/site";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import s from "./IslandHome.module.css";
@@ -18,7 +18,7 @@ export function IslandHome({ initialFocus = null }: { initialFocus?: ProjectId |
   const diveInView = useDiveInView(); // only one 3D scene runs at a time
   const [hovered, setHovered] = useState<ProjectId | null>(null);
   const [selected, setSelected] = useState<ProjectId | null>(initialFocus);
-  const card = projects.find((p) => p.id === selected);
+  const card = islandProjects.find((p) => p.id === selected);
   const cardTitle = useRef<HTMLHeadingElement>(null);
   const opener = useRef<HTMLElement | null>(null);
 
@@ -77,17 +77,20 @@ export function IslandHome({ initialFocus = null }: { initialFocus?: ProjectId |
 
       <nav className={s.chips} aria-label="Featured work">
         <p className={s.hint}>Tap a building, or pick a project</p>
-        {projects.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            aria-pressed={selected === p.id}
-            className={selected === p.id ? s.chipOn : s.chip}
-            onClick={() => open(p.id)}
-          >
-            {p.name}
-          </button>
-        ))}
+        {/* One swipeable row on phones, so seven chips never climb into the intro. */}
+        <div className={s.chipRow}>
+          {islandProjects.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              aria-pressed={selected === p.id}
+              className={selected === p.id ? s.chipOn : s.chip}
+              onClick={() => open(p.id)}
+            >
+              {p.name}
+            </button>
+          ))}
+        </div>
       </nav>
       {/* There's more below: the dive. Decorative; the sections follow in document order. */}
       <div className={s.cue} aria-hidden="true">
