@@ -13,7 +13,7 @@ export const about = {
   /** Drafted with the career-ops agent from cv.md, trimmed to fit one laptop screen; approved by Jin (2026-11-13). */
   intro: [
     "By day I'm a full-stack engineer at Wells Fargo, building investment software for financial advisors, from the UI and microservices down to the databases and the cloud, with an AI layer on top. I stepped in as my team's acting technical product owner and still design stories with our product owners, so I build close to the people who use it, and I brief senior leadership on release readiness every cycle.",
-    "Outside work I keep building. Pro-Link AI is a coaching assistant that a golf coach in South Korea uses at least twice a week to plan lessons. My software factory runs like an agile team on Linear, routing each ticket to the model and method that fit it. And now I'm building an agent for Human In Tech, my family's business.",
+    "Outside work I keep building, and two of my projects bring AI and automation into small businesses: Pro-Link AI, a coaching assistant a golf coach in South Korea uses at least twice a week to plan lessons, and a back-office agent that grows outreach for Human In Tech, my family's business. My software factory runs like an agile team on Linear, routing each ticket to the model and method that fit it.",
   ],
   numbers: [
     { value: "4+", label: "years shipping production systems" },
@@ -58,6 +58,7 @@ export const experience: ExperienceEntry[] = [
       "Designed a production Claude API agent that generates, validates and self-heals test scripts, with its evaluation framework and confidence-gated rollouts.",
       "Led a workstream across a US and an India-based team, and acted as Product Owner during the test-automation phase.",
     ],
+    link: { label: "About the Claude API agent", href: "/work/claude-api-agent" },
   },
   {
     id: "prolink",
@@ -68,7 +69,7 @@ export const experience: ExperienceEntry[] = [
     points: [
       "Real-time pose estimation, 9 biomechanical fault detectors and a pro-swing comparator.",
       "A Claude coaching layer in English and Korean, guarded against prompt injection and invented numbers.",
-      "1,000+ automated tests and smoke-test-gated rollouts with automatic rollback.",
+      "1,100+ automated tests and smoke-test-gated rollouts with automatic rollback.",
     ],
     link: { label: "Read the case study", href: "/work/pro-link-ai" },
   },
@@ -98,7 +99,7 @@ export const experience: ExperienceEntry[] = [
   },
 ];
 
-export type OtherProjectId = "lifeos" | "sweep" | "citibike" | "aurora" | "humanintech";
+export type OtherProjectId = "turf" | "aurora" | "humanintech";
 
 export type OtherProject = {
   /** Stable: the Skills section cites these as proof. */
@@ -111,32 +112,24 @@ export type OtherProject = {
   liveUrl?: string;
 };
 
-export const otherProjectsHeading = "More things I've built";
+export const otherProjectsHeading = "Some others I've built";
 
+/** The smaller list under Jin's main projects (his pick, 2026-11-15). */
 export const otherProjects: OtherProject[] = [
   {
-    id: "lifeos",
-    name: "Life OS",
-    tag: "Personal · active",
+    id: "turf",
+    name: "TurfGame",
+    tag: "Personal · in development",
     blurb:
-      "My daily execution engine: a web app and PWA for goals, tasks, schedules and reflections, organized goal-first.",
-    stack: ["Next.js 16", "TypeScript", "Dexie.js", "Zustand"],
+      "A deterministic, engine-free simulation of an 8-faction territory game with a Godot front end; milestones M0 to M3 closed, M4 in progress.",
+    stack: ["C#", ".NET 10", "Godot 4", "580+ xUnit tests"],
   },
   {
-    id: "sweep",
-    name: "Security Sweep",
-    tag: "Personal · daily use",
-    blurb:
-      "A read-only sweep of 21 GitHub repos' security settings, alerts and new commits, failing closed on read errors.",
-    stack: ["Python", "GitHub CLI", "64 unit tests"],
-  },
-  {
-    id: "citibike",
-    name: "Citi Bike demand forecasting",
-    tag: "Georgia Tech · team project",
-    blurb:
-      "A pipeline turning public Citi Bike, subway, weather and bike-route data into an H3 cell-by-hour panel under a fixed data contract.",
-    stack: ["Python", "H3", "pytest"],
+    id: "humanintech",
+    name: "Human In Tech website",
+    tag: "Family business · live",
+    blurb: "The live website for my family's business, with security headers, consent-gated analytics and SEO structured data.",
+    stack: ["Next.js 14", "TypeScript", "Tailwind"],
   },
   {
     id: "aurora",
@@ -144,13 +137,6 @@ export const otherProjects: OtherProject[] = [
     tag: "University · 1st place midterm",
     blurb: "A full-stack smart city platform for the City of Aurora, IL; top 5 overall.",
     stack: ["React", "Python", "Google Maps API", "IoT"],
-  },
-  {
-    id: "humanintech",
-    name: "Human In Tech",
-    tag: "Personal",
-    blurb: "A professional website for a family business.",
-    stack: ["React", "Responsive design"],
   },
 ];
 
@@ -176,20 +162,23 @@ export const skills: Skill[] = [
   { name: "LLM evaluation", group: "AI & Agentic", proofs: ["wf-engineer", "factory"] },
   { name: "RAG pipelines", group: "AI & Agentic", proofs: ["wf-analyst"] },
   { name: "Computer vision", group: "AI & Agentic", proofs: ["prolink"] },
-  { name: "TypeScript", group: "Languages", proofs: ["wf-engineer", "prolink", "lifeos"] },
-  { name: "Python", group: "Languages", proofs: ["prolink", "factory", "jepa", "sweep", "citibike"] },
+  { name: "TypeScript", group: "Languages", proofs: ["wf-engineer", "prolink", "hitagent", "humanintech"] },
+  { name: "Python", group: "Languages", proofs: ["prolink", "factory", "jepa", "sweep", "fantasy", "citibike"] },
   { name: "Java", group: "Languages", proofs: ["wf-engineer"] },
   { name: "C# / .NET", group: "Languages", proofs: ["turf"] },
-  { name: "React", group: "Frontend", proofs: ["wf-engineer", "prolink", "lifeos", "aurora", "humanintech"] },
-  { name: "Next.js", group: "Frontend", proofs: ["prolink", "lifeos"] },
+  { name: "React", group: "Frontend", proofs: ["wf-engineer", "prolink", "citibike", "aurora", "humanintech"] },
+  { name: "Next.js", group: "Frontend", proofs: ["prolink", "humanintech"] },
+  { name: "deck.gl", group: "Frontend", proofs: ["citibike"] },
   { name: "Angular", group: "Frontend", proofs: ["wf-engineer"] },
   { name: "Micro-frontends", group: "Frontend", proofs: ["wf-engineer"] },
   { name: "Spring Boot", group: "Backend", proofs: ["wf-engineer"] },
   { name: "Kafka", group: "Backend", proofs: ["wf-engineer"] },
   { name: "FastAPI", group: "Backend", proofs: ["prolink"] },
   { name: "Cloudflare Workers", group: "Backend", proofs: ["prolink"] },
+  { name: "Google Apps Script", group: "Backend", proofs: ["hitagent"] },
   { name: "MongoDB", group: "Data", proofs: ["wf-engineer", "wf-analyst"] },
   { name: "Data pipelines", group: "Data", proofs: ["citibike"] },
+  { name: "Model backtesting", group: "Data", proofs: ["fantasy"] },
   { name: "Playwright", group: "Quality", proofs: ["wf-engineer"] },
   { name: "Release gates", group: "Quality", proofs: ["wf-engineer", "prolink"] },
   { name: "Deterministic simulation", group: "Quality", proofs: ["turf"] },

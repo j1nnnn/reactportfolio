@@ -4,9 +4,9 @@ import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber"
 import { useRef, type ReactNode } from "react";
 import * as THREE from "three";
 import type { ProjectId } from "@/content/projects";
-import { AgentLab, Box, ClockOffice, Factory, GolfGreen, M, PatentSeal, TurfBoard } from "./buildings";
+import { Box, CamOffice, ClockOffice, Court, DemandHexes, Factory, GolfGreen, Lighthouse, M } from "./buildings";
 
-// The home page's island (ADR 0002): one building per featured project. Hover lifts a building,
+// The home page's island (ADR 0002): one building per main project (Jin's seven, 2026-11-15). Hover lifts a building,
 // selecting it zooms the camera in. Loaded in the browser only; the page's chip row is its HTML twin.
 
 export type IslandSceneProps = {
@@ -18,13 +18,15 @@ export type IslandSceneProps = {
 };
 type Props = Omit<IslandSceneProps, "animate"> & { reduced: boolean };
 
-const PLOTS: Record<ProjectId, [number, number]> = {
-  factory: [-4, -2],
-  agent: [0, -2.4],
-  patent: [4, -2],
-  prolink: [-4, 2.2],
-  turf: [0, 2.4],
-  jepa: [4, 2.2],
+// Four plots at the back, three at the front. Only island projects have one.
+const PLOTS: Partial<Record<ProjectId, [number, number]>> = {
+  factory: [-6, -2.3],
+  citibike: [-2, -2.3],
+  sweep: [2, -2.3],
+  jepa: [6, -2.3],
+  prolink: [-4, 2.4],
+  hitagent: [0, 2.4],
+  fantasy: [4, 2.4],
 };
 
 const RIGHT = new THREE.Vector3(1, 0, -1).normalize();
@@ -33,7 +35,7 @@ const OFFSET = new THREE.Vector3(10, 10, 10);
 /** Wraps a building: lifts on hover, reports pointer events. */
 function Plot({ id, hovered, selected, onHover, onSelect, children }: { id: ProjectId; children: ReactNode } & Omit<Props, "reduced">) {
   const g = useRef<THREE.Group>(null);
-  const [x, z] = PLOTS[id];
+  const [x, z] = PLOTS[id] ?? [0, 0];
   useFrame((_, dt) => {
     if (!g.current) return;
     const up = hovered === id || selected === id ? 0.28 : 0;
@@ -75,12 +77,14 @@ function Rig({ selected, reduced }: { selected: ProjectId | null; reduced: boole
   const target = useRef(new THREE.Vector3());
   useFrame((_, dt) => {
     const wide = size.width > 820;
-    const base = wide ? Math.min(size.width / 22, size.height / 13) : size.width / 15;
+    const base = wide ? Math.min(size.width / 27, size.height / 13) : size.width / 19;
     const want = new THREE.Vector3();
     let zoom = base;
-    if (selected) {
-      const [x, z] = PLOTS[selected];
-      want.set(x, 0.6, z).addScaledVector(RIGHT, wide ? 2.2 : 0);
+    const plot = selected && PLOTS[selected];
+    if (plot) {
+      const [x, z] = plot;
+      // Wide screens: the building sits just right of centre, clear of the intro text and the card.
+      want.set(x, 0.6, z).addScaledVector(RIGHT, wide ? -1 : 0);
       zoom = base * 1.7;
     } else if (wide) {
       want.addScaledVector(RIGHT, -3.2);
@@ -101,18 +105,21 @@ function Island(props: Props) {
   return (
     <group>
       <mesh position={[0, -0.35, 0]} receiveShadow castShadow>
-        <boxGeometry args={[14, 0.7, 10]} />
+        <boxGeometry args={[18, 0.7, 10]} />
         <M color="#b98f68" />
       </mesh>
       <mesh position={[0, 0.0, 0]} receiveShadow>
-        <boxGeometry args={[14.02, 0.05, 10.02]} />
+        <boxGeometry args={[18.02, 0.05, 10.02]} />
         <M color="#9dcf8c" />
       </mesh>
-      <Box size={[13, 0.04, 0.5]} pos={[0, 0.03, 0.1]} color="#e6dfd2" />
-      {[-2, 2].map((x) => (
-        <Box key={x} size={[0.5, 0.04, 9]} pos={[x, 0.03, 0]} color="#e6dfd2" />
+      <Box size={[17, 0.04, 0.5]} pos={[0, 0.03, 0.1]} color="#e6dfd2" />
+      {[-4, 0, 4].map((x) => (
+        <Box key={`b${x}`} size={[0.5, 0.04, 4.4]} pos={[x, 0.03, -2.2]} color="#e6dfd2" />
       ))}
-      {[[-6.2, -4.1], [6.3, 3.9], [-6.3, 4], [6.2, -4.2], [-1.9, 4.4], [2.1, -4.5]].map(([x, z], i) => (
+      {[-2, 2].map((x) => (
+        <Box key={`f${x}`} size={[0.5, 0.04, 4.4]} pos={[x, 0.03, 2.4]} color="#e6dfd2" />
+      ))}
+      {[[-8.2, -4.2], [8.3, -4.1], [-8.3, 4.1], [8.2, 4.2], [-7, 2.2], [7.1, 2.6], [-6.4, 4.4], [6.5, 4.4]].map(([x, z], i) => (
         <group key={i} position={[x, 0, z]}>
           <Box size={[0.12, 0.4, 0.12]} pos={[0, 0.2, 0]} color="#8a6a4c" />
           <mesh position={[0, 0.65, 0]} castShadow>
@@ -130,14 +137,17 @@ function Island(props: Props) {
       <Plot id="jepa" {...plot}>
         <ClockOffice reduced={reduced} />
       </Plot>
-      <Plot id="turf" {...plot}>
-        <TurfBoard reduced={reduced} />
+      <Plot id="hitagent" {...plot}>
+        <CamOffice reduced={reduced} />
       </Plot>
-      <Plot id="agent" {...plot}>
-        <AgentLab reduced={reduced} />
+      <Plot id="sweep" {...plot}>
+        <Lighthouse reduced={reduced} />
       </Plot>
-      <Plot id="patent" {...plot}>
-        <PatentSeal reduced={reduced} />
+      <Plot id="fantasy" {...plot}>
+        <Court reduced={reduced} />
+      </Plot>
+      <Plot id="citibike" {...plot}>
+        <DemandHexes reduced={reduced} />
       </Plot>
     </group>
   );

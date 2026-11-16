@@ -4,13 +4,16 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import * as THREE from "three";
 import type { ProjectId } from "@/content/projects";
-import { AgentLab, ClockOffice, Factory, GolfGreen, PatentSeal, TurfBoard } from "@/components/island/buildings";
+import { AgentLab, CamOffice, ClockOffice, Court, DemandHexes, Factory, GolfGreen, Lighthouse, PatentSeal } from "@/components/island/buildings";
 
 const BUILDINGS: Record<ProjectId, (p: { reduced: boolean }) => React.JSX.Element> = {
   prolink: GolfGreen,
   factory: Factory,
   jepa: ClockOffice,
-  turf: TurfBoard,
+  hitagent: CamOffice,
+  sweep: Lighthouse,
+  fantasy: Court,
+  citibike: DemandHexes,
   agent: AgentLab,
   patent: PatentSeal,
 };
